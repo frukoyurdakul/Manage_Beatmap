@@ -15,14 +15,6 @@ namespace Manage_Beatmap
         public int editType { get; set; } = -1;
         public SV_Equalizer()
         {
-            string CultureName = Thread.CurrentThread.CurrentCulture.Name;
-            CultureInfo ci = new CultureInfo(CultureName);
-            if (ci.NumberFormat.NumberDecimalSeparator != ",")
-            {
-                // Forcing use of decimal separator for numerical values
-                ci.NumberFormat.NumberDecimalSeparator = ",";
-                Thread.CurrentThread.CurrentCulture = ci;
-            }
             InitializeComponent();
             ChangeControlTexts();
             ChangeLabelPositions();
@@ -54,7 +46,7 @@ namespace Manage_Beatmap
             {
                 if (textBox2.Text != "1" && textBox2.Text != "Default is 1.00x")
                 {
-                    if (!Decimal.TryParse(textBox2.Text, out f))
+                    if (!decimal.TryParse(textBox2.Text, out f))
                         ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.SVvalueFormat]);
                     else if (comboBox1.SelectedIndex == 0)
                     {

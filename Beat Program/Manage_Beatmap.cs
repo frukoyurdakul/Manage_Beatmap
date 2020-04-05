@@ -35,27 +35,22 @@ namespace Manage_Beatmap
         bool isHaveNotes = false;
         bool isActivated = false;
         bool isBackup = false;
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
+                return cp;
+            }
+        }
+
         public Manage_Beatmap()
         {
-            try
-            {
-                string CultureName = Thread.CurrentThread.CurrentCulture.Name;
-                CultureInfo ci = new CultureInfo(CultureName);
-                if (ci.NumberFormat.NumberDecimalSeparator != ",")
-                {
-                    // Forcing use of decimal separator for numerical values
-                    ci.NumberFormat.NumberDecimalSeparator = ",";
-                    Thread.CurrentThread.CurrentCulture = ci;
-                }
-                InitializeComponent();
-                SetLanguage();
-                ChangeControlTexts();
-                Opening();
-            }
-            catch (Exception e)
-            {
-                ShowMode.Error(e.Message);
-            }
+            InitializeComponent();
+            SetLanguage();
+            ChangeControlTexts();
         }
         #region WinApi
         [DllImport("User32.dll")]
@@ -342,6 +337,7 @@ namespace Manage_Beatmap
             {
                 path = file.FileName;
                 fileName = file.SafeFileName;
+                manageLoad();
                 timer1.Start();
             }
         }
@@ -2585,6 +2581,8 @@ namespace Manage_Beatmap
             form.Size = new Size(form.Size.Width, form.Size.Height - 50);
             form.label1.Text = language.LanguageContent[Language.lastVolume];
             form.label1.Location = new Point(133 - form.label1.Size.Width, form.label1.Location.Y);
+            form.label1.AutoSize = true;
+            form.label1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             form.Text = language.LanguageContent[Language.volumeChanger];
             form.checkBox1.Dispose();
             form.ShowDialog();
@@ -2653,10 +2651,18 @@ namespace Manage_Beatmap
                 List<int> redPointOffsets = new List<int>();
                 double currentBPMvalue = 0, currentBPMvalueTemp = 0, snapTime, SVchange, firstSV, firstBPMvalue = 1, variableOffset = obj.FirstTimeInMilliSeconds;
                 string currentLine;
-                int timingPointsIndex = -1; for (int i = 0; i < lines.Count; i++) if (lines[i] == "[TimingPoints]") { timingPointsIndex = i + 1; break; }
-                int hitObjectsIndex = -1; for (int i = 0; i < lines.Count; i++) if (lines[i] == "[HitObjects]") { hitObjectsIndex = i + 1; break; }
-                int resolution = 48, counter = 0, kTemp = 0, iTemp = 0, gridValue = (int)((obj.FirstGridValue * resolution) / obj.LastGridValue), unsnappedTimingPointOffset = -1;
-                bool isUnsnappedTimingPointDetected = false;
+                int timingPointsIndex = -1;
+                for (int i = 0; i < lines.Count; i++)
+                    if (lines[i] == "[TimingPoints]")
+                    { timingPointsIndex = i + 1; break; }
+                int hitObjectsIndex = -1;
+                for (int i = 0; i < lines.Count; i++)
+                    if (lines[i] == "[HitObjects]")
+                    { hitObjectsIndex = i + 1; break; }
+                int resolution = 48,
+                    counter = 0,
+                    kTemp = 0,
+                    gridValue = (int)(obj.FirstGridValue * resolution / obj.LastGridValue);
                 firstSV = obj.FirstSV;
                 for (int i = timingPointsIndex; !lines[i].Contains("["); i++)
                 {
@@ -2665,8 +2671,8 @@ namespace Manage_Beatmap
                     {
                         if (currentLine.Substring(currentLine.IndexOfWithCount(',', 6), 1) == "1")
                         {
-                            redPointOffsets.Add(Int32.Parse(currentLine.Substring(0, currentLine.IndexOf(','))));
-                            currentBPMs.Add(Double.Parse(currentLine.Substring(currentLine.IndexOfWithCount(',', 1), currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).Replace('.', ',')));
+                            redPointOffsets.Add(int.Parse(currentLine.Substring(0, currentLine.IndexOf(','))));
+                            currentBPMs.Add(double.Parse(currentLine.Substring(currentLine.IndexOfWithCount(',', 1), currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).Replace('.', ',')));
                         }
                     }
                 }
@@ -2740,9 +2746,13 @@ namespace Manage_Beatmap
                 {
                     List<int> noteOffsets = new List<int>();
                     List<double> initialSVchanges = new List<double>();
-                    double currentTime = obj.FirstTimeInMilliSeconds, tempSV = obj.FirstSV, lastSV = tempSV, currentSnap = 0, passedSnap = 0, firstSnap = 0;
-                    int startTime, endTime, redPointOffset = -10000, currentTimeTemp = (int)currentTime, baseSnap = 0, baseSnapTemp = 0;
-                    bool isFirstSnapSelected = false;
+                    double currentTime = obj.FirstTimeInMilliSeconds, 
+                        tempSV = obj.FirstSV, 
+                        lastSV = obj.LastSV;
+                    int startTime,
+                        endTime,
+                        redPointOffset = -10000,
+                        currentTimeTemp = (int)currentTime;
                     if (obj.isBetweenTimeMode)
                     {
                         for (int i = hitObjectsIndex; i < lines.Count; i++)
@@ -2752,7 +2762,7 @@ namespace Manage_Beatmap
                             {
                                 string offsetString = currentLine.Substring(currentLine.IndexOfWithCount(',', 2),
                                     currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
-                                int offset = Int32.Parse(offsetString);
+                                int offset = int.Parse(offsetString);
                                 if (offset >= obj.FirstTimeInMilliSeconds)
                                 {
                                     noteOffsets.Add(offset);
@@ -2763,7 +2773,7 @@ namespace Manage_Beatmap
                                             currentLine = lines[j];
                                             offsetString = currentLine.Substring(currentLine.IndexOfWithCount(',', 2),
                                                 currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
-                                            offset = Int32.Parse(offsetString);
+                                            offset = int.Parse(offsetString);
                                             if (offset <= obj.LastTimeInMilliSeconds)
                                                 noteOffsets.Add(offset);
                                             else
@@ -2808,7 +2818,7 @@ namespace Manage_Beatmap
                     noteOffsets.Distinct();
                     startTime = noteOffsets.Min();
                     endTime = noteOffsets.Max();
-                    int snapDifference = 0; double internalSnapTime;
+                    double totalDifference = endTime - startTime;
                     int listIndex = 0, fileIndex = 0, selectedIndex = 0;
                     for (int i = hitObjectsIndex - 1; i > timingPointsIndex - 1; i--)
                     {
@@ -2830,10 +2840,6 @@ namespace Manage_Beatmap
                         {
                             currentBPMvalue = 60000 / currentBPMs[i];
                             currentBPMvalueTemp = currentBPMvalue;
-                            redPointOffset = redPointOffsets[i];
-                            iTemp = i;
-                            baseSnap = Convert.ToInt32(((obj.FirstTimeInMilliSeconds - redPointOffset) * resolution) / currentBPMvalue);
-                            baseSnapTemp = baseSnap;
                             break;
                         }
                     }
@@ -2841,116 +2847,44 @@ namespace Manage_Beatmap
                         firstBPMvalue = obj.TargetBPM;
                     else
                         firstBPMvalue = currentBPMvalue;
-                    for (currentTime = startTime; currentTime <= endTime;)
-                    {
-                        double bpm = 0;
-                        for (int i = redPointOffsets.Count - 1; i >= 0; i--)
-                        {
-                            if (currentTime >= redPointOffsets[i])
-                            {
-                                bpm = currentBPMs[i];
-                                break;
-                            }
-                        }
-                        internalSnapTime = bpm / resolution;
-                        currentTime += internalSnapTime;
-                        snapDifference++;
-                    }
-                    SVchange = ((obj.LastSV * firstBPMvalue) - (obj.FirstSV * currentBPMvalue)) / (currentBPMvalue * snapDifference);
-                    for (int i = 0; i <= snapDifference; i++)
-                    {
-                        initialSVchanges.Add(Math.Round(obj.FirstSV + SVchange * i, 6));
-                    }
-                    double lastSVchange = initialSVchanges[initialSVchanges.Count - 1];
-                    double initialBPM = currentBPMvalue; int currentSnapTemp = 0;
+                    double currentBPM;
+                    int existingSvIndexInLines;
                     if (redPointOffset != -10000 || noteOffsets.Count != 0)
                     {
-                        for (currentTime = startTime; currentSnap < initialSVchanges.Count && listIndex < noteOffsets.Count;)
+                        for (; currentTime <= endTime && listIndex < noteOffsets.Count;)
                         {
-                            snapTime = (60000 / currentBPMvalue) / resolution;
-                            currentSnap = passedSnap - firstSnap + Convert.ToInt32((((int)currentTime - redPointOffset) / snapTime));
-                            if (isFirstSnapSelected)
+                            currentTime = noteOffsets[listIndex];
+                            currentBPM = GetCurrentBPM(redPointOffsets, currentBPMs, currentTime);
+                            tempSV = GetSvForTextByDifference(firstSV, lastSV, currentTime - noteOffsets[0],
+                                totalDifference, currentBPM, firstBPMvalue);
+                            existingSvIndexInLines = GetExistingSvIndexInLines(lines, timingPointsIndex, currentTime);
+                            if (existingSvIndexInLines == -1)
                             {
-                                if (currentSnap < initialSVchanges.Count)
-                                {
-                                    tempSV = -100 / (initialSVchanges[(int)currentSnap] * (initialBPM / currentBPMvalue));
-                                    double tempSVvalue = -100 / tempSV;
-                                    if (redPointOffsets.Count > 1)
-                                    {
-                                        for (int i = redPointOffsets.Count - 1; i >= 0; i--)
-                                        {
-                                            if ((int)currentTime >= redPointOffsets[i] && iTemp < i)
-                                            {
-                                                if (currentTime - redPointOffsets[i] >= 2)
-                                                {
-                                                    isUnsnappedTimingPointDetected = true;
-                                                    unsnappedTimingPointOffset = redPointOffsets[i];
-                                                    break;
-                                                }
-                                                currentTime = redPointOffsets[i];
-                                                baseSnap = 0;
-                                                currentBPMvalue = Math.Round(60000 / currentBPMs[i], 6);
-                                                snapTime = (60000 / currentBPMvalue) / resolution;
-                                                redPointOffset = redPointOffsets[i];
-                                                selectedIndex = fileIndex;
-                                                fileIndex++;
-                                                if (currentBPMvalueTemp != currentBPMvalue)
-                                                {
-                                                    tempSV = -100 / (initialSVchanges[(int)currentSnap] * (initialBPM / currentBPMvalue));
-                                                    tempSVvalue = -100 / tempSV;
-                                                    currentBPMvalueTemp = currentBPMvalue;
-                                                    passedSnap = currentSnap + firstSnap;
-                                                }
-                                                baseSnapTemp = baseSnap;
-                                                iTemp = i;
-                                                break;
-                                            }
-                                        }
-                                        if (isUnsnappedTimingPointDetected)
-                                            break;
-                                    }
-                                    if ((int)currentTime + 2 >= noteOffsets[listIndex] && (int)currentTime - 2 <= noteOffsets[listIndex]) // search for unsnapped notes because of rounding errors
-                                    {
-                                        if (Math.Abs(currentTime - (double)noteOffsets[listIndex]) > 1.0)
-                                        {
-                                            isUnsnappedTimingPointDetected = true;
-                                            unsnappedTimingPointOffset = noteOffsets[listIndex];
-                                            break;
-                                        }
-                                        currentTimeTemp = noteOffsets[listIndex];
-                                        tempSVvalue = -100 / tempSV;
-                                        string temp = lines[selectedIndex];
-                                        temp = temp.Substring(temp.IndexOfWithCount(',', 2));
-                                        temp = temp.Remove(temp.IndexOfWithCount(',', 4), 1);
-                                        temp = temp.Insert(temp.IndexOfWithCount(',', 4), "0");
-                                        temp = temp.Insert(0, tempSV.ToString().Replace(',', '.') + ",");
-                                        temp = temp.Insert(0, currentTimeTemp.ToString() + ",");
-                                        lines.Insert(fileIndex + 1, temp);
-                                        listIndex++; fileIndex++;
-                                    }
-                                }
-                                currentTime += snapTime;
-                                currentSnapTemp = (int)currentSnap;
+                                string temp = lines[selectedIndex];
+                                temp = temp.Substring(temp.IndexOfWithCount(',', 2));
+                                temp = temp.Remove(temp.IndexOfWithCount(',', 4), 1);
+                                temp = temp.Insert(temp.IndexOfWithCount(',', 4), "0");
+                                temp = temp.Insert(0, tempSV.ToString().Replace(',', '.') + ",");
+                                temp = temp.Insert(0, currentTime.ToString() + ",");
+                                lines.Insert(fileIndex + 1, temp);
                             }
                             else
                             {
-                                firstSnap = currentSnap;
-                                currentSnap = 0;
-                                isFirstSnapSelected = true;
+                                string temp = lines[selectedIndex];
+                                temp = temp.Substring(temp.IndexOfWithCount(',', 2));
+                                temp = temp.Remove(temp.IndexOfWithCount(',', 4), 1);
+                                temp = temp.Insert(temp.IndexOfWithCount(',', 4), "0");
+                                temp = temp.Insert(0, tempSV.ToString().Replace(',', '.') + ",");
+                                temp = temp.Insert(0, currentTime.ToString() + ",");
+                                lines[existingSvIndexInLines] = temp;
                             }
+                            listIndex++;
+                            fileIndex++;
                         }
                     }
                     else
                     {
                         ShowMode.Error(language.LanguageContent[Language.noTimingPointsOrNotes]);
-                        if (!timer1.Enabled) timer1.Start();
-                        return;
-                    }
-                    if (isUnsnappedTimingPointDetected)
-                    {
-                        if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.unsnappedNotesOrTimingPointsDetected] + FormatString.getFormattedTimeString(unsnappedTimingPointOffset))
-                            == DialogResult.Yes)
-                            Process.Start("osu://edit/" + FormatString.getFormattedTimeString(unsnappedTimingPointOffset));
                         if (!timer1.Enabled) timer1.Start();
                         return;
                     }
@@ -2974,6 +2908,69 @@ namespace Manage_Beatmap
                 SVadder();
             else if (!timer1.Enabled) timer1.Start();
         }
+
+        private double GetSvForTextByDifference(double firstSV, double lastSV, 
+            double currentDifference, double totalDifference,
+            double currentBPM, double targetBPM)
+        {
+            return -100 / GetSvValueByDifference(firstSV, lastSV, currentDifference, 
+                totalDifference, currentBPM, targetBPM);
+        }
+
+        private double GetSvValueByDifference(double firstSV, double lastSV,
+            double currentDifference, double totalDifference,
+            double currentBPM, double targetBPM)
+        {
+            double ratio = currentDifference / totalDifference;
+            double sv = (firstSV + ((lastSV - firstSV) * ratio)) / (currentBPM / targetBPM);
+            return sv;
+        }
+
+        private double GetCurrentBPM(List<int> redPointOffsets, List<double> currentBPMs, double currentTime)
+        {
+            int index = -1;
+            for (int i = redPointOffsets.Count - 1; i >= 0; i--)
+            {
+                if (redPointOffsets[i] <= currentTime)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            if (index == -1)
+                throw new ArgumentException("Closest BPM point was not found while searching by note offset.");
+            return 60000d / currentBPMs[index];
+        }
+
+        private int GetExistingSvIndexInLines(List<string> fileLines, int timingPointIndex, double currentTime)
+        {
+            string line;
+            string[] splitted;
+            int existingSvIndex = -1;
+            double pointTime;
+            for (int i = timingPointIndex; i < fileLines.Count; i++)
+            {
+                line = fileLines[i].Trim();
+                if (line == "[TimingPoints]")
+                    continue;
+                else if (line.StartsWith("[") || string.IsNullOrEmpty(line))
+                    break;
+                else
+                {
+                    splitted = line.Split(',');
+                    pointTime = double.Parse(splitted[0]);
+                    if (pointTime == currentTime && splitted[6] == "0")
+                    {
+                        existingSvIndex = i;
+                        break;
+                    }
+                    else if (pointTime > currentTime)
+                        break;
+                }
+            }
+            return existingSvIndex;
+        }
+
         private void EqualizeSV()
         {
             if (timer1.Enabled) timer1.Stop();
@@ -3229,10 +3226,17 @@ namespace Manage_Beatmap
         {
             FilterTiming();
         }
+
         private void allVisibleButton_Click(object sender, EventArgs e) // Make all visible
         {
             RemoveFilter();
         }
+
+        private void Manage_Beatmap_Shown(object sender, EventArgs e)
+        {
+            Opening();
+        }
+
         private void timer1_Tick(object sender, EventArgs e) // Timer
         {
             short ctrl = GetAsyncKeyState((int)Keys.ControlKey);

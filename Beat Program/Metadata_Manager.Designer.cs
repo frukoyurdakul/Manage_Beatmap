@@ -50,18 +50,18 @@
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(126, 15);
+            this.label1.Location = new System.Drawing.Point(123, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 20);
+            this.label1.Size = new System.Drawing.Size(61, 25);
             this.label1.TabIndex = 0;
             this.label1.Text = "Title:";
             // 
             // titleTextBox
             // 
             this.titleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.titleTextBox.Location = new System.Drawing.Point(180, 12);
+            this.titleTextBox.Location = new System.Drawing.Point(191, 12);
             this.titleTextBox.Name = "titleTextBox";
-            this.titleTextBox.Size = new System.Drawing.Size(252, 26);
+            this.titleTextBox.Size = new System.Drawing.Size(239, 30);
             this.titleTextBox.TabIndex = 0;
             this.titleTextBox.TextChanged += new System.EventHandler(this.titleTextBox_TextChanged);
             this.titleTextBox.Enter += new System.EventHandler(this.textBox_Enter);
@@ -71,9 +71,9 @@
             this.romanisedTitleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.romanisedTitleTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.romanisedTitleTextBox.Enabled = false;
-            this.romanisedTitleTextBox.Location = new System.Drawing.Point(180, 44);
+            this.romanisedTitleTextBox.Location = new System.Drawing.Point(191, 44);
             this.romanisedTitleTextBox.Name = "romanisedTitleTextBox";
-            this.romanisedTitleTextBox.Size = new System.Drawing.Size(252, 26);
+            this.romanisedTitleTextBox.Size = new System.Drawing.Size(239, 30);
             this.romanisedTitleTextBox.TabIndex = 1;
             this.romanisedTitleTextBox.Enter += new System.EventHandler(this.textBox_Enter);
             // 
@@ -81,18 +81,18 @@
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(31, 47);
+            this.label2.Location = new System.Drawing.Point(10, 47);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(143, 20);
+            this.label2.Size = new System.Drawing.Size(174, 25);
             this.label2.TabIndex = 2;
             this.label2.Text = "Romanised Title:";
             // 
             // artistTextBox
             // 
             this.artistTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.artistTextBox.Location = new System.Drawing.Point(180, 76);
+            this.artistTextBox.Location = new System.Drawing.Point(191, 76);
             this.artistTextBox.Name = "artistTextBox";
-            this.artistTextBox.Size = new System.Drawing.Size(252, 26);
+            this.artistTextBox.Size = new System.Drawing.Size(239, 30);
             this.artistTextBox.TabIndex = 2;
             this.artistTextBox.TextChanged += new System.EventHandler(this.artistTextBox_TextChanged);
             this.artistTextBox.Enter += new System.EventHandler(this.textBox_Enter);
@@ -101,9 +101,9 @@
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(117, 79);
+            this.label3.Location = new System.Drawing.Point(115, 79);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 20);
+            this.label3.Size = new System.Drawing.Size(69, 25);
             this.label3.TabIndex = 4;
             this.label3.Text = "Artist:";
             // 
@@ -112,9 +112,9 @@
             this.romanisedArtistTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.romanisedArtistTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.romanisedArtistTextBox.Enabled = false;
-            this.romanisedArtistTextBox.Location = new System.Drawing.Point(180, 108);
+            this.romanisedArtistTextBox.Location = new System.Drawing.Point(191, 108);
             this.romanisedArtistTextBox.Name = "romanisedArtistTextBox";
-            this.romanisedArtistTextBox.Size = new System.Drawing.Size(252, 26);
+            this.romanisedArtistTextBox.Size = new System.Drawing.Size(239, 30);
             this.romanisedArtistTextBox.TabIndex = 3;
             this.romanisedArtistTextBox.Enter += new System.EventHandler(this.textBox_Enter);
             // 
@@ -122,18 +122,18 @@
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(22, 111);
+            this.label4.Location = new System.Drawing.Point(2, 111);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(152, 20);
+            this.label4.Size = new System.Drawing.Size(182, 25);
             this.label4.TabIndex = 6;
             this.label4.Text = "Romanised Artist:";
             // 
             // bookmarksTextBox
             // 
             this.bookmarksTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.bookmarksTextBox.Location = new System.Drawing.Point(180, 140);
+            this.bookmarksTextBox.Location = new System.Drawing.Point(191, 140);
             this.bookmarksTextBox.Name = "bookmarksTextBox";
-            this.bookmarksTextBox.Size = new System.Drawing.Size(252, 26);
+            this.bookmarksTextBox.Size = new System.Drawing.Size(239, 30);
             this.bookmarksTextBox.TabIndex = 4;
             this.bookmarksTextBox.Enter += new System.EventHandler(this.textBox_Enter);
             // 
@@ -141,18 +141,18 @@
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(71, 143);
+            this.label5.Location = new System.Drawing.Point(58, 143);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(103, 20);
+            this.label5.Size = new System.Drawing.Size(126, 25);
             this.label5.TabIndex = 8;
             this.label5.Text = "Bookmarks:";
             // 
             // sourceTextBox
             // 
             this.sourceTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.sourceTextBox.Location = new System.Drawing.Point(180, 172);
+            this.sourceTextBox.Location = new System.Drawing.Point(191, 172);
             this.sourceTextBox.Name = "sourceTextBox";
-            this.sourceTextBox.Size = new System.Drawing.Size(252, 26);
+            this.sourceTextBox.Size = new System.Drawing.Size(239, 30);
             this.sourceTextBox.TabIndex = 5;
             this.sourceTextBox.Enter += new System.EventHandler(this.textBox_Enter);
             // 
@@ -160,18 +160,18 @@
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(102, 175);
+            this.label6.Location = new System.Drawing.Point(96, 175);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(71, 20);
+            this.label6.Size = new System.Drawing.Size(88, 25);
             this.label6.TabIndex = 10;
             this.label6.Text = "Source:";
             // 
             // tagsTextBox
             // 
             this.tagsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tagsTextBox.Location = new System.Drawing.Point(180, 204);
+            this.tagsTextBox.Location = new System.Drawing.Point(191, 204);
             this.tagsTextBox.Name = "tagsTextBox";
-            this.tagsTextBox.Size = new System.Drawing.Size(252, 26);
+            this.tagsTextBox.Size = new System.Drawing.Size(239, 30);
             this.tagsTextBox.TabIndex = 6;
             this.tagsTextBox.Enter += new System.EventHandler(this.textBox_Enter);
             // 
@@ -179,9 +179,9 @@
             // 
             this.label7.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(121, 207);
+            this.label7.Location = new System.Drawing.Point(116, 207);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 20);
+            this.label7.Size = new System.Drawing.Size(68, 25);
             this.label7.TabIndex = 12;
             this.label7.Text = "Tags:";
             // 
@@ -193,7 +193,7 @@
             this.button.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.button.Location = new System.Drawing.Point(12, 263);
+            this.button.Location = new System.Drawing.Point(11, 263);
             this.button.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button.Name = "button";
             this.button.Size = new System.Drawing.Size(420, 49);
@@ -204,10 +204,10 @@
             // 
             // Metadata_manager
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.ClientSize = new System.Drawing.Size(444, 325);
+            this.ClientSize = new System.Drawing.Size(442, 325);
             this.Controls.Add(this.button);
             this.Controls.Add(this.tagsTextBox);
             this.Controls.Add(this.label7);

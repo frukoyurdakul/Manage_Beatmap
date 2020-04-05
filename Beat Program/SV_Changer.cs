@@ -25,14 +25,6 @@ namespace Manage_Beatmap
         private bool isEntered = false, isButtonClicked = false, isMessageShown = false;
         public SV_Changer()
         {
-            string CultureName = Thread.CurrentThread.CurrentCulture.Name;
-            CultureInfo ci = new CultureInfo(CultureName);
-            if (ci.NumberFormat.NumberDecimalSeparator != ",")
-            {
-                // Forcing use of decimal separator for numerical values
-                ci.NumberFormat.NumberDecimalSeparator = ",";
-                Thread.CurrentThread.CurrentCulture = ci;
-            }
             InitializeComponent();
             ChangeControlTexts();
             ChangeLabelPositions();
@@ -121,10 +113,11 @@ namespace Manage_Beatmap
             }
             if (Regex.IsMatch(timeTextBox.Text, @"\d{2}[:]\d{2}[:]\d{3}") || Regex.IsMatch(timeTextBox.Text, @"[1-9]+[0-9]*[:]\d{2}[:]\d{2}[:]\d{3}"))
             {
+                string decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
                 if (Regex.IsMatch(firstTextBox.Text, @"^[0-9]+$") ||
-                Regex.IsMatch(firstTextBox.Text, @"^[0-9]+[,][0-9]+$") ||
+                Regex.IsMatch(firstTextBox.Text, @"^[0-9]+[" + decimalSeparator + "][0-9]+$") ||
                 Regex.IsMatch(lastTextBox.Text, @"^[0-9]+$") ||
-                Regex.IsMatch(lastTextBox.Text, @"^[0-9]+[,][0-9]+$"))
+                Regex.IsMatch(lastTextBox.Text, @"^[0-9]+[" + decimalSeparator + "][0-9]+$"))
                 {
                     if(checkBox2.Checked)
                     {

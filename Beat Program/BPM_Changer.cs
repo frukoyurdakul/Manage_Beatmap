@@ -17,14 +17,6 @@ namespace Manage_Beatmap
         public static int ComboBoxSelectedIndex { get; internal set; } 
         public BPM_Changer()
         {
-            string CultureName = Thread.CurrentThread.CurrentCulture.Name;
-            CultureInfo ci = new CultureInfo(CultureName);
-            if (ci.NumberFormat.NumberDecimalSeparator != ",")
-            {
-                // Forcing use of decimal separator for numerical values
-                ci.NumberFormat.NumberDecimalSeparator = ",";
-                Thread.CurrentThread.CurrentCulture = ci;
-            }
             InitializeComponent();
             ChangeControlTexts();
             ChangeLabelPositions();
@@ -62,11 +54,6 @@ namespace Manage_Beatmap
             else if (textBox1.Text.Any(char.IsLetter))
             {
                 ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.onlyNumbersAndComma]);
-                return;
-            }
-            else if (textBox1.Text.Contains('.'))
-            {
-                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.sepearateWithComma]);
                 return;
             }
             else if (!comboBox1.IsDisposed && comboBox1.SelectedIndex == -1)

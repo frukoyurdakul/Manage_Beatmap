@@ -42,7 +42,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(181, 7);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(111, 16);
+            this.label1.Size = new System.Drawing.Size(136, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "Timing Content";
             // 
@@ -54,9 +54,9 @@
             this.applyTimingButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.applyTimingButton.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold);
             this.applyTimingButton.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.applyTimingButton.Location = new System.Drawing.Point(152, 218);
+            this.applyTimingButton.Location = new System.Drawing.Point(152, 214);
             this.applyTimingButton.Name = "applyTimingButton";
-            this.applyTimingButton.Size = new System.Drawing.Size(183, 31);
+            this.applyTimingButton.Size = new System.Drawing.Size(183, 35);
             this.applyTimingButton.TabIndex = 3;
             this.applyTimingButton.Text = "Apply timing";
             this.applyTimingButton.UseVisualStyleBackColor = false;
@@ -73,16 +73,16 @@
             this.comboBox.Location = new System.Drawing.Point(237, 166);
             this.comboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox.Name = "comboBox";
-            this.comboBox.Size = new System.Drawing.Size(109, 24);
+            this.comboBox.Size = new System.Drawing.Size(109, 28);
             this.comboBox.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(128, 169);
+            this.label2.Location = new System.Drawing.Point(112, 169);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(99, 16);
+            this.label2.Size = new System.Drawing.Size(119, 20);
             this.label2.TabIndex = 53;
             this.label2.Text = "Change type:";
             // 
@@ -102,7 +102,7 @@
             // 
             // Timing_Manager
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(484, 261);

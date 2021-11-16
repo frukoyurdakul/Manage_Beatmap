@@ -77,10 +77,11 @@
   <ItemGroup>
     <Reference Include="FindIndex, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\FindIndex\FindIndex\bin\Release\FindIndex.dll</HintPath>
+      <HintPath>dlls\FindIndex.dll</HintPath>
     </Reference>
-    <Reference Include="MessageBoxMode">
-      <HintPath>..\..\MessageBoxMode\MessageBoxMode\bin\Release\MessageBoxMode.dll</HintPath>
+    <Reference Include="MessageBoxMode, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dlls\MessageBoxMode.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

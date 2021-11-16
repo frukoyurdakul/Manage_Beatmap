@@ -75,6 +75,7 @@ namespace Manage_Beatmap
         public const int selectGridSnap = 53;
         public const int BPMwrong = 54;
         public const int optionalInitialIsFirst = 55;
+        public const int optionalDefaultIsMinusThree = 178;
         public const int SVchangesWrong = 56;
         public const int timeExpressionDoesNotMatch = 57;
         public const int rememberSnappingNotes = 58;
@@ -213,10 +214,11 @@ namespace Manage_Beatmap
         public const int twoInheritedPointRequired = 174;
         public const int prepareMapToHitsoundingButton = 175;
         public const int noSliderMultiplierFound = 176;
+        public const int svOffset = 177;
         #endregion
         #endregion
         #endregion
-        private const int size = 177;
+        private const int size = 179;
         public Language(string lang)
         {
             if (File.Exists("Languages\\" + lang + ".txt"))
@@ -348,13 +350,13 @@ namespace Manage_Beatmap
             LanguageContent[94] = "Play!";
             LanguageContent[95] = "Stop!";
             LanguageContent[96] = "Hitsound Manager";
-            LanguageContent[97] = "It is highly recommended to selecting the grid snap relatively. For example; if you are on 1/8 snap don't use 4/1, if you do it the results will be wrong.";
-            LanguageContent[98] = "Copy the time: ";
-            LanguageContent[99] = "Set first SV: ";
-            LanguageContent[100] = "Set last SV: ";
-            LanguageContent[101] = "Count: ";
-            LanguageContent[102] = "Target BPM: ";
-            LanguageContent[103] = "Grid snap: ";
+            LanguageContent[97] = "It is highly recommended to selecting the grid snap relatively. For example; if you are on 1/8 snap don't use 4/1, if you do it the results will be wrong.\r\n\r\nThe SV offset is for shifting the resulting inherited points by that amount of milliseconds.";
+            LanguageContent[98] = "Copy the time:";
+            LanguageContent[99] = "Set first SV:";
+            LanguageContent[100] = "Set last SV:";
+            LanguageContent[101] = "Count:";
+            LanguageContent[102] = "Target BPM:";
+            LanguageContent[103] = "Grid snap:";
             LanguageContent[104] = "Put points by note snaps";
             LanguageContent[105] = "Add inherited points";
             LanguageContent[106] = "Slider Velocity Changer";
@@ -376,7 +378,7 @@ namespace Manage_Beatmap
             LanguageContent[redo] = "Redo";
             LanguageContent[save] = "Save";
             LanguageContent[refresh] = "Refresh";
-            LanguageContent[copyLastTime] = "Copy last time: ";
+            LanguageContent[copyLastTime] = "Copy last time:";
             LanguageContent[lastTimeCannotBeSmaller] = "The 2nd time cannot be smaller than or equal the first time.";
             LanguageContent[activateBetweenTimeMode] = "Activate between time mode";
             LanguageContent[selectFiles] = "Select files";
@@ -428,6 +430,8 @@ namespace Manage_Beatmap
             LanguageContent[twoInheritedPointRequired] = "At least two inherited points are required on the map.";
             LanguageContent[prepareMapToHitsoundingButton] = "Prepare the map to hitsounding";
             LanguageContent[noSliderMultiplierFound] = "The property \"SliderMultiplier\" has not been found on the file. Process aborted.";
+            LanguageContent[optionalDefaultIsMinusThree] = "optional, default is -3";
+            LanguageContent[svOffset] = "SV Offset:";
             SelectedLanguage = "English";
             SaveToConfig(SelectedLanguage);
         }

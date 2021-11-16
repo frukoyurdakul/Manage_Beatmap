@@ -16,7 +16,8 @@ namespace Manage_Beatmap
         public string firstSVTextBox { get; set; } = string.Empty;
         public string lastSVTextBox { get; set; } = string.Empty;
         public string countOrLastTimeTextBox { get; set; } = string.Empty;
-        public SV_Changer_Content(bool betweenTimeModeCheckBox, bool putNotesBySnaps, int comboBoxSelectedIndex, string timeTextBox, string firstSVTextBox, string lastSVTextBox, string countOrLastTimeTextBox)
+        public string svOffsetTextBox { get; set; } = string.Empty;
+        public SV_Changer_Content(bool betweenTimeModeCheckBox, bool putNotesBySnaps, int comboBoxSelectedIndex, string timeTextBox, string firstSVTextBox, string lastSVTextBox, string countOrLastTimeTextBox, string svOffsetTextBox)
         {
             this.betweenTimeModeCheckBox = betweenTimeModeCheckBox;
             this.putNotesBySnaps = putNotesBySnaps;
@@ -25,6 +26,7 @@ namespace Manage_Beatmap
             this.firstSVTextBox = firstSVTextBox;
             this.lastSVTextBox = lastSVTextBox;
             this.countOrLastTimeTextBox = countOrLastTimeTextBox;
+            this.svOffsetTextBox = svOffsetTextBox;
         }
         public SV_Changer_Content(SV_Changer_Content content)
         {
@@ -35,6 +37,7 @@ namespace Manage_Beatmap
             firstSVTextBox = content.firstSVTextBox;
             lastSVTextBox = content.lastSVTextBox;
             countOrLastTimeTextBox = content.countOrLastTimeTextBox;
+            svOffsetTextBox = content.svOffsetTextBox;
         }
     }
 }

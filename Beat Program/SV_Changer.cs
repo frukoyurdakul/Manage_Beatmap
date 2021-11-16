@@ -19,10 +19,11 @@ namespace Manage_Beatmap
         public int FirstTimeInMilliSeconds { get; set; }
         public int LastTimeInMilliSeconds { get; set; }
         public int Count { get; set; }
+        public int SvOffset { get; set; }
         public DialogResult Status { get; set; }
         public bool isNoteMode { get; set; }
         public bool isBetweenTimeMode { get; set; }
-        private bool isEntered = false, isButtonClicked = false, isMessageShown = false;
+        private bool isTargetBpmEntered = false, isSvOffsetEntered = false, isButtonClicked = false, isMessageShown = false;
         public SV_Changer()
         {
             InitializeComponent();
@@ -41,11 +42,13 @@ namespace Manage_Beatmap
             label7.Text = Manage_Beatmap.language.LanguageContent[Language.countLabel];
             label5.Text = Manage_Beatmap.language.LanguageContent[Language.targetBPMlabel];
             label3.Text = Manage_Beatmap.language.LanguageContent[Language.gridSnapLabel];
+            label8.Text = Manage_Beatmap.language.LanguageContent[Language.svOffset];
             bpmTextBox.Text = Manage_Beatmap.language.LanguageContent[Language.optionalInitialIsFirst];
             checkBox1.Text = Manage_Beatmap.language.LanguageContent[Language.checkBox];
             button.Text = Manage_Beatmap.language.LanguageContent[Language.addInheritedPointsButton];
             checkBox2.Text = Manage_Beatmap.language.LanguageContent[Language.activateBetweenTimeMode];
             checkBox3.Text = Manage_Beatmap.language.LanguageContent[Language.reOpenWindow];
+            checkBox2.Checked = true;
         }
         private void ChangeLabelPositions()
         {
@@ -88,7 +91,8 @@ namespace Manage_Beatmap
                                 timeTextBox.Text,
                                 firstTextBox.Text,
                                 lastTextBox.Text,
-                                countOrLastTimeTextBox.Text
+                                countOrLastTimeTextBox.Text,
+                                svOffsetTextBox.Text
                             );
                     }
                     else
@@ -146,6 +150,25 @@ namespace Manage_Beatmap
                         ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.BPMwrong]);
                         return false;
                     }
+                    string result = svOffsetTextBox.Text.Trim();
+                    int svOffsetLocal;
+                    try
+                    {
+                        if (string.IsNullOrWhiteSpace(result) || result == Manage_Beatmap.language.LanguageContent[Language.optionalDefaultIsMinusThree])
+                            svOffsetLocal = -3;
+                        else
+                            svOffsetLocal = Convert.ToInt32(svOffsetTextBox.Text.Trim());
+                    }
+                    catch (FormatException)
+                    {
+                        ShowMode.Error("The value entered for SV Offset is incorrect.");
+                        return false;
+                    }
+                    if (svOffsetLocal > 0 && checkBox1.Checked)
+                    {
+                        if (ShowMode.QuestionWithYesNo("The SV offset should be 0 or a negative value. Using a positive value will put the inherited points after the notes themselves. Are you sure you want to continue?") == DialogResult.No)
+                            return false;
+                    }
                     if (timeTextBox.Text.SearchCharCount(':') == 2)
                     {
                         string first = timeTextBox.Text.Substring(0, 2);
@@ -196,6 +219,7 @@ namespace Manage_Beatmap
                         TargetBPM = Double.Parse(bpmTextBox.Text);
                     else
                         TargetBPM = 0;
+                    SvOffset = svOffsetLocal;
                 }
                 else
                 {
@@ -217,16 +241,24 @@ namespace Manage_Beatmap
 
         private void SV_Changer_Resize(object sender, EventArgs e)
         {
-            label6.Size = new Size(this.Size.Width - 36, label6.Size.Height);
-            label6.AutoSize = true;
+            
         }
 
         private void bpmTextBox_Enter(object sender, EventArgs e)
         {
-            if (!isEntered)
+            if (!isTargetBpmEntered)
             {
                 bpmTextBox.Text = string.Empty;
-                isEntered = true;
+                isTargetBpmEntered = true;
+            }
+        }
+
+        private void svOffsetTextBox_Enter(object sender, EventArgs e)
+        {
+            if (!isSvOffsetEntered)
+            {
+                svOffsetTextBox.Text = string.Empty;
+                isSvOffsetEntered = true;
             }
         }
 
@@ -262,7 +294,8 @@ namespace Manage_Beatmap
                         timeTextBox.Text,
                         firstTextBox.Text,
                         lastTextBox.Text,
-                        countOrLastTimeTextBox.Text
+                        countOrLastTimeTextBox.Text,
+                        svOffsetTextBox.Text
                     );
             }
             else

@@ -127,19 +127,16 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>29, 278</value>
-  </data>
-  <data name="label1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>19, 286</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>135, 25</value>
+    <value>107, 20</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>Set first SV: </value>
+    <value>Set first SV:</value>
   </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>
@@ -151,19 +148,16 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>16</value>
+    <value>18</value>
   </data>
   <data name="timeTextBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="timeTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 234</value>
-  </data>
-  <data name="timeTextBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>133, 251</value>
   </data>
   <data name="timeTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>257, 30</value>
+    <value>277, 26</value>
   </data>
   <data name="timeTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -178,19 +172,16 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;timeTextBox.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>17</value>
   </data>
   <data name="firstTextBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="firstTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 274</value>
-  </data>
-  <data name="firstTextBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>133, 283</value>
   </data>
   <data name="firstTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>257, 30</value>
+    <value>277, 26</value>
   </data>
   <data name="firstTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -205,7 +196,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;firstTextBox.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>15</value>
   </data>
   <data name="label2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
@@ -214,19 +205,16 @@
     <value>True</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>31, 318</value>
-  </data>
-  <data name="label2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>22, 318</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>134, 25</value>
+    <value>105, 20</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
-    <value>Set last SV: </value>
+    <value>Set last SV:</value>
   </data>
   <data name="&gt;&gt;label2.Name" xml:space="preserve">
     <value>label2</value>
@@ -238,7 +226,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>16</value>
   </data>
   <data name="comboBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
@@ -283,13 +271,10 @@
     <value>1/16</value>
   </data>
   <data name="comboBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 434</value>
-  </data>
-  <data name="comboBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>133, 446</value>
   </data>
   <data name="comboBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>257, 33</value>
+    <value>277, 28</value>
   </data>
   <data name="comboBox.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -304,7 +289,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;comboBox.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>14</value>
   </data>
   <data name="label3.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
@@ -313,19 +298,16 @@
     <value>True</value>
   </data>
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>48, 438</value>
-  </data>
-  <data name="label3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>35, 449</value>
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>118, 25</value>
+    <value>92, 20</value>
   </data>
   <data name="label3.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>Grid snap: </value>
+    <value>Grid snap:</value>
   </data>
   <data name="&gt;&gt;label3.Name" xml:space="preserve">
     <value>label3</value>
@@ -337,7 +319,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>13</value>
   </data>
   <data name="button.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
@@ -346,13 +328,10 @@
     <value>Flat</value>
   </data>
   <data name="button.Location" type="System.Drawing.Point, System.Drawing">
-    <value>34, 514</value>
-  </data>
-  <data name="button.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>6, 510</value>
   </data>
   <data name="button.Size" type="System.Drawing.Size, System.Drawing">
-    <value>407, 44</value>
+    <value>404, 35</value>
   </data>
   <data name="button.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -370,19 +349,16 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;button.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>12</value>
   </data>
   <data name="lastTextBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="lastTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 314</value>
-  </data>
-  <data name="lastTextBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>133, 315</value>
   </data>
   <data name="lastTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>257, 30</value>
+    <value>277, 26</value>
   </data>
   <data name="lastTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -397,7 +373,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lastTextBox.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>10</value>
   </data>
   <data name="label4.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
@@ -406,13 +382,10 @@
     <value>True</value>
   </data>
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 238</value>
-  </data>
-  <data name="label4.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>2, 254</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>158, 25</value>
+    <value>129, 20</value>
   </data>
   <data name="label4.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -430,19 +403,16 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>11</value>
   </data>
   <data name="countOrLastTimeTextBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="countOrLastTimeTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 354</value>
-  </data>
-  <data name="countOrLastTimeTextBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>133, 347</value>
   </data>
   <data name="countOrLastTimeTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>257, 30</value>
+    <value>277, 26</value>
   </data>
   <data name="countOrLastTimeTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -457,7 +427,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;countOrLastTimeTextBox.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>8</value>
   </data>
   <data name="label5.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
@@ -466,13 +436,10 @@
     <value>True</value>
   </data>
   <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>29, 398</value>
-  </data>
-  <data name="label5.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>19, 382</value>
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>134, 25</value>
+    <value>108, 20</value>
   </data>
   <data name="label5.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -490,25 +457,22 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>9</value>
   </data>
   <data name="label6.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
   <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 9</value>
-  </data>
-  <data name="label6.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>5, 7</value>
   </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>449, 101</value>
+    <value>412, 149</value>
   </data>
   <data name="label6.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
-    <value>It is highly recommended to selecting the grid snap relatively. For example; if you are on 1/8 snap don't use 4/1, if you do it the results will be wrong.</value>
+    <value>It is highly recommended to selecting the grid snap relatively. For example; if you are on 1/8 snap don't use 4/1, if you do it the results will be wrong. The SV offset is for shifting the resulting inherited points by that amount of milliseconds.</value>
   </data>
   <data name="&gt;&gt;label6.Name" xml:space="preserve">
     <value>label6</value>
@@ -520,7 +484,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>7</value>
   </data>
   <data name="checkBox1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
@@ -529,13 +493,10 @@
     <value>True</value>
   </data>
   <data name="checkBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>92, 476</value>
-  </data>
-  <data name="checkBox1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>98, 480</value>
   </data>
   <data name="checkBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>271, 29</value>
+    <value>226, 24</value>
   </data>
   <data name="checkBox1.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -553,19 +514,16 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;checkBox1.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>6</value>
   </data>
   <data name="bpmTextBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
   </data>
   <data name="bpmTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 394</value>
-  </data>
-  <data name="bpmTextBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>133, 379</value>
   </data>
   <data name="bpmTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>257, 30</value>
+    <value>277, 26</value>
   </data>
   <data name="bpmTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -583,7 +541,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;bpmTextBox.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="label7.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
@@ -592,13 +550,10 @@
     <value>True</value>
   </data>
   <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>87, 358</value>
-  </data>
-  <data name="label7.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 0, 4, 0</value>
+    <value>65, 350</value>
   </data>
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 25</value>
+    <value>62, 20</value>
   </data>
   <data name="label7.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
@@ -616,7 +571,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="checkBox2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top</value>
@@ -625,13 +580,10 @@
     <value>True</value>
   </data>
   <data name="checkBox2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>68, 138</value>
-  </data>
-  <data name="checkBox2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>79, 171</value>
   </data>
   <data name="checkBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>306, 29</value>
+    <value>255, 24</value>
   </data>
   <data name="checkBox2.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
@@ -649,7 +601,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;checkBox2.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="checkBox3.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top</value>
@@ -661,13 +613,10 @@
     <value>NoControl</value>
   </data>
   <data name="checkBox3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 181</value>
-  </data>
-  <data name="checkBox3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>39, 206</value>
   </data>
   <data name="checkBox3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>400, 29</value>
+    <value>332, 24</value>
   </data>
   <data name="checkBox3.TabIndex" type="System.Int32, mscorlib">
     <value>17</value>
@@ -685,16 +634,76 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;checkBox3.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="label8.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="label8.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label8.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
+    <value>38, 414</value>
+  </data>
+  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
+    <value>93, 20</value>
+  </data>
+  <data name="label8.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>SV Offset:</value>
+  </data>
+  <data name="&gt;&gt;label8.Name" xml:space="preserve">
+    <value>label8</value>
+  </data>
+  <data name="&gt;&gt;label8.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label8.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="svOffsetTextBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="svOffsetTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>133, 411</value>
+  </data>
+  <data name="svOffsetTextBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>277, 26</value>
+  </data>
+  <data name="svOffsetTextBox.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="svOffsetTextBox.Text" xml:space="preserve">
+    <value>optional, default is -3</value>
+  </data>
+  <data name="&gt;&gt;svOffsetTextBox.Name" xml:space="preserve">
+    <value>svOffsetTextBox</value>
+  </data>
+  <data name="&gt;&gt;svOffsetTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;svOffsetTextBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;svOffsetTextBox.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>13, 25</value>
+    <value>10, 20</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>468, 612</value>
+    <value>417, 563</value>
   </data>
   <data name="$this.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 12pt, style=Bold</value>
@@ -5210,17 +5219,11 @@
         //////////////////////////////////////////////////8=
 </value>
   </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
-  </data>
-  <data name="$this.MaximumSize" type="System.Drawing.Size, System.Drawing">
-    <value>486, 659</value>
+    <value>5, 5, 5, 5</value>
   </data>
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>486, 659</value>
+    <value>433, 602</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterParent</value>

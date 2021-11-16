@@ -46,6 +46,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.svOffsetTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -158,11 +160,24 @@
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.UseVisualStyleBackColor = true;
             // 
+            // label8
+            // 
+            resources.ApplyResources(this.label8, "label8");
+            this.label8.Name = "label8";
+            // 
+            // svOffsetTextBox
+            // 
+            resources.ApplyResources(this.svOffsetTextBox, "svOffsetTextBox");
+            this.svOffsetTextBox.Name = "svOffsetTextBox";
+            this.svOffsetTextBox.Enter += new System.EventHandler(this.svOffsetTextBox_Enter);
+            // 
             // SV_Changer
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.svOffsetTextBox);
             this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.bpmTextBox);
@@ -209,5 +224,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBox2;
         public System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox svOffsetTextBox;
     }
 }

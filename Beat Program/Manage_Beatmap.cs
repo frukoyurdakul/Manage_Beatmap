@@ -589,7 +589,7 @@ namespace Manage_Beatmap
                 ShowMode.Warning(language.LanguageContent[Language.noteTimingNegative]);
             return lines;
         }
-        private void CheckMinorShiftOccurences() // fixes the minor calculation errors depending on floating point issues by equalizing the green point - note offsets if between 5ms around.
+        private void CheckMinorShiftOccurences(int svOffset) // fixes the minor calculation errors depending on floating point issues by equalizing the green point - note offsets if between 5ms around.
         {
             lines = File.ReadAllLines(path);
             int timingPointsIndex = -1, hitObjectsIndex = -1;
@@ -614,7 +614,7 @@ namespace Manage_Beatmap
                 for (int i = timingPointsIndex; i < hitObjectsIndex - 1 && !string.IsNullOrWhiteSpace(lines[i]); i++)
                 {
                     currentTimingPointLine = lines[i];
-                    timingPointOffset = Int32.Parse(currentTimingPointLine.Substring(0, currentTimingPointLine.IndexOf(',')));
+                    timingPointOffset = Int32.Parse(currentTimingPointLine.Substring(0, currentTimingPointLine.IndexOf(','))) + svOffset;
                     for (int j = hitObjectsIndex; j < lines.Length; j++)
                     {
                         currentHitObjectLine = lines[j];
@@ -705,7 +705,7 @@ namespace Manage_Beatmap
                 if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.notesShift]) == DialogResult.Yes)
                 {
                     ShowMode.Warning(language.LanguageContent[Language.snapWarning]);
-                    CheckMinorShiftOccurences();
+                    CheckMinorShiftOccurences(0);
                 }
             }
             ShowMode.Information(language.LanguageContent[Language.processComplete]);
@@ -2639,16 +2639,20 @@ namespace Manage_Beatmap
             }
             if (!timer1.Enabled) timer1.Start();
         }
-        private void SVadder()
+        private void SVadder(bool calledInner)
         {
             if (timer1.Enabled) timer1.Stop();
             SV_Changer obj = new SV_Changer();
             obj.ShowDialog();
             if (obj.Status == DialogResult.Yes)
             {
+                AddBackup();
+                this.lines = File.ReadAllLines(path);
                 List<string> lines = this.lines.ToList();
                 List<double> currentBPMs = new List<double>();
                 List<int> redPointOffsets = new List<int>();
+                SortedDictionary<int, int> greenPoints = new SortedDictionary<int, int>();
+                List<int> greenPointOffsets = new List<int>();
                 double currentBPMvalue = 0, currentBPMvalueTemp = 0, snapTime, SVchange, firstSV, firstBPMvalue = 1, variableOffset = obj.FirstTimeInMilliSeconds;
                 string currentLine;
                 int timingPointsIndex = -1;
@@ -2662,17 +2666,26 @@ namespace Manage_Beatmap
                 int resolution = 48,
                     counter = 0,
                     kTemp = 0,
-                    gridValue = (int)(obj.FirstGridValue * resolution / obj.LastGridValue);
+                    gridValue = (int)(obj.FirstGridValue * resolution / obj.LastGridValue),
+                    svOffset = obj.SvOffset;
                 firstSV = obj.FirstSV;
+                string pointType;
                 for (int i = timingPointsIndex; !lines[i].Contains("["); i++)
                 {
                     currentLine = lines[i];
                     if (!string.IsNullOrWhiteSpace(currentLine))
                     {
-                        if (currentLine.Substring(currentLine.IndexOfWithCount(',', 6), 1) == "1")
+                        pointType = currentLine.Substring(currentLine.IndexOfWithCount(',', 6), 1);
+                        if (pointType == "1")
                         {
                             redPointOffsets.Add(int.Parse(currentLine.Substring(0, currentLine.IndexOf(','))));
                             currentBPMs.Add(double.Parse(currentLine.Substring(currentLine.IndexOfWithCount(',', 1), currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).Replace('.', ',')));
+                        }
+                        else if (pointType == "0")
+                        {
+                            int offset = int.Parse(currentLine.Substring(0, currentLine.IndexOf(',')));
+                            greenPoints.Add(offset, i);
+                            greenPointOffsets.Add(offset);
                         }
                     }
                 }
@@ -2716,7 +2729,7 @@ namespace Manage_Beatmap
                             temp = temp.Remove(temp.IndexOfWithCount(',', 4), 1);
                             temp = temp.Insert(temp.IndexOfWithCount(',', 4), "0");
                             temp = temp.Insert(0, tempSV.ToString().Replace(',', '.') + ",");
-                            temp = temp.Insert(0, (int)variableOffset + ",");
+                            temp = temp.Insert(0, (int)variableOffset + svOffset + ",");
                             lines.Insert(i + 1, temp);
                             for (int j = 0; j < gridValue; j++)
                             {
@@ -2745,14 +2758,12 @@ namespace Manage_Beatmap
                 else
                 {
                     List<int> noteOffsets = new List<int>();
-                    List<double> initialSVchanges = new List<double>();
                     double currentTime = obj.FirstTimeInMilliSeconds, 
-                        tempSV = obj.FirstSV, 
+                        tempSV, 
                         lastSV = obj.LastSV;
                     int startTime,
                         endTime,
-                        redPointOffset = -10000,
-                        currentTimeTemp = (int)currentTime;
+                        redPointOffset = -10000;
                     if (obj.isBetweenTimeMode)
                     {
                         for (int i = hitObjectsIndex; i < lines.Count; i++)
@@ -2848,17 +2859,34 @@ namespace Manage_Beatmap
                     else
                         firstBPMvalue = currentBPMvalue;
                     double currentBPM;
-                    int existingSvIndexInLines;
+                    int existingSvIndexInLines, closestSvIndex;
+                    double svOffsetTemp;
+                    bool noteIsOnRedPoint;
                     if (redPointOffset != -10000 || noteOffsets.Count != 0)
                     {
                         for (; currentTime <= endTime && listIndex < noteOffsets.Count;)
                         {
-                            currentTime = noteOffsets[listIndex];
+                            noteIsOnRedPoint = redPointOffsets.Contains(noteOffsets[listIndex]);
+                            svOffsetTemp = noteIsOnRedPoint ? 0 : svOffset;
+
+                            currentTime = noteOffsets[listIndex] + svOffsetTemp;
                             currentBPM = GetCurrentBPM(redPointOffsets, currentBPMs, currentTime);
-                            tempSV = GetSvForTextByDifference(firstSV, lastSV, currentTime - noteOffsets[0],
+                            tempSV = GetSvForTextByDifference(firstSV, lastSV, currentTime - startTime - svOffsetTemp,
                                 totalDifference, currentBPM, firstBPMvalue);
                             existingSvIndexInLines = GetExistingSvIndexInLines(lines, timingPointsIndex, currentTime);
-                            if (existingSvIndexInLines == -1)
+
+                            int closestIndex = greenPointOffsets.BinarySearch((int)currentTime);
+                            if (closestIndex >= 0)
+                                closestSvIndex = closestIndex;
+                            else
+                                closestSvIndex = ~closestIndex - 1;
+                            if (IsSvEqual(lines, closestSvIndex == -1 ? -1 : greenPoints[greenPointOffsets[closestSvIndex]], tempSV))
+                            {
+                                listIndex++;
+                                fileIndex++;
+                                continue;
+                            }
+                            else if (existingSvIndexInLines == -1)
                             {
                                 string temp = lines[selectedIndex];
                                 temp = temp.Substring(temp.IndexOfWithCount(',', 2));
@@ -2897,7 +2925,7 @@ namespace Manage_Beatmap
                 {
                     if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.mayNotBeSnapped]) == DialogResult.Yes)
                     {
-                        CheckMinorShiftOccurences();
+                        CheckMinorShiftOccurences(svOffset);
                         File.WriteAllLines(path, this.lines);
                         ShowMode.Information(language.LanguageContent[Language.allSVchangesSnapped]);
                     }
@@ -2905,8 +2933,38 @@ namespace Manage_Beatmap
                 manageLoad();
             }
             if (obj.checkBox3.Checked)
-                SVadder();
+                SVadder(true);
             else if (!timer1.Enabled) timer1.Start();
+        }
+
+        private bool IsSvEqual(List<string> lines, int index, double targetSV)
+        {
+            // The index being smaller than 0 means there are no inherited points,
+            // assume the SV is 1.0 at that point.
+            if (index < 0)
+                return targetSV == -100.0;
+
+            string line = lines[index];
+            double sv = double.Parse(SubstringWithCount(line, ',', 1, 2).Replace('.', ','));
+            return Math.Abs(targetSV - sv) < 0.000001;
+        }
+
+        public static string SubstringWithCount(string text, char searched, int from, int to)
+        {
+            if (from > to)
+                throw new ArgumentException("\"from\" cannot be bigger than \"to\", from: " + from + ", to: " + to);
+
+            int startIndex = text.IndexOfWithCount(searched, from);
+            int endIndex = text.IndexOfWithCount(searched, to);
+            string result;
+
+            if (startIndex == -1 && from == 0 && endIndex - 1 >= 0)
+                result = text.Substring(0, endIndex - 1);
+            else if (startIndex >= 0 && endIndex - 1 >= 0)
+                result = text.Substring(startIndex, endIndex - startIndex - 1);
+            else
+                result = "";
+            return result;
         }
 
         private double GetSvForTextByDifference(double firstSV, double lastSV, 
@@ -3165,7 +3223,7 @@ namespace Manage_Beatmap
                     ChangeOffset();
                     break;
                 case 8:
-                    SVadder();
+                    SVadder(false);
                     break;
                 case 9:
                     EqualizeSV();

@@ -31,7 +31,7 @@ namespace Manage_Beatmap
 
         private double setSecondAttribute(string dataString)
         {
-            double value = Convert.ToDouble(dataString.Substring(dataString.IndexOfWithCount(',', 1), dataString.IndexOfWithCount(',', 2) - dataString.IndexOfWithCount(',', 1) - 1).Replace('.', ','));
+            double value = Convert.ToDouble(dataString.Substring(dataString.IndexOfWithCount(',', 1), dataString.IndexOfWithCount(',', 2) - dataString.IndexOfWithCount(',', 1) - 1).ReplaceDecimalSeparator());
             return value;
         }
 

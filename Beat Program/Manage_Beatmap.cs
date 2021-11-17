@@ -121,17 +121,19 @@ namespace Manage_Beatmap
                 ShowMode.Error(language.LanguageContent[Language.noTimingPoints]);
                 return;
             }
+            string decimalSeparator = Program.GetDecimalSeparator();
+            string originalDecimalSeparator = Program.GetOriginalDecimalSeparator();
             for (int i = timingPointsIndex + 1; i < lines.Length - 1 && !string.IsNullOrWhiteSpace(lines[i]); i++)
             {
                 DataRow dr = table.NewRow();
                 string temp = lines[i];
-                double offset = Convert.ToDouble(temp.Substring(0, temp.IndexOf(',')).Replace('.',','));
+                double offset = Convert.ToDouble(temp.Substring(0, temp.IndexOf(',')).Replace(originalDecimalSeparator, decimalSeparator));
                 if (offset != (int)offset)
                     offsetErrorIndexes.Add(dataGridViewRowIndex);
                 dr[colIndex++] = offset.ToString() + "  (" + FormatString.getFormattedTimeString((int)offset) + ")";
-                double bpmOrSV = Convert.ToDouble(temp.Substring(temp.IndexOfWithCount(',', 1), temp.IndexOfWithCount(',', 2) - temp.IndexOfWithCount(',', 1) - 1).Replace('.', ','));
+                double bpmOrSV = Convert.ToDouble(temp.Substring(temp.IndexOfWithCount(',', 1), temp.IndexOfWithCount(',', 2) - temp.IndexOfWithCount(',', 1) - 1).Replace(originalDecimalSeparator, decimalSeparator));
                 if (bpmOrSV < 0)
-                    dr[colIndex++] = string.Format("{0:0.0000}", (-100) / bpmOrSV) + "x".Replace('.', ',');
+                    dr[colIndex++] = string.Format("{0:0.0000}", (-100) / bpmOrSV) + "x".Replace(originalDecimalSeparator, decimalSeparator);
                 else
                     dr[colIndex++] = (60000 / bpmOrSV).ToString();
                 if(temp.Substring(temp.IndexOfWithCount(',', 6), 1) == "1")
@@ -1024,7 +1026,7 @@ namespace Manage_Beatmap
                                         timingPointOffsets.Add(Convert.ToInt32(currentLine.Substring(0, currentLine.IndexOf(','))));
                                         if (timingPointOffsets[timingPointOffsets.Count - 1] == startOffset)
                                         {
-                                            string testString = currentLine.Substring(currentLine.IndexOfWithCount(',', 1), currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).Replace('.', ',');
+                                            string testString = currentLine.Substring(currentLine.IndexOfWithCount(',', 1), currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).ReplaceDecimalSeparator();
                                             changedTimingPointBPM = Convert.ToDouble(testString);
                                         }
                                     }
@@ -1153,7 +1155,7 @@ namespace Manage_Beatmap
                                         timingPointOffsets.Add(Convert.ToInt32(currentLine.Substring(0, currentLine.IndexOf(','))));
                                         if (timingPointOffsets[timingPointOffsets.Count - 1] == startOffset)
                                         {
-                                            string testString = currentLine.Substring(currentLine.IndexOfWithCount(',', 1), currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).Replace('.', ',');
+                                            string testString = currentLine.Substring(currentLine.IndexOfWithCount(',', 1), currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).ReplaceDecimalSeparator();
                                             changedTimingPointBPM = Convert.ToDouble(testString);
                                         }
                                     }
@@ -1663,7 +1665,7 @@ namespace Manage_Beatmap
                                 {
                                     currentValue = Convert.ToDouble(currentLine.Substring(
                                          currentLine.IndexOfWithCount(',', 1),
-                                         currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).Replace('.', ','));
+                                         currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).ReplaceDecimalSeparator());
                                     currentBPM = 60000 / currentValue;
                                 }
                                 else
@@ -1725,7 +1727,7 @@ namespace Manage_Beatmap
                     currentTime = Convert.ToInt32(linesList[i].Substring(0, linesList[i].IndexOf(',')));
                     currentValue = Convert.ToDouble(linesList[i].Substring(
                     linesList[i].IndexOfWithCount(',', 1),
-                    linesList[i].IndexOfWithCount(',', 2) - linesList[i].IndexOfWithCount(',', 1) - 1).Replace('.', ','));
+                    linesList[i].IndexOfWithCount(',', 2) - linesList[i].IndexOfWithCount(',', 1) - 1).ReplaceDecimalSeparator());
                     currentTimingPointValues = linesList[i].Substring(
                         linesList[i].IndexOfWithCount(',', 2));
                     currentBPM = 60000 / currentValue;
@@ -1798,9 +1800,9 @@ namespace Manage_Beatmap
         {
             dataGridView1.ClearSelection();
             CurrencyManager currencyManager1 = (CurrencyManager)BindingContext[dataGridView1.DataSource];
+            currencyManager1.SuspendBinding();
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
-                currencyManager1.SuspendBinding();
                 if (dataGridView1.Rows[i].Cells[1].Value.ToString().Contains("x"))
                     dataGridView1.Rows[i].Visible = false;
                 else
@@ -1821,9 +1823,9 @@ namespace Manage_Beatmap
         {
             dataGridView1.ClearSelection();
             CurrencyManager currencyManager1 = (CurrencyManager)BindingContext[dataGridView1.DataSource];
+            currencyManager1.SuspendBinding();
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
-                currencyManager1.SuspendBinding();
                 dataGridView1.Rows[i].Visible = true;
             }
             currencyManager1.ResumeBinding();
@@ -1844,7 +1846,7 @@ namespace Manage_Beatmap
             if (timer1.Enabled) timer1.Stop();
             int hitObjectsIndex = -1, timingPointsIndex = -1;
             double sliderMultiplier = 0;
-            for (int i = 0; i < lines.Length; i++) if (lines[i].Contains("SliderMultiplier") && lines[i] != "SliderMultiplier") { sliderMultiplier = Convert.ToDouble(lines[i].Substring(lines[i].IndexOf(':') + 1).Replace('.', ',')); break; }
+            for (int i = 0; i < lines.Length; i++) if (lines[i].Contains("SliderMultiplier") && lines[i] != "SliderMultiplier") { sliderMultiplier = Convert.ToDouble(lines[i].Substring(lines[i].IndexOf(':') + 1).ReplaceDecimalSeparator()); break; }
             for (int i = 0; i < lines.Length; i++) if (lines[i] == "[TimingPoints]") { timingPointsIndex = i; break; }
             for (int i = 0; i < lines.Length; i++) if (lines[i] == "[HitObjects]") { hitObjectsIndex = i; break; }
             if (timingPointsIndex == -1 || hitObjectsIndex == -1)
@@ -1885,7 +1887,7 @@ namespace Manage_Beatmap
                     string currentLine = linesList[i];
                     if (!string.IsNullOrWhiteSpace(currentLine))
                     {
-                        hitObjectOffsets.Add(new Notes((int)(Convert.ToDouble(currentLine.Substring(currentLine.IndexOfWithCount(',', 2), currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1).Replace('.', ','))), currentLine));
+                        hitObjectOffsets.Add(new Notes((int)(Convert.ToDouble(currentLine.Substring(currentLine.IndexOfWithCount(',', 2), currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1).ReplaceDecimalSeparator())), currentLine));
                         Notes lastHitObject = hitObjectOffsets[hitObjectOffsets.Count - 1];
                         if (lastHitObject.IsSlider)
                         {
@@ -2679,7 +2681,7 @@ namespace Manage_Beatmap
                         if (pointType == "1")
                         {
                             redPointOffsets.Add(int.Parse(currentLine.Substring(0, currentLine.IndexOf(','))));
-                            currentBPMs.Add(double.Parse(currentLine.Substring(currentLine.IndexOfWithCount(',', 1), currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).Replace('.', ',')));
+                            currentBPMs.Add(double.Parse(currentLine.Substring(currentLine.IndexOfWithCount(',', 1), currentLine.IndexOfWithCount(',', 2) - currentLine.IndexOfWithCount(',', 1) - 1).ReplaceDecimalSeparator()));
                         }
                         else if (pointType == "0")
                         {
@@ -2878,7 +2880,7 @@ namespace Manage_Beatmap
                             {
                                 int noteOffset = noteOffsets[listIndex];
                                 noteIsOnGreenPoint = greenPointOffsets.Contains(noteOffset) || greenPointOffsets.Contains((int)(noteOffset + svOffsetTemp));
-                                if (noteIsOnGreenPoint)
+                                if (noteIsOnGreenPoint && !greenPointOffsets.Contains((int)currentTime))
                                 {
                                     if (!isShiftingAsked)
                                     {
@@ -2978,7 +2980,7 @@ namespace Manage_Beatmap
                 return targetSV == -100.0;
 
             string line = lines[index];
-            double sv = double.Parse(SubstringWithCount(line, ',', 1, 2).Replace('.', ','));
+            double sv = double.Parse(SubstringWithCount(line, ',', 1, 2).ReplaceDecimalSeparator());
             return Math.Abs(targetSV - sv) < 0.000001;
         }
 

@@ -32,9 +32,9 @@ namespace Manage_Beatmap
             int repeat = Convert.ToInt32(dataString.Substring(dataString.IndexOfWithCount(',', 6), dataString.IndexOfWithCount(',', 7) - dataString.IndexOfWithCount(',', 6) - 1));
             double pixelLength;
             if (dataString.SearchCharCount(',') < 8)
-                pixelLength = Convert.ToDouble(dataString.Substring(dataString.IndexOfWithCount(',', 7)).Replace('.', ','));
+                pixelLength = Convert.ToDouble(dataString.Substring(dataString.IndexOfWithCount(',', 7)).ReplaceDecimalSeparator());
             else
-                pixelLength = Convert.ToDouble(dataString.Substring(dataString.IndexOfWithCount(',', 7), dataString.IndexOfWithCount(',', 8) - dataString.IndexOfWithCount(',', 7) - 1).Replace('.', ','));
+                pixelLength = Convert.ToDouble(dataString.Substring(dataString.IndexOfWithCount(',', 7), dataString.IndexOfWithCount(',', 8) - dataString.IndexOfWithCount(',', 7) - 1).ReplaceDecimalSeparator());
             EndOffset = Offset + (int)((pixelLength / sliderVelocity) / (100 * sliderMultiplier) * beatDuration * repeat);
         }
 

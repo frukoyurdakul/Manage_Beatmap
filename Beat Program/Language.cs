@@ -307,7 +307,7 @@ namespace Manage_Beatmap
             LanguageContent[51] = "One or more values are empty.";
             LanguageContent[52] = "Please enter a positive value to the count section.";
             LanguageContent[53] = "Please select a grid snap.";
-            LanguageContent[54] = "BPM value has entered wrong. Example: 120 or 175,25";
+            LanguageContent[54] = "BPM value has been entered wrong. Example: 120 or 175,25 (dot or comma, depending on the decimal separator of your language.)";
             LanguageContent[55] = "optional, initial is first";
             LanguageContent[56] = "One of the SV changes are wrong. Example: 1 or 1,25 (dot or comma, depending on the decimal separator of your language.)";
             LanguageContent[57] = "The time expression does not match. Required parts: \"00:00:000\" or \"0:00:00:000\". You can use \"05:21:234 - \" for example.";

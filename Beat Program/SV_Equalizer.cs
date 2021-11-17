@@ -41,7 +41,7 @@ namespace Manage_Beatmap
             decimal d = 0;
             decimal f = 0;
             if (!Decimal.TryParse(textBox1.Text, out d) && comboBox1.SelectedIndex == -1)
-                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.BPMonlyNumberAndSeperatedComma]);
+                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.BPMwrong]);
             else
             {
                 if (textBox2.Text != "1" && textBox2.Text != "Default is 1.00x")

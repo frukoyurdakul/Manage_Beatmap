@@ -118,7 +118,7 @@ namespace Manage_Beatmap
             }
             if (Regex.IsMatch(timeTextBox.Text, @"\d{2}[:]\d{2}[:]\d{3}") || Regex.IsMatch(timeTextBox.Text, @"[1-9]+[0-9]*[:]\d{2}[:]\d{2}[:]\d{3}"))
             {
-                string decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+                string decimalSeparator = Program.GetDecimalSeparator();
                 if (Regex.IsMatch(firstTextBox.Text, @"^[0-9]+$") ||
                 Regex.IsMatch(firstTextBox.Text, @"^[0-9]+[" + decimalSeparator + "][0-9]+$") ||
                 Regex.IsMatch(lastTextBox.Text, @"^[0-9]+$") ||

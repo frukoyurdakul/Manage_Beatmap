@@ -105,6 +105,7 @@
       <DependentUpon>Hitsounds.cs</DependentUpon>
     </Compile>
     <Compile Include="Language.cs" />
+    <Compile Include="ListExtensions.cs" />
     <Compile Include="Manage_Beatmap.cs">
       <SubType>Form</SubType>
     </Compile>

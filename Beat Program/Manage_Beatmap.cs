@@ -2862,6 +2862,9 @@ namespace Manage_Beatmap
                     int existingSvIndexInLines, closestSvIndex;
                     double svOffsetTemp;
                     bool noteIsOnRedPoint;
+                    bool noteIsOnGreenPoint;
+                    bool isShiftingAsked = false;
+                    bool isShiftingPoints = false;
                     if (redPointOffset != -10000 || noteOffsets.Count != 0)
                     {
                         for (; currentTime <= endTime && listIndex < noteOffsets.Count;)
@@ -2870,10 +2873,34 @@ namespace Manage_Beatmap
                             svOffsetTemp = noteIsOnRedPoint ? 0 : svOffset;
 
                             currentTime = noteOffsets[listIndex] + svOffsetTemp;
+
+                            if (svOffsetTemp != 0)
+                            {
+                                int noteOffset = noteOffsets[listIndex];
+                                noteIsOnGreenPoint = greenPointOffsets.Contains(noteOffset) || greenPointOffsets.Contains((int)(noteOffset + svOffsetTemp));
+                                if (noteIsOnGreenPoint)
+                                {
+                                    if (!isShiftingAsked)
+                                    {
+                                        DialogResult result = ShowMode.QuestionWithYesNoCancel("The point at " + TimeSpan.FromMilliseconds(noteOffset).ToString(@"mm':'ss':'fff") + " will be duplicated with the defined SV offset. Are you sure you want to continue?\r\n\r\n\"Yes\" will shift the current offsets, \"No\" will put points which will potentially be duplicates, \"Cancel\" will cancel the whole operation.");
+                                        if (result == DialogResult.Yes)
+                                            isShiftingPoints = true;
+                                        else if (result == DialogResult.No)
+                                            isShiftingPoints = false;
+                                        else
+                                            return;
+                                        isShiftingAsked = true;
+                                    }
+                                }
+                            }
+
                             currentBPM = GetCurrentBPM(redPointOffsets, currentBPMs, currentTime);
                             tempSV = GetSvForTextByDifference(firstSV, lastSV, currentTime - startTime - svOffsetTemp,
                                 totalDifference, currentBPM, firstBPMvalue);
                             existingSvIndexInLines = GetExistingSvIndexInLines(lines, timingPointsIndex, currentTime);
+                            selectedIndex = GetClosestPointIndexInLines(lines, timingPointsIndex, currentTime);
+                            if (existingSvIndexInLines == -1 && isShiftingPoints)
+                                existingSvIndexInLines = GetExistingSvIndexInLines(lines, timingPointsIndex, noteOffsets[listIndex]);
 
                             int closestIndex = greenPointOffsets.BinarySearch((int)currentTime);
                             if (closestIndex >= 0)
@@ -2935,6 +2962,12 @@ namespace Manage_Beatmap
             if (obj.checkBox3.Checked)
                 SVadder(true);
             else if (!timer1.Enabled) timer1.Start();
+        }
+
+        private double GetOffsetOfLine(string line)
+        {
+            string offset = line.Substring(0, line.IndexOf(','));
+            return double.Parse(offset);
         }
 
         private bool IsSvEqual(List<string> lines, int index, double targetSV)
@@ -3017,14 +3050,45 @@ namespace Manage_Beatmap
                 {
                     splitted = line.Split(',');
                     pointTime = double.Parse(splitted[0]);
-                    if (pointTime == currentTime && splitted[6] == "0")
+                    if (pointTime == currentTime)
                     {
-                        existingSvIndex = i;
-                        break;
+                        if (splitted[6] == "0")
+                        {
+                            existingSvIndex = i;
+                            break;
+                        }
                     }
                     else if (pointTime > currentTime)
                         break;
                 }
+            }
+            return existingSvIndex;
+        }
+
+        private int GetClosestPointIndexInLines(List<string> fileLines, int timingPointIndex, double currentTime)
+        {
+            string line;
+            string[] splitted;
+            int existingSvIndex = -1;
+            int previousIndex = -1;
+            double pointTime;
+            for (int i = timingPointIndex; i < fileLines.Count; i++)
+            {
+                line = fileLines[i].Trim();
+                if (line == "[TimingPoints]")
+                    continue;
+                else if (line.StartsWith("[") || string.IsNullOrEmpty(line))
+                    break;
+                else
+                {
+                    splitted = line.Split(',');
+                    pointTime = double.Parse(splitted[0]);
+                    if (pointTime == currentTime)
+                        return i;
+                    else if (pointTime > currentTime)
+                        return previousIndex;
+                }
+                previousIndex = i;
             }
             return existingSvIndex;
         }

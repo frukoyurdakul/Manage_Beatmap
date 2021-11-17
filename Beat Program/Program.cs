@@ -14,6 +14,7 @@ namespace Manage_Beatmap
         [STAThread]
         static void Main()
         {
+            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("tr-TR");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Manage_Beatmap());

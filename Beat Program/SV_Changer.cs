@@ -64,6 +64,7 @@ namespace Manage_Beatmap
             isMessageShown = true;
             countOrLastTimeTextBox.Text = Manage_Beatmap.savedContent.countOrLastTimeTextBox;
             timeTextBox.Text = Manage_Beatmap.savedContent.timeTextBox;
+            svOffsetTextBox.Text = Manage_Beatmap.savedContent.svOffsetTextBox;
             firstTextBox.Text = Manage_Beatmap.savedContent.firstSVTextBox;
             lastTextBox.Text = Manage_Beatmap.savedContent.lastSVTextBox;
             checkBox1.Checked = Manage_Beatmap.savedContent.putNotesBySnaps;

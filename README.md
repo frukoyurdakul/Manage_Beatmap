@@ -19,7 +19,7 @@ The app is mostly used for either "Equalizing SV for variable timings" or "Addin
 
 ## Development
 
-To see what issues are tackled with and what is , you can check the [issues](https://github.com/frukoyurdakul/Manage_Beatmap/issues) tab.
+To see what issues were tackled with and what is in progress, you can check the [issues](https://github.com/frukoyurdakul/Manage_Beatmap/issues) tab.
 
 ## Reporting a bug
 

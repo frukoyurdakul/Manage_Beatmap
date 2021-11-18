@@ -27,8 +27,8 @@ There are known bugs of the app, but to keep things in order, you can report bug
 Make sure they:
 
 - Contain enough information regarding the bug (including screenshots),
-- Are not resolved already ([closed issues](https://github.com/frukoyurdakul/Manage_Beatmap/issues?q=is%3Aissue+is%3Aclosed))
-- Are resolved but you encountered it anyway,
+- Are not closed already ([closed issues](https://github.com/frukoyurdakul/Manage_Beatmap/issues?q=is%3Aissue+is%3Aclosed))
+- Are closed but you encountered it anyway,
 - Are not duplicates.
 
 ## Feature requests

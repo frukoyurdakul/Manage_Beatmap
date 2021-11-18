@@ -324,7 +324,7 @@ namespace Manage_Beatmap
             LanguageContent[68] = "Add hitsounds to the folder";
             LanguageContent[69] = "Set all whistle sounds to claps";
             LanguageContent[70] = "Position the notes (Taiko mode)";
-            LanguageContent[71] = "Change BPM of the selected timing point";
+            LanguageContent[71] = "Update BPM and rearrange objects";
             LanguageContent[72] = "Change offsets of the selected timing points";
             LanguageContent[73] = "Add inherited points to change SV smoothly";
             LanguageContent[74] = "Equalize the SV for all timing points";

@@ -9,8 +9,6 @@ namespace Manage_Beatmap
 {
     static class Program
     {
-        public static CultureInfo originalCultureInfo;
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

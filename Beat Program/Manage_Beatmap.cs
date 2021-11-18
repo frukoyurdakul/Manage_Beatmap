@@ -20,7 +20,8 @@ namespace Manage_Beatmap
         string path = string.Empty;
         string fileName = string.Empty;
         string lastUpdate = string.Empty;
-        string[] lines, activeComboBoxItems, notActiveComboBoxItems;
+        string[] lines;
+        List<string> activeComboBoxItems, notActiveComboBoxItems;
         List<string> linesList = new List<string>();
         public static Language language;
         public static bool isHitsoundsOpen = false;
@@ -35,6 +36,9 @@ namespace Manage_Beatmap
         bool isHaveNotes = false;
         bool isActivated = false;
         bool isBackup = false;
+
+        private readonly decimal resolution = 5040m;
+        private readonly SortedSet<decimal> snaps = new SortedSet<decimal>();
 
         protected override CreateParams CreateParams
         {
@@ -51,7 +55,53 @@ namespace Manage_Beatmap
             InitializeComponent();
             SetLanguage();
             ChangeControlTexts();
+            SetSnapResolutions();
         }
+
+        private void SetSnapResolutions()
+        {
+            snaps.Add(0m);
+            snaps.Add(315m);
+            snaps.Add(420m);
+            snaps.Add(560m);
+            snaps.Add(630m);
+            snaps.Add(720m);
+            snaps.Add(840m);
+            snaps.Add(945m);
+            snaps.Add(1008m);
+            snaps.Add(1120m);
+            snaps.Add(1260m);
+            snaps.Add(1440m);
+            snaps.Add(1575m);
+            snaps.Add(1680m);
+            snaps.Add(1890m);
+            snaps.Add(2016m);
+            snaps.Add(2100m);
+            snaps.Add(2160m);
+            snaps.Add(2205m);
+            snaps.Add(2240m);
+            snaps.Add(2520m);
+            snaps.Add(2800m);
+            snaps.Add(2835m);
+            snaps.Add(2880m);
+            snaps.Add(2940m);
+            snaps.Add(3024m);
+            snaps.Add(3150m);
+            snaps.Add(3360m);
+            snaps.Add(3465m);
+            snaps.Add(3600m);
+            snaps.Add(3780m);
+            snaps.Add(3920m);
+            snaps.Add(4032m);
+            snaps.Add(4095m);
+            snaps.Add(4200m);
+            snaps.Add(4320m);
+            snaps.Add(4410m);
+            snaps.Add(4480m);
+            snaps.Add(4620m);
+            snaps.Add(4725m);
+        }
+
         #region WinApi
         [DllImport("User32.dll")]
         private static extern short GetAsyncKeyState(int vKey);
@@ -177,7 +227,7 @@ namespace Manage_Beatmap
         private void disableButtons()
         {
             comboBox1.Items.Clear();
-            comboBox1.Items.AddRange(notActiveComboBoxItems);
+            comboBox1.Items.AddRange(notActiveComboBoxItems.ToArray());
             button19.Enabled = false;
             button21.Enabled = false;
             button22.Enabled = false;
@@ -186,7 +236,7 @@ namespace Manage_Beatmap
         private void enableButtons()
         {
             comboBox1.Items.Clear();
-            comboBox1.Items.AddRange(activeComboBoxItems);
+            comboBox1.Items.AddRange(activeComboBoxItems.ToArray());
             button19.Enabled = true;
             button21.Enabled = true;
             button22.Enabled = true;
@@ -258,29 +308,29 @@ namespace Manage_Beatmap
         }
         private void SetComboBoxItems()
         {
-            activeComboBoxItems = new string[19];
-            notActiveComboBoxItems = new string[2];
-            activeComboBoxItems[0] = language.LanguageContent[Language.selectFileButton];
-            activeComboBoxItems[1] = language.LanguageContent[Language.addHitsoundsToFolderButton];
-            activeComboBoxItems[2] = language.LanguageContent[Language.prepareMapToHitsoundingButton];
-            activeComboBoxItems[3] = language.LanguageContent[Language.setAllWhistleToClapsButton];
-            activeComboBoxItems[4] = language.LanguageContent[Language.positionNotesButton];
-            activeComboBoxItems[5] = language.LanguageContent[Language.newTimingButton];
-            activeComboBoxItems[6] = language.LanguageContent[Language.changeBPMofSelectedPointButton];
-            activeComboBoxItems[7] = language.LanguageContent[Language.changeOffsetsOfSelectedPointsButton];
-            activeComboBoxItems[8] = language.LanguageContent[Language.addInheritedPointsToChangeSVsmoothlyButton];
-            activeComboBoxItems[9] = language.LanguageContent[Language.equalizeSVforAllTimingPointsButton];
-            activeComboBoxItems[10] = language.LanguageContent[Language.increaseOrDecreaseSVsButton];
-            activeComboBoxItems[11] = language.LanguageContent[Language.increaseSVstepByStepButton];
-            activeComboBoxItems[12] = language.LanguageContent[Language.changeVolumesButton];
-            activeComboBoxItems[13] = language.LanguageContent[Language.changeVolumesStepByStepButton];
-            activeComboBoxItems[14] = language.LanguageContent[Language.deleteSelectedInheritedPointsButton];
-            activeComboBoxItems[15] = language.LanguageContent[Language.deleteAllInheritedPointsButton];
-            activeComboBoxItems[16] = language.LanguageContent[Language.deleteDuplicatePointsButton];
-            activeComboBoxItems[17] = language.LanguageContent[Language.deleteUnneccessaryInheritedPointsButton];
-            activeComboBoxItems[18] = language.LanguageContent[Language.copyTagsButton];
-            notActiveComboBoxItems[0] = language.LanguageContent[Language.selectFileButton];
-            notActiveComboBoxItems[1] = language.LanguageContent[Language.addHitsoundsToFolderButton];
+            activeComboBoxItems = new List<string>();
+            notActiveComboBoxItems = new List<string>();
+            activeComboBoxItems.Add(language.LanguageContent[Language.selectFileButton]);
+            // activeComboBoxItems[1] = language.LanguageContent[Language.addHitsoundsToFolderButton];
+            // activeComboBoxItems[2] = language.LanguageContent[Language.prepareMapToHitsoundingButton];
+            activeComboBoxItems.Add(language.LanguageContent[Language.setAllWhistleToClapsButton]);
+            activeComboBoxItems.Add(language.LanguageContent[Language.positionNotesButton]);
+            // activeComboBoxItems[5] = language.LanguageContent[Language.newTimingButton];
+            activeComboBoxItems.Add(language.LanguageContent[Language.changeBPMofSelectedPointButton]);
+            // activeComboBoxItems[7] = language.LanguageContent[Language.changeOffsetsOfSelectedPointsButton];
+            activeComboBoxItems.Add(language.LanguageContent[Language.addInheritedPointsToChangeSVsmoothlyButton]);
+            activeComboBoxItems.Add(language.LanguageContent[Language.equalizeSVforAllTimingPointsButton]);
+            activeComboBoxItems.Add(language.LanguageContent[Language.increaseOrDecreaseSVsButton]);
+            activeComboBoxItems.Add(language.LanguageContent[Language.increaseSVstepByStepButton]);
+            activeComboBoxItems.Add(language.LanguageContent[Language.changeVolumesButton]);
+            activeComboBoxItems.Add(language.LanguageContent[Language.changeVolumesStepByStepButton]);
+            // activeComboBoxItems[14] = language.LanguageContent[Language.deleteSelectedInheritedPointsButton];
+            // activeComboBoxItems[15] = language.LanguageContent[Language.deleteAllInheritedPointsButton];
+            // activeComboBoxItems[16] = language.LanguageContent[Language.deleteDuplicatePointsButton];
+            // activeComboBoxItems[17] = language.LanguageContent[Language.deleteUnneccessaryInheritedPointsButton];
+            activeComboBoxItems.Add(language.LanguageContent[Language.copyTagsButton]);
+            notActiveComboBoxItems.Add(language.LanguageContent[Language.selectFileButton]);
+            // notActiveComboBoxItems[1] = language.LanguageContent[Language.addHitsoundsToFolderButton];
         }
         private void ChangeControlTexts()
         {
@@ -288,33 +338,12 @@ namespace Manage_Beatmap
             Text = language.LanguageContent[Language.manageBeatmapFormTitle] + " {" + fileName + "}";
             label2.Text = language.LanguageContent[Language.manageBeatmapTopLabel] + lastUpdate;
             label1.Text = language.LanguageContent[Language.manageBeatmapKeysLabel];
-            if (comboBox1.Items.Count != 2)
-            {
-                comboBox1.Items[0] = language.LanguageContent[Language.selectFileButton];
-                comboBox1.Items[1] = language.LanguageContent[Language.addHitsoundsToFolderButton];
-                comboBox1.Items[2] = language.LanguageContent[Language.prepareMapToHitsoundingButton];
-                comboBox1.Items[3] = language.LanguageContent[Language.setAllWhistleToClapsButton];
-                comboBox1.Items[4] = language.LanguageContent[Language.positionNotesButton];
-                comboBox1.Items[5] = language.LanguageContent[Language.newTimingButton];
-                comboBox1.Items[6] = language.LanguageContent[Language.changeBPMofSelectedPointButton];
-                comboBox1.Items[7] = language.LanguageContent[Language.changeOffsetsOfSelectedPointsButton];
-                comboBox1.Items[8] = language.LanguageContent[Language.addInheritedPointsToChangeSVsmoothlyButton];
-                comboBox1.Items[9] = language.LanguageContent[Language.equalizeSVforAllTimingPointsButton];
-                comboBox1.Items[10] = language.LanguageContent[Language.increaseOrDecreaseSVsButton];
-                comboBox1.Items[11] = language.LanguageContent[Language.increaseSVstepByStepButton];
-                comboBox1.Items[12] = language.LanguageContent[Language.changeVolumesButton];
-                comboBox1.Items[13] = language.LanguageContent[Language.changeVolumesStepByStepButton];
-                comboBox1.Items[14] = language.LanguageContent[Language.deleteSelectedInheritedPointsButton];
-                comboBox1.Items[15] = language.LanguageContent[Language.deleteAllInheritedPointsButton];
-                comboBox1.Items[16] = language.LanguageContent[Language.deleteDuplicatePointsButton];
-                comboBox1.Items[17] = language.LanguageContent[Language.deleteUnneccessaryInheritedPointsButton];
-                comboBox1.Items[18] = language.LanguageContent[Language.copyTagsButton];
-            }
+
+            comboBox1.Items.Clear();
+            if (!string.IsNullOrEmpty(path))
+                comboBox1.Items.AddRange(activeComboBoxItems.ToArray());
             else
-            {
-                comboBox1.Items[0] = language.LanguageContent[Language.selectFileButton];
-                comboBox1.Items[1] = language.LanguageContent[Language.addHitsoundsToFolderButton];
-            }
+                comboBox1.Items.AddRange(notActiveComboBoxItems.ToArray());
             button16.Text = language.LanguageContent[Language.optionsFormTitle];
             button17.Text = language.LanguageContent[Language.undo];
             button18.Text = language.LanguageContent[Language.redo];
@@ -345,60 +374,20 @@ namespace Manage_Beatmap
         }
         private void SetTimingOffsetsAndNewBpm()
         {
-            double actualBpm = Convert.ToDouble(dataGridView1.SelectedRows[0].Cells[1].Value);
-            double enteredBpm = BPM_Changer.value;
-            double calculatedGridSnap = 0; // Will use it for checking the grid snap, multiplicated with resolution.
-            string startingOffsetString = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
-            int startingOffset = Convert.ToInt32(startingOffsetString.Substring(0, startingOffsetString.IndexOf(' '))), newOffset;
-            double resolution = 48; // Need an ekoka value for 1/16 and 1/12 which is 1/48.
-            for (int i = 0; i < linesList.Count; i++)
-            {
-                if (linesList[i] == "[TimingPoints]")
-                {
-                    for (int j = i + 1; !string.IsNullOrWhiteSpace(linesList[j]); j++)
-                    {
-                        string selectedLine = linesList[j];
-                        int selectedOffset = Convert.ToInt32(linesList[j].Substring(0, linesList[j].IndexOf(',')));
-                        if (selectedOffset == startingOffset && selectedLine.Substring(selectedLine.IndexOfWithCount(',', 6), 1) == "1")
-                        {
-                            double bpmInTermsOfTime = 60000 / enteredBpm;
-                            string bpmInTermsOfTimeString = bpmInTermsOfTime.ToString().Replace(',', '.');
-                            selectedLine = selectedLine.Remove(selectedLine.IndexOf(',') + 1, selectedLine.IndexOfWithCount(',', 2) - selectedLine.IndexOf(',') - 2);
-                            selectedLine = selectedLine.Insert(selectedLine.IndexOf(',') + 1, bpmInTermsOfTimeString);
-                            linesList[j] = selectedLine;
-                        }
-                        else if (selectedOffset > startingOffset)
-                        {
-                            calculatedGridSnap = Convert.ToInt32((((selectedOffset - startingOffset) / (60000 / actualBpm)) * resolution));
-                            newOffset = (int)(startingOffset + ((60000 / (enteredBpm * resolution)) * calculatedGridSnap));
-                            if (selectedLine.Substring(selectedLine.IndexOfWithCount(',', 6), 1) == "1")
-                            {
-                                if (!isDefined)
-                                {
-                                    nextTimingPointOffset = selectedOffset;
-                                    offsetChange = newOffset - selectedOffset;
-                                    isDefined = true;
-                                }
-                            }
-                            selectedLine = selectedLine.Remove(0, selectedLine.IndexOf(','));
-                            if (offsetChange != 0)
-                                selectedLine = selectedLine.Insert(0, (selectedOffset + offsetChange).ToString());
-                            else
-                                selectedLine = selectedLine.Insert(0, newOffset.ToString());
-                            linesList[j] = selectedLine;
-                        }
-                    }
-                }
-            }
+            lines = SetTimingOffsetsAndNewBpm(lines);
         }
         private string[] SetTimingOffsetsAndNewBpm(string[] lines)
         {
-            double actualBpm = Convert.ToDouble(dataGridView1.SelectedRows[0].Cells[1].Value);
-            double enteredBpm = BPM_Changer.value;
-            double calculatedGridSnap = 0; // Will use it for checking the grid snap, multiplicated with resolution.
+            decimal actualBpm = Convert.ToDecimal(dataGridView1.SelectedRows[0].Cells[1].Value);
+            decimal enteredBpm = Convert.ToDecimal(BPM_Changer.value);
+            decimal actualBpmMillis = 60000m / actualBpm;
+            decimal enteredBpmMillis = 60000m / enteredBpm;
+
+            decimal ratio1 = actualBpm / enteredBpm;
+            decimal ratio2 = enteredBpmMillis / actualBpmMillis;
+
             string startingOffsetString = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
             int startingOffset = Convert.ToInt32(startingOffsetString.Substring(0, startingOffsetString.IndexOf(' '))), newOffset;
-            double resolution = 48; // Need an ekoka value for 1/16 and 1/12 which is 1/48.
             for (int i = 0; i < lines.Length; i++)
             {
                 if (lines[i] == "[TimingPoints]")
@@ -409,20 +398,26 @@ namespace Manage_Beatmap
                         int selectedOffset = Convert.ToInt32(lines[j].Substring(0, lines[j].IndexOf(',')));
                         if (selectedOffset == startingOffset && selectedLine.Substring(selectedLine.IndexOfWithCount(',', 6), 1) == "1")
                         {
-                            double bpmInTermsOfTime = 60000 / enteredBpm;
-                            string bpmInTermsOfTimeString = bpmInTermsOfTime.ToString().Replace(',', '.');
+                            decimal bpmInTermsOfTime = 60000m / enteredBpm;
+                            string bpmInTermsOfTimeString = Convert.ToDouble(bpmInTermsOfTime).ToString().Replace(',', '.');
                             selectedLine = selectedLine.Remove(selectedLine.IndexOf(',') + 1, selectedLine.IndexOfWithCount(',', 2) - selectedLine.IndexOf(',') - 2);
                             selectedLine = selectedLine.Insert(selectedLine.IndexOf(',') + 1, bpmInTermsOfTimeString);
                             lines[j] = selectedLine;
                         }
                         else if (selectedOffset > startingOffset)
                         {
-                            calculatedGridSnap = Convert.ToInt32((((selectedOffset - startingOffset) / (60000 / actualBpm)) * resolution));
-                            newOffset = (int)(startingOffset + ((60000 / (enteredBpm * resolution)) * calculatedGridSnap));
+                            decimal diff = selectedOffset - startingOffset;
+                            decimal closestResolution = GetClosestResolution(diff, actualBpmMillis);
+                            decimal result = enteredBpmMillis * closestResolution / resolution;
+                            newOffset = (int)(startingOffset + result);
                             if (selectedLine.Substring(selectedLine.IndexOfWithCount(',', 6), 1) == "1")
                             {
                                 if (!isDefined)
                                 {
+                                    closestResolution = GetResolution(diff, actualBpmMillis);
+                                    result = enteredBpmMillis * closestResolution / resolution;
+                                    newOffset = (int)(startingOffset + result);
+
                                     nextTimingPointOffset = selectedOffset;
                                     offsetChange = newOffset - selectedOffset;
                                     isDefined = true;
@@ -442,86 +437,23 @@ namespace Manage_Beatmap
         }
         private void SetNewHitObjectOffsets()
         {
-            double resolution = 48;
-            double actualBpm = Convert.ToDouble(dataGridView1.SelectedRows[0].Cells[1].Value);
-            double enteredBpm = BPM_Changer.value;
-            double calculatedGridSnap = 0;
-            int selectedIndex = -1;
-            for (int i = 0; i < linesList.Count; i++)
-            {
-                if (linesList[i] == "[HitObjects]")
-                {
-                    selectedIndex = i + 1;
-                    break;
-                }
-            }
-            string startingOffsetString = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
-            int startingOffset = Convert.ToInt32(startingOffsetString.Substring(0, startingOffsetString.IndexOf(' ')));
-            int selectedOffset, newOffset;
-            if (selectedIndex != -1)
-            {
-                for (int i = selectedIndex; i < linesList.Count && !string.IsNullOrWhiteSpace(linesList[i]); i++)
-                {
-                    string currentLine = linesList[i];
-                    selectedOffset = Convert.ToInt32(currentLine.Substring(currentLine.IndexOfWithCount(',', 2), currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1));
-                    if (selectedOffset > startingOffset)
-                    {
-                        if (currentLine.SearchCharCount(',') != 6)
-                        {
-                            if (selectedOffset > nextTimingPointOffset && isDefined)
-                            {
-                                currentLine = currentLine.Remove(currentLine.IndexOfWithCount(',', 2), currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
-                                currentLine = currentLine.Insert(currentLine.IndexOfWithCount(',', 2), (selectedOffset + offsetChange).ToString());
-                                linesList[i] = currentLine;
-                            }
-                            else
-                            {
-                                calculatedGridSnap = Convert.ToInt32((((selectedOffset - startingOffset) / (60000 / actualBpm)) * resolution));
-                                newOffset = (int)(startingOffset + ((60000 / (enteredBpm * resolution)) * calculatedGridSnap));
-                                currentLine = currentLine.Remove(currentLine.IndexOfWithCount(',', 2), currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
-                                currentLine = currentLine.Insert(currentLine.IndexOfWithCount(',', 2), newOffset.ToString());
-                                linesList[i] = currentLine;
-                            }
-                        }
-                        else // means that it's a spinner
-                        {
-                            int spinnerEndOffset = Convert.ToInt32(currentLine.Substring(currentLine.IndexOfWithCount(',', 5), currentLine.IndexOfWithCount(',', 6) - currentLine.IndexOfWithCount(',', 5) - 1));
-                            if (selectedOffset > nextTimingPointOffset && isDefined)
-                            {
-                                currentLine = currentLine.Remove(currentLine.IndexOfWithCount(',', 2), currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
-                                currentLine = currentLine.Insert(currentLine.IndexOfWithCount(',', 2), (selectedOffset + offsetChange).ToString());
-                                currentLine = currentLine.Remove(currentLine.IndexOfWithCount(',', 5), currentLine.IndexOfWithCount(',', 6) - currentLine.IndexOfWithCount(',', 5) - 1);
-                                currentLine = currentLine.Insert(currentLine.IndexOfWithCount(',', 5), (spinnerEndOffset + offsetChange).ToString());
-                                linesList[i] = currentLine;
-                            }
-                            else
-                            {
-                                calculatedGridSnap = Convert.ToInt32((((selectedOffset - startingOffset) / (60000 / actualBpm)) * resolution));
-                                newOffset = (int)(startingOffset + ((60000 / (enteredBpm * resolution)) * calculatedGridSnap));
-                                currentLine = currentLine.Remove(currentLine.IndexOfWithCount(',', 2), currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
-                                currentLine = currentLine.Insert(currentLine.IndexOfWithCount(',', 2), newOffset.ToString());
-                                calculatedGridSnap = Convert.ToInt32((((spinnerEndOffset - startingOffset) / (60000 / actualBpm)) * resolution));
-                                newOffset = (int)(spinnerEndOffset + ((60000 / (enteredBpm * resolution)) * calculatedGridSnap));
-                                currentLine = currentLine.Remove(currentLine.IndexOfWithCount(',', 5), currentLine.IndexOfWithCount(',', 6) - currentLine.IndexOfWithCount(',', 5) - 1);
-                                currentLine = currentLine.Insert(currentLine.IndexOfWithCount(',', 5), newOffset.ToString());
-                                linesList[i] = currentLine;
-                            }
-                        }
-                        isHaveNotes = true;
-                    }
-                }
-            }
+            lines = SetNewHitObjectOffsets(lines, false);
             if (isHaveNotes)
                 ShowMode.Information(language.LanguageContent[Language.noteTimingPositive]);
             else
                 ShowMode.Warning(language.LanguageContent[Language.noteTimingNegative]);
         }
-        private string[] SetNewHitObjectOffsets(string[] lines)
+        private string[] SetNewHitObjectOffsets(string[] lines, bool showWarning = false)
         {
-            double resolution = 48;
-            double actualBpm = Convert.ToDouble(dataGridView1.SelectedRows[0].Cells[1].Value);
-            double enteredBpm = BPM_Changer.value;
-            double calculatedGridSnap = 0;
+            decimal actualBpm = Convert.ToDecimal(dataGridView1.SelectedRows[0].Cells[1].Value);
+            decimal enteredBpm = Convert.ToDecimal(BPM_Changer.value);
+
+            decimal actualBpmMillis = 60000m / actualBpm;
+            decimal enteredBpmMillis = 60000m / enteredBpm;
+
+            decimal ratio1 = actualBpm / enteredBpm;
+            decimal ratio2 = enteredBpmMillis / actualBpmMillis;
+
             int selectedIndex = -1;
             for (int i = 0; i < lines.Length; i++)
             {
@@ -552,8 +484,10 @@ namespace Manage_Beatmap
                             }
                             else
                             {
-                                calculatedGridSnap = Convert.ToInt32((((selectedOffset - startingOffset) / (60000 / actualBpm)) * resolution));
-                                newOffset = (int)(startingOffset + ((60000 / (enteredBpm * resolution)) * calculatedGridSnap));
+                                decimal diff = selectedOffset - startingOffset;
+                                decimal closestResolution = GetClosestResolution(diff, actualBpmMillis);
+                                decimal result = enteredBpmMillis * closestResolution / resolution;
+                                newOffset = (int)(startingOffset + result);
                                 currentLine = currentLine.Remove(currentLine.IndexOfWithCount(',', 2), currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
                                 currentLine = currentLine.Insert(currentLine.IndexOfWithCount(',', 2), newOffset.ToString());
                                 lines[i] = currentLine;
@@ -572,12 +506,17 @@ namespace Manage_Beatmap
                             }
                             else
                             {
-                                calculatedGridSnap = Convert.ToInt32((((selectedOffset - startingOffset) / (60000 / actualBpm)) * resolution));
-                                newOffset = (int)(startingOffset + ((60000 / (enteredBpm * resolution)) * calculatedGridSnap));
+                                decimal diff = selectedOffset - startingOffset;
+                                decimal closestResolution = GetClosestResolution(diff, actualBpmMillis);
+                                decimal result = enteredBpmMillis * closestResolution / resolution;
+                                newOffset = (int)(startingOffset + result);
                                 currentLine = currentLine.Remove(currentLine.IndexOfWithCount(',', 2), currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
                                 currentLine = currentLine.Insert(currentLine.IndexOfWithCount(',', 2), newOffset.ToString());
-                                calculatedGridSnap = Convert.ToInt32((((spinnerEndOffset - startingOffset) / (60000 / actualBpm)) * resolution));
-                                newOffset = (int)(spinnerEndOffset + ((60000 / (enteredBpm * resolution)) * calculatedGridSnap));
+
+                                diff = spinnerEndOffset - startingOffset;
+                                closestResolution = GetClosestResolution(diff, actualBpmMillis);
+                                result = enteredBpmMillis * closestResolution / resolution;
+                                newOffset = (int)(startingOffset + result);
                                 currentLine = currentLine.Remove(currentLine.IndexOfWithCount(',', 5), currentLine.IndexOfWithCount(',', 6) - currentLine.IndexOfWithCount(',', 5) - 1);
                                 currentLine = currentLine.Insert(currentLine.IndexOfWithCount(',', 5), newOffset.ToString());
                                 lines[i] = currentLine;
@@ -587,10 +526,59 @@ namespace Manage_Beatmap
                     }
                 }
             }
-            if (!isHaveNotes)
+            if (showWarning && !isHaveNotes)
                 ShowMode.Warning(language.LanguageContent[Language.noteTimingNegative]);
             return lines;
         }
+        private decimal GetClosestResolution(decimal diff, decimal bpm)
+        {
+            decimal resLocal = Convert.ToInt32(diff / bpm * resolution);
+            decimal resModuled = resLocal % resolution;
+            decimal resRoot = resLocal - resModuled;
+            decimal closestRes = GetClosest(snaps, resModuled);
+            return resRoot + closestRes;
+        }
+
+        private decimal GetResolution(decimal diff, decimal bpm)
+        {
+            return Convert.ToInt32(diff / bpm * resolution);
+        }
+
+        private decimal GetClosest(SortedSet<decimal> thisList, decimal thisValue)
+        {
+            // Check to see if we need to search the list.
+            if (thisList == null || thisList.Count <= 0) { return 0; }
+            if (thisList.Count == 1) { return thisList.ElementAt(0); }
+
+            // Setup the variables needed to find the closest index
+            int lower = 0;
+            int upper = thisList.Count - 1;
+            int index = (lower + upper) / 2;
+
+            // Find the closest index (rounded down)
+            bool searching = true;
+            while (searching)
+            {
+                int comparisonResult = Decimal.Compare(thisValue, thisList.ElementAt(index));
+                if (comparisonResult == 0) { return thisList.ElementAt(index); }
+                else if (comparisonResult < 0) { upper = index - 1; }
+                else { lower = index + 1; }
+
+                index = (lower + upper) / 2;
+                if (lower > upper) { searching = false; }
+            }
+
+            // Check to see if we are under or over the max values.
+            if (index >= thisList.Count - 1) { return thisList.Max; }
+            if (index < 0) { return thisList.Min; }
+
+            // Check to see if we should have rounded up instead
+            if (thisList.ElementAt(index + 1) - thisValue < thisValue - (thisList.ElementAt(index))) { index++; }
+
+            // Return the correct/closest string
+            return thisList.ElementAt(index);
+        }
+
         private void CheckMinorShiftOccurences(int svOffset) // fixes the minor calculation errors depending on floating point issues by equalizing the green point - note offsets if between 5ms around.
         {
             lines = File.ReadAllLines(path);
@@ -702,6 +690,30 @@ namespace Manage_Beatmap
                     saveBackup(copyPath);
             }
             File.WriteAllLines(path, linesList.ToArray());
+            if (isHaveNotes)
+            {
+                if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.notesShift]) == DialogResult.Yes)
+                {
+                    ShowMode.Warning(language.LanguageContent[Language.snapWarning]);
+                    CheckMinorShiftOccurences(0);
+                }
+            }
+            ShowMode.Information(language.LanguageContent[Language.processComplete]);
+        }
+        private void WriteNewFileFromArray()
+        {
+            if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.askBackup]) == DialogResult.Yes)
+            {
+                string copyPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + fileName;
+                if (File.Exists(copyPath))
+                {
+                    if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.overwriteBackup]) == DialogResult.Yes)
+                        saveBackup(copyPath);
+                }
+                else
+                    saveBackup(copyPath);
+            }
+            File.WriteAllLines(path, lines);
             if (isHaveNotes)
             {
                 if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.notesShift]) == DialogResult.Yes)
@@ -2006,7 +2018,7 @@ namespace Manage_Beatmap
                                         if (BPM.checkBox1.Enabled)
                                             lines = ChangeBookmarks_BPM(lines);
                                         lines = SetTimingOffsetsAndNewBpm(lines);
-                                        lines = SetNewHitObjectOffsets(lines);
+                                        lines = SetNewHitObjectOffsets(lines, true);
                                         WriteNewFile(paths[i], fileNames[i], lines);
                                     }
                                     ShowMode.Information(language.LanguageContent[Language.processComplete]);
@@ -2024,7 +2036,7 @@ namespace Manage_Beatmap
                                     ChangeBookmarks_BPM();
                                 SetTimingOffsetsAndNewBpm();
                                 SetNewHitObjectOffsets();
-                                WriteNewFile();
+                                WriteNewFileFromArray();
                             }
                             linesList.Clear();
                             manageLoad();
@@ -3267,46 +3279,46 @@ namespace Manage_Beatmap
                 case 0:
                     SelectFile();
                     break;
-                case 1:
+                /*case 1:
                     Hitsounds();
-                    break;
-                case 2:
+                    break;*/
+                /*case 2:
                     PrepareMapToHitsounding();
-                    break;
-                case 3:
+                    break;*/
+                case 1:
                     WhistleToClap();
                     break;
-                case 4:
+                case 2:
                     PositionNotes();
                     break;
-                case 5:
+                /*case 5:
                     NewTiming();
-                    break;
-                case 6:
+                    break;*/
+                case 3:
                     ChangeBPM();
                     break;
-                case 7:
+                /*case 7:
                     ChangeOffset();
-                    break;
-                case 8:
+                    break;*/
+                case 4:
                     SVadder(false);
                     break;
-                case 9:
+                case 5:
                     EqualizeSV();
                     break;
-                case 10:
+                case 6:
                     SVchanger();
                     break;
-                case 11:
+                case 7:
                     SVstepbystep();
                     break;
-                case 12:
+                case 8:
                     VolumeChanger();
                     break;
-                case 13:
+                case 9:
                     VolumeStepByStep();
                     break;
-                case 14:
+                /*case 14:
                     DeleteSelectedInheritedPoints();
                     break;
                 case 15:
@@ -3317,8 +3329,8 @@ namespace Manage_Beatmap
                     break;
                 case 17:
                     DeleteUnneccessaryInheritedPoints();
-                    break;
-                case 18:
+                    break;*/
+                case 10:
                     MetadataManager();
                     break;
                 default:

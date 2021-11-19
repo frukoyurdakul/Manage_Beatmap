@@ -2873,12 +2873,13 @@ namespace Manage_Beatmap
                     else
                         firstBPMvalue = currentBPMvalue;
                     double currentBPM;
-                    int existingSvIndexInLines, closestSvIndex;
+                    int existingSvIndexInLines, closestSvIndex, targetFileSvIndex;
                     double svOffsetTemp;
                     bool noteIsOnRedPoint;
                     bool noteIsOnGreenPoint;
                     bool isShiftingAsked = false;
                     bool isShiftingPoints = false;
+                    bool addedAnyGreenPoints = false;
                     if (redPointOffset != -10000 || noteOffsets.Count != 0)
                     {
                         for (; currentTime <= endTime && listIndex < noteOffsets.Count;)
@@ -2916,12 +2917,7 @@ namespace Manage_Beatmap
                             if (existingSvIndexInLines == -1 && isShiftingPoints)
                                 existingSvIndexInLines = GetExistingSvIndexInLines(lines, timingPointsIndex, noteOffsets[listIndex]);
 
-                            int closestIndex = greenPointOffsets.BinarySearch((int)currentTime);
-                            if (closestIndex >= 0)
-                                closestSvIndex = closestIndex;
-                            else
-                                closestSvIndex = ~closestIndex - 1;
-                            if (IsSvEqual(lines, closestSvIndex == -1 ? -1 : greenPoints[greenPointOffsets[closestSvIndex]], tempSV))
+                            if (IsSvEqual(lines, selectedIndex, tempSV))
                             {
                                 listIndex++;
                                 fileIndex++;
@@ -3104,7 +3100,7 @@ namespace Manage_Beatmap
                 }
                 previousIndex = i;
             }
-            return existingSvIndex;
+            return previousIndex;
         }
 
         private void EqualizeSV()

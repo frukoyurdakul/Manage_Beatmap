@@ -2698,6 +2698,7 @@ namespace Manage_Beatmap
                         else if (pointType == "0")
                         {
                             int offset = int.Parse(currentLine.Substring(0, currentLine.IndexOf(',')));
+                            greenPoints.Remove(offset);
                             greenPoints.Add(offset, i);
                             greenPointOffsets.Add(offset);
                         }

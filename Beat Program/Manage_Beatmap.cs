@@ -2921,7 +2921,6 @@ namespace Manage_Beatmap
                             if (IsSvEqual(lines, selectedIndex, tempSV))
                             {
                                 listIndex++;
-                                fileIndex++;
                                 continue;
                             }
                             else if (existingSvIndexInLines == -1)
@@ -2932,7 +2931,7 @@ namespace Manage_Beatmap
                                 temp = temp.Insert(temp.IndexOfWithCount(',', 4), "0");
                                 temp = temp.Insert(0, tempSV.ToString().Replace(',', '.') + ",");
                                 temp = temp.Insert(0, currentTime.ToString() + ",");
-                                lines.Insert(fileIndex + 1, temp);
+                                lines.Insert(selectedIndex + 1, temp);
                             }
                             else
                             {
@@ -2945,7 +2944,6 @@ namespace Manage_Beatmap
                                 lines[existingSvIndexInLines] = temp;
                             }
                             listIndex++;
-                            fileIndex++;
                         }
                     }
                     else

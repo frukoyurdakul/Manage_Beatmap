@@ -2873,12 +2873,13 @@ namespace Manage_Beatmap
                     else
                         firstBPMvalue = currentBPMvalue;
                     double currentBPM;
-                    int existingSvIndexInLines, closestSvIndex;
+                    int existingSvIndexInLines, closestSvIndex, targetFileSvIndex;
                     double svOffsetTemp;
                     bool noteIsOnRedPoint;
                     bool noteIsOnGreenPoint;
                     bool isShiftingAsked = false;
                     bool isShiftingPoints = false;
+                    bool addedAnyGreenPoints = false;
                     if (redPointOffset != -10000 || noteOffsets.Count != 0)
                     {
                         for (; currentTime <= endTime && listIndex < noteOffsets.Count;)
@@ -2916,12 +2917,7 @@ namespace Manage_Beatmap
                             if (existingSvIndexInLines == -1 && isShiftingPoints)
                                 existingSvIndexInLines = GetExistingSvIndexInLines(lines, timingPointsIndex, noteOffsets[listIndex]);
 
-                            int closestIndex = greenPointOffsets.BinarySearch((int)currentTime);
-                            if (closestIndex >= 0)
-                                closestSvIndex = closestIndex;
-                            else
-                                closestSvIndex = ~closestIndex - 1;
-                            if (IsSvEqual(lines, closestSvIndex == -1 ? -1 : greenPoints[greenPointOffsets[closestSvIndex]], tempSV))
+                            if (IsSvEqual(lines, selectedIndex, tempSV))
                             {
                                 listIndex++;
                                 fileIndex++;
@@ -2992,6 +2988,13 @@ namespace Manage_Beatmap
                 return targetSV == -100.0;
 
             string line = lines[index];
+
+            // The passed point here can also be a red point. In that case, assume the SV
+            // is 1.00x.
+            bool isGreenPoint = line.IsPointInherited();
+            if (!isGreenPoint)
+                return targetSV == -100.0;
+
             double sv = double.Parse(SubstringWithCount(line, ',', 1, 2).ReplaceDecimalSeparator());
             return Math.Abs(targetSV - sv) < 0.000001;
         }
@@ -3098,13 +3101,23 @@ namespace Manage_Beatmap
                     splitted = line.Split(',');
                     pointTime = double.Parse(splitted[0]);
                     if (pointTime == currentTime)
-                        return i;
+                    {
+                        // Return immediately if the point is an inherited point.
+                        // Otherwise, it is a timing point. On the next loop,
+                        // we might find an inherited point with the same offset,
+                        // but we can also find a point with bigger offset.
+                        // 
+                        // In any case, in the next loop, we will probably return
+                        // either this index, or the previous index.
+                        if (line.IsPointInherited())
+                            return i;
+                    }
                     else if (pointTime > currentTime)
                         return previousIndex;
                 }
                 previousIndex = i;
             }
-            return existingSvIndex;
+            return previousIndex;
         }
 
         private void EqualizeSV()

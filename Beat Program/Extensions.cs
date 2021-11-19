@@ -50,6 +50,25 @@ namespace Manage_Beatmap
                 return "";
         }
 
+        public static string SetPointValue(this string input, double value)
+        {
+            return SetBetween(input, ',', 1, 2, value.ToString().Replace(',', '.'));
+        }
+
+        public static string SetBetween(this string input, char searched, int startCount, int endCount, string text)
+        {
+            int startIndex = input.IndexOfWithCount(searched, startCount);
+            int endIndex = input.IndexOfWithCount(searched, endCount);
+            if (startIndex >= 0 && endIndex >= 0 && startIndex < endIndex)
+            {
+                string result = input.Remove(startIndex, endIndex - startIndex - 1);
+                result = result.Insert(startIndex, text);
+                return result;
+            }
+            else
+                return "";
+        }
+
         public static T GetClosest<T>(this List<T> list, T item)
         {
             if (list.Count == 0)

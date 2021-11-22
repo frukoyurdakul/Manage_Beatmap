@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     public partial class Metadata_manager : Form
     {
@@ -109,7 +109,7 @@ namespace Manage_Beatmap
 
         private void Metadata_manager_Load(object sender, EventArgs e)
         {
-            button.Text = Manage_Beatmap.language.LanguageContent[Language.copyMetadata];
+            button.Text = MainForm.language.LanguageContent[Language.copyMetadata];
             int counter = 0;
             for(int i = 0; i < lines.Count; i++)
             {
@@ -186,14 +186,14 @@ namespace Manage_Beatmap
                     else if (bookmarks[i] == ',') { }
                     else
                     {
-                        ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.wrongbookmarkformat]);
+                        ShowMode.Error(MainForm.language.LanguageContent[Language.wrongbookmarkformat]);
                         return;
                     }
                 }
             }
             else
             {
-                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.wrongbookmarkformat]);
+                ShowMode.Error(MainForm.language.LanguageContent[Language.wrongbookmarkformat]);
                 return;
             }
             title = titleTextBox.Text.TrimStart().TrimEnd();
@@ -203,16 +203,16 @@ namespace Manage_Beatmap
             source = sourceTextBox.Text.TrimStart().TrimEnd();
             tags = tagsTextBox.Text.TrimStart().TrimEnd();
             if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(artist))
-                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.artistOrTitleMissing]);
+                ShowMode.Error(MainForm.language.LanguageContent[Language.artistOrTitleMissing]);
             else
             {
                 string[] lines;
-                ShowMode.Information(Manage_Beatmap.language.LanguageContent[Language.multiSelectionTags]);
+                ShowMode.Information(MainForm.language.LanguageContent[Language.multiSelectionTags]);
                 OpenFileDialog dialog = new OpenFileDialog();
                 dialog.InitialDirectory = path.Substring(0, path.LastIndexOf('\\'));
-                dialog.Filter = Manage_Beatmap.language.LanguageContent[Language.osuFiles] + " (*.osu,*.OSU) | *.osu;*.OSU";
+                dialog.Filter = MainForm.language.LanguageContent[Language.osuFiles] + " (*.osu,*.OSU) | *.osu;*.OSU";
                 dialog.Multiselect = true;
-                dialog.Title = Manage_Beatmap.language.LanguageContent[Language.selectFiles];
+                dialog.Title = MainForm.language.LanguageContent[Language.selectFiles];
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     string[] paths = dialog.FileNames;
@@ -236,8 +236,8 @@ namespace Manage_Beatmap
                         if (lines != null)
                             File.WriteAllLines(paths[i], lines);
                         else
-                            ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.metadatatagmissing] + " " +
-                                Manage_Beatmap.language.LanguageContent[Language.currentFile] + paths[i]);
+                            ShowMode.Error(MainForm.language.LanguageContent[Language.metadatatagmissing] + " " +
+                                MainForm.language.LanguageContent[Language.currentFile] + paths[i]);
                     }
                     Thread.Sleep(500);
                     if (mapper.Count == paths.Length && version.Count == paths.Length)
@@ -257,13 +257,13 @@ namespace Manage_Beatmap
                             {
                                 ShowMode.Error(ex.Message);
                             }
-                        ShowMode.Information(Manage_Beatmap.language.LanguageContent[Language.processComplete]);
+                        ShowMode.Information(MainForm.language.LanguageContent[Language.processComplete]);
                         isSuccess = true;
                         Close();
                     }
                 }
                 else
-                    ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.noFilesSelected]);
+                    ShowMode.Error(MainForm.language.LanguageContent[Language.noFilesSelected]);
             }
         }
 

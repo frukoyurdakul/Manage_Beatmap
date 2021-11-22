@@ -1,6 +1,6 @@
-﻿namespace Manage_Beatmap
+﻿namespace BeatmapManager
 {
-    partial class Manage_Beatmap
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Manage_Beatmap));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -44,8 +44,10 @@
             this.button16 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new DoubleBufferedGridView();
-            this.formHandlerPanel = new FormHandlerPanel();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.formHandlerPanel = new BeatmapManager.FormHandlerPanel();
+            this.dataGridView1 = new BeatmapManager.DoubleBufferedGridView();
+            this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -149,13 +151,25 @@
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
             // 
+            // tableLayoutPanel1
+            // 
+            resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
+            this.tableLayoutPanel1.Controls.Add(this.formHandlerPanel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            // 
+            // formHandlerPanel
+            // 
+            resources.ApplyResources(this.formHandlerPanel, "formHandlerPanel");
+            this.formHandlerPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.formHandlerPanel.Name = "formHandlerPanel";
+            // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToResizeColumns = false;
             this.dataGridView1.AllowUserToResizeRows = false;
-            resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -167,6 +181,7 @@
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            resources.ApplyResources(this.dataGridView1, "dataGridView1");
             this.dataGridView1.GridColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -179,17 +194,12 @@
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             // 
-            // formHandlerPanel
-            // 
-            resources.ApplyResources(this.formHandlerPanel, "formHandlerPanel");
-            this.formHandlerPanel.Name = "formHandlerPanel";
-            // 
-            // Manage_Beatmap
+            // MainForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.Controls.Add(this.formHandlerPanel);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.applyFunctionButton);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button23);
@@ -201,14 +211,14 @@
             this.Controls.Add(this.button16);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.dataGridView1);
             this.DoubleBuffered = true;
             this.KeyPreview = true;
-            this.Name = "Manage_Beatmap";
+            this.Name = "MainForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Manage_Beatmap_FormClosing);
             this.Load += new System.EventHandler(this.Form5_Load);
             this.Shown += new System.EventHandler(this.Manage_Beatmap_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Manage_Beatmap_KeyDown);
+            this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -228,6 +238,7 @@
         private System.Windows.Forms.Button button16;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private FormHandlerPanel formHandlerPanel;
         private DoubleBufferedGridView dataGridView1;
     }

@@ -1,4 +1,4 @@
-﻿namespace Manage_Beatmap
+﻿namespace BeatmapManager
 {
     partial class SV_Equalizer
     {

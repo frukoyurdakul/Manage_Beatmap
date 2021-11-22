@@ -1,7 +1,7 @@
 ﻿using System;
 using FindIndex;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     class TimingPoints
     {

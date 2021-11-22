@@ -115,11 +115,11 @@
     </Compile>
     <Compile Include="Language.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Manage_Beatmap.cs">
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Manage_Beatmap.Designer.cs">
-      <DependentUpon>Manage_Beatmap.cs</DependentUpon>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="BPM_Changer.cs">
       <SubType>Form</SubType>
@@ -168,8 +168,8 @@
     <EmbeddedResource Include="Hitsounds.resx">
       <DependentUpon>Hitsounds.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Manage_Beatmap.resx">
-      <DependentUpon>Manage_Beatmap.cs</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BPM_Changer.resx">
       <DependentUpon>BPM_Changer.cs</DependentUpon>

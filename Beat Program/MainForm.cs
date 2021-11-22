@@ -13,9 +13,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Diagnostics;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
-    public partial class Manage_Beatmap : Form
+    public partial class MainForm : Form
     {
         string path = string.Empty;
         string fileName = string.Empty;
@@ -50,7 +50,7 @@ namespace Manage_Beatmap
             }
         }
 
-        public Manage_Beatmap()
+        public MainForm()
         {
             InitializeComponent();
             SetLanguage();
@@ -205,9 +205,19 @@ namespace Manage_Beatmap
             }
             dataGridView1.DataSource = table;
             for (int i = 0; i < dataGridView1.Columns.Count; i++)
-                dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+            {
+                DataGridViewColumn column = dataGridView1.Columns[i];
+                if (i == 0)
+                    column.FillWeight = 4;
+                else if (i == 1)
+                    column.FillWeight = 3;
+                else
+                    column.FillWeight = 2;
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
             dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView1.Columns[4].DefaultCellStyle.Font = new Font("Times New Roman", 18F, FontStyle.Bold);
+            dataGridView1.Columns[4].DefaultCellStyle.Font = new Font("Arial Narrow", 12F, FontStyle.Bold);
             for (int i = 0; i < offsetErrorIndexes.Count; i++)
             {
                 dataGridView1.Rows[offsetErrorIndexes[i]].DefaultCellStyle.BackColor = Color.Red;

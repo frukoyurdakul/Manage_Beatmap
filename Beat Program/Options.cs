@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     public partial class Options : Form
     {
@@ -15,7 +15,7 @@ namespace Manage_Beatmap
             AddCurrentLanguages();
             ChangeControlTexts();
             ChangeLabelPositions();
-            comboBox1.SelectedIndex = comboBox1.Items.IndexOf(Manage_Beatmap.language.SelectedLanguage);
+            comboBox1.SelectedIndex = comboBox1.Items.IndexOf(MainForm.language.SelectedLanguage);
             comboBoxInitialIndex = comboBox1.SelectedIndex;
         }
         private void AddCurrentLanguages()
@@ -31,17 +31,17 @@ namespace Manage_Beatmap
         }
         private void ChangeControlTexts()
         {
-            Text = Manage_Beatmap.language.LanguageContent[Language.optionsFormTitle];
-            label1.Text = Manage_Beatmap.language.LanguageContent[Language.languageLabel];
+            Text = MainForm.language.LanguageContent[Language.optionsFormTitle];
+            label1.Text = MainForm.language.LanguageContent[Language.languageLabel];
             if(comboBox1.Items.Count > 0)
-                comboBox1.Items[0] = Manage_Beatmap.language.LanguageContent[Language.firstLanguage];
+                comboBox1.Items[0] = MainForm.language.LanguageContent[Language.firstLanguage];
             if(comboBox1.Items.Count > 1)
-                comboBox1.Items[1] = Manage_Beatmap.language.LanguageContent[Language.secondLanguage];
+                comboBox1.Items[1] = MainForm.language.LanguageContent[Language.secondLanguage];
             if (comboBox1.Items.Count > 2)
-                comboBox1.Items[2] = Manage_Beatmap.language.LanguageContent[Language.thirdLanguage];
-            label2.Text = Manage_Beatmap.language.LanguageContent[Language.refresh] + ": F5";
-            label3.Text = Manage_Beatmap.language.LanguageContent[Language.undo] + ": Ctrl + Z";
-            label4.Text = Manage_Beatmap.language.LanguageContent[Language.redo] + ": Ctrl + Y";
+                comboBox1.Items[2] = MainForm.language.LanguageContent[Language.thirdLanguage];
+            label2.Text = MainForm.language.LanguageContent[Language.refresh] + ": F5";
+            label3.Text = MainForm.language.LanguageContent[Language.undo] + ": Ctrl + Z";
+            label4.Text = MainForm.language.LanguageContent[Language.redo] + ": Ctrl + Y";
         }
         private void ChangeLabelPositions()
         {
@@ -50,11 +50,11 @@ namespace Manage_Beatmap
         private void comboBox1_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (comboBox1.SelectedIndex == 0)
-                Manage_Beatmap.language = new Language();
+                MainForm.language = new Language();
             else if (comboBox1.SelectedIndex == 1)
-                Manage_Beatmap.language = new Language("Turkish");
+                MainForm.language = new Language("Turkish");
             else if (comboBox1.SelectedIndex == 2)
-                Manage_Beatmap.language = new Language("French");
+                MainForm.language = new Language("French");
             ChangeControlTexts();
             ChangeLabelPositions();
             IsLanguageChanged = comboBox1.SelectedIndex != comboBoxInitialIndex;

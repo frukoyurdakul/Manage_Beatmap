@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     public partial class BPM_Changer : Form
     {
@@ -24,11 +24,11 @@ namespace Manage_Beatmap
         }
         private void ChangeControlTexts()
         {
-            Text = Manage_Beatmap.language.LanguageContent[Language.BPMchangerFormTitle];
-            label1.Text = Manage_Beatmap.language.LanguageContent[Language.newBPMlabel];
-            label2.Text = Manage_Beatmap.language.LanguageContent[Language.changeType];
-            button1.Text = Manage_Beatmap.language.LanguageContent[Language.applyButton];
-            checkBox1.Text = Manage_Beatmap.language.LanguageContent[Language.adjustBookmarks];
+            Text = MainForm.language.LanguageContent[Language.BPMchangerFormTitle];
+            label1.Text = MainForm.language.LanguageContent[Language.newBPMlabel];
+            label2.Text = MainForm.language.LanguageContent[Language.changeType];
+            button1.Text = MainForm.language.LanguageContent[Language.applyButton];
+            checkBox1.Text = MainForm.language.LanguageContent[Language.adjustBookmarks];
         }
         private void ChangeLabelPositions()
         {
@@ -53,15 +53,15 @@ namespace Manage_Beatmap
             }
             else if (textBox1.Text.Any(char.IsLetter))
             {
-                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.onlyNumbersAndComma]);
+                ShowMode.Error(MainForm.language.LanguageContent[Language.onlyNumbersAndComma]);
                 return;
             }
             else if (!comboBox1.IsDisposed && comboBox1.SelectedIndex == -1)
             {
-                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.comboBoxSelectedIndex]);
+                ShowMode.Error(MainForm.language.LanguageContent[Language.comboBoxSelectedIndex]);
                 return;
             }
-            DialogResult res = MessageBox.Show(Manage_Beatmap.language.LanguageContent[Language.areYouSure], "Status", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            DialogResult res = MessageBox.Show(MainForm.language.LanguageContent[Language.areYouSure], "Status", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
             if (res == DialogResult.Yes)
             {
                 value = Convert.ToDouble(textBox1.Text);

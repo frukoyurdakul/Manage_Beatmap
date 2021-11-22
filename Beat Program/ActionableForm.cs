@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     public class ActionableForm<T>: ActionableForm where T: ActionableForm<T>
     {

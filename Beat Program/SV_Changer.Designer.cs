@@ -1,4 +1,4 @@
-﻿namespace Manage_Beatmap
+﻿namespace BeatmapManager
 {
     partial class SV_Changer
     {
@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SV_Changer));
+            this.label4 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.svOffsetTextBox = new System.Windows.Forms.TextBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
@@ -36,7 +37,6 @@
             this.bpmTextBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.countOrLastTimeTextBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.lastTextBox = new System.Windows.Forms.TextBox();
@@ -47,8 +47,12 @@
             this.firstTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
             // 
             // label8
             // 
@@ -91,11 +95,6 @@
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // label6
-            // 
-            resources.ApplyResources(this.label6, "label6");
-            this.label6.Name = "label6";
             // 
             // countOrLastTimeTextBox
             // 
@@ -166,16 +165,11 @@
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
             // 
-            // label4
-            // 
-            resources.ApplyResources(this.label4, "label4");
-            this.label4.Name = "label4";
-            // 
             // SV_Changer
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.svOffsetTextBox);
@@ -184,7 +178,6 @@
             this.Controls.Add(this.bpmTextBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.label6);
             this.Controls.Add(this.countOrLastTimeTextBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.lastTextBox);
@@ -215,7 +208,6 @@
         private System.Windows.Forms.TextBox lastTextBox;
         private System.Windows.Forms.TextBox countOrLastTimeTextBox;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TextBox bpmTextBox;
         private System.Windows.Forms.Label label7;

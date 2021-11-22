@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     public class Language
     {

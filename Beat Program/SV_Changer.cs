@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Globalization;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     public partial class SV_Changer
         #if DEBUG
@@ -40,26 +40,25 @@ namespace Manage_Beatmap
             InitializeComponent();
             ChangeControlTexts();
             ChangeLabelPositions();
-            if (Manage_Beatmap.savedContent != null)
+            if (MainForm.savedContent != null)
                 FillSavedContent();
         }
 
         private void ChangeControlTexts()
         {
-            Text = Manage_Beatmap.language.LanguageContent[Language.SVchangerFormTitle];
-            label6.Text = Manage_Beatmap.language.LanguageContent[Language.SVchangerTopLabel];
-            label4.Text = Manage_Beatmap.language.LanguageContent[Language.copyTimeLabel];
-            label1.Text = Manage_Beatmap.language.LanguageContent[Language.setFirstSVlabel];
-            label2.Text = Manage_Beatmap.language.LanguageContent[Language.setLastSVlabel];
-            label7.Text = Manage_Beatmap.language.LanguageContent[Language.countLabel];
-            label5.Text = Manage_Beatmap.language.LanguageContent[Language.targetBPMlabel];
-            label3.Text = Manage_Beatmap.language.LanguageContent[Language.gridSnapLabel];
-            label8.Text = Manage_Beatmap.language.LanguageContent[Language.svOffset];
-            bpmTextBox.Text = Manage_Beatmap.language.LanguageContent[Language.optionalInitialIsFirst];
-            checkBox1.Text = Manage_Beatmap.language.LanguageContent[Language.checkBox];
-            button.Text = Manage_Beatmap.language.LanguageContent[Language.addInheritedPointsButton];
-            checkBox2.Text = Manage_Beatmap.language.LanguageContent[Language.activateBetweenTimeMode];
-            checkBox3.Text = Manage_Beatmap.language.LanguageContent[Language.reOpenWindow];
+            Text = MainForm.language.LanguageContent[Language.SVchangerFormTitle];
+            label4.Text = MainForm.language.LanguageContent[Language.copyTimeLabel];
+            label1.Text = MainForm.language.LanguageContent[Language.setFirstSVlabel];
+            label2.Text = MainForm.language.LanguageContent[Language.setLastSVlabel];
+            label7.Text = MainForm.language.LanguageContent[Language.countLabel];
+            label5.Text = MainForm.language.LanguageContent[Language.targetBPMlabel];
+            label3.Text = MainForm.language.LanguageContent[Language.gridSnapLabel];
+            label8.Text = MainForm.language.LanguageContent[Language.svOffset];
+            bpmTextBox.Text = MainForm.language.LanguageContent[Language.optionalInitialIsFirst];
+            checkBox1.Text = MainForm.language.LanguageContent[Language.checkBox];
+            button.Text = MainForm.language.LanguageContent[Language.addInheritedPointsButton];
+            checkBox2.Text = MainForm.language.LanguageContent[Language.activateBetweenTimeMode];
+            checkBox3.Text = MainForm.language.LanguageContent[Language.reOpenWindow];
             checkBox2.Checked = true;
         }
         private void ChangeLabelPositions()
@@ -74,15 +73,15 @@ namespace Manage_Beatmap
         private void FillSavedContent()
         {
             isMessageShown = true;
-            countOrLastTimeTextBox.Text = Manage_Beatmap.savedContent.countOrLastTimeTextBox;
-            timeTextBox.Text = Manage_Beatmap.savedContent.timeTextBox;
-            svOffsetTextBox.Text = Manage_Beatmap.savedContent.svOffsetTextBox;
-            firstTextBox.Text = Manage_Beatmap.savedContent.firstSVTextBox;
-            lastTextBox.Text = Manage_Beatmap.savedContent.lastSVTextBox;
-            checkBox1.Checked = Manage_Beatmap.savedContent.putNotesBySnaps;
-            checkBox2.Checked = Manage_Beatmap.savedContent.betweenTimeModeCheckBox;
+            countOrLastTimeTextBox.Text = MainForm.savedContent.countOrLastTimeTextBox;
+            timeTextBox.Text = MainForm.savedContent.timeTextBox;
+            svOffsetTextBox.Text = MainForm.savedContent.svOffsetTextBox;
+            firstTextBox.Text = MainForm.savedContent.firstSVTextBox;
+            lastTextBox.Text = MainForm.savedContent.lastSVTextBox;
+            checkBox1.Checked = MainForm.savedContent.putNotesBySnaps;
+            checkBox2.Checked = MainForm.savedContent.betweenTimeModeCheckBox;
             checkBox3.Checked = true;
-            comboBox.SelectedIndex = Manage_Beatmap.savedContent.comboBoxSelectedIndex;
+            comboBox.SelectedIndex = MainForm.savedContent.comboBoxSelectedIndex;
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -96,7 +95,7 @@ namespace Manage_Beatmap
                         isNoteMode = false;
                     if (checkBox3.Checked)
                     {
-                        Manage_Beatmap.savedContent = new SV_Changer_Content
+                        MainForm.savedContent = new SV_Changer_Content
                             (
                                 checkBox2.Checked,
                                 checkBox1.Checked,
@@ -109,7 +108,7 @@ namespace Manage_Beatmap
                             );
                     }
                     else
-                        Manage_Beatmap.savedContent = null;
+                        MainForm.savedContent = null;
                     isButtonClicked = true;
                     Close();
                 }
@@ -123,7 +122,7 @@ namespace Manage_Beatmap
                 {
                     if ((string.IsNullOrEmpty(c.Text) || string.IsNullOrWhiteSpace(c.Text)) && c.Name != "bpmTextBox")
                     {
-                        ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.oneOrMoreValuesEmpty]);
+                        ShowMode.Error(MainForm.language.LanguageContent[Language.oneOrMoreValuesEmpty]);
                         return false;
                     }
                 }
@@ -141,7 +140,7 @@ namespace Manage_Beatmap
                         if(!(Regex.IsMatch(countOrLastTimeTextBox.Text, @"\d{2}[:]\d{2}[:]\d{3}") || 
                             Regex.IsMatch(countOrLastTimeTextBox.Text, @"[1-9]+[0-9]*[:]\d{2}[:]\d{2}[:]\d{3}")))
                         {
-                            ShowMode.Information(Manage_Beatmap.language.LanguageContent[Language.timeExpressionDoesNotMatch]);
+                            ShowMode.Information(MainForm.language.LanguageContent[Language.timeExpressionDoesNotMatch]);
                             return false;
                         }
                     }
@@ -149,25 +148,25 @@ namespace Manage_Beatmap
                     {
                         if (!Regex.IsMatch(countOrLastTimeTextBox.Text, @"^[1-9]+[0-9]*$"))
                         {
-                            ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.enterPositiveToCount]);
+                            ShowMode.Error(MainForm.language.LanguageContent[Language.enterPositiveToCount]);
                             return false;
                         }
                     }
                     if (comboBox.SelectedIndex == -1 && !checkBox1.Checked)
                     {
-                        ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.selectGridSnap]);
+                        ShowMode.Error(MainForm.language.LanguageContent[Language.selectGridSnap]);
                         return false;
                     }
-                    if (!Regex.IsMatch(bpmTextBox.Text, @"^[1-9]+[0-9]*$") && !Regex.IsMatch(bpmTextBox.Text, @"^[1-9]+[0-9]*[,][0-9]+$") && !string.IsNullOrWhiteSpace(bpmTextBox.Text) && bpmTextBox.Text != Manage_Beatmap.language.LanguageContent[Language.optionalInitialIsFirst])
+                    if (!Regex.IsMatch(bpmTextBox.Text, @"^[1-9]+[0-9]*$") && !Regex.IsMatch(bpmTextBox.Text, @"^[1-9]+[0-9]*[,][0-9]+$") && !string.IsNullOrWhiteSpace(bpmTextBox.Text) && bpmTextBox.Text != MainForm.language.LanguageContent[Language.optionalInitialIsFirst])
                     {
-                        ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.BPMwrong]);
+                        ShowMode.Error(MainForm.language.LanguageContent[Language.BPMwrong]);
                         return false;
                     }
                     string result = svOffsetTextBox.Text.Trim();
                     int svOffsetLocal;
                     try
                     {
-                        if (string.IsNullOrWhiteSpace(result) || result == Manage_Beatmap.language.LanguageContent[Language.optionalDefaultIsMinusThree])
+                        if (string.IsNullOrWhiteSpace(result) || result == MainForm.language.LanguageContent[Language.optionalDefaultIsMinusThree])
                             svOffsetLocal = -3;
                         else
                             svOffsetLocal = Convert.ToInt32(svOffsetTextBox.Text.Trim());
@@ -214,7 +213,7 @@ namespace Manage_Beatmap
                     }
                     if(checkBox2.Checked && LastTimeInMilliSeconds <= FirstTimeInMilliSeconds)
                     {
-                        ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.lastTimeCannotBeSmaller]);
+                        ShowMode.Error(MainForm.language.LanguageContent[Language.lastTimeCannotBeSmaller]);
                         return false;
                     }
                     isNoteMode = checkBox1.Checked;
@@ -228,7 +227,7 @@ namespace Manage_Beatmap
                     LastSV = Convert.ToDouble(lastTextBox.Text);
                     if(!checkBox2.Checked)
                         Count = Convert.ToInt32(countOrLastTimeTextBox.Text);
-                    if (bpmTextBox.Text != Manage_Beatmap.language.LanguageContent[Language.optionalInitialIsFirst] && !string.IsNullOrWhiteSpace(bpmTextBox.Text))
+                    if (bpmTextBox.Text != MainForm.language.LanguageContent[Language.optionalInitialIsFirst] && !string.IsNullOrWhiteSpace(bpmTextBox.Text))
                         TargetBPM = Double.Parse(bpmTextBox.Text);
                     else
                         TargetBPM = 0;
@@ -236,19 +235,19 @@ namespace Manage_Beatmap
                 }
                 else
                 {
-                    ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.SVchangesWrong]);
+                    ShowMode.Error(MainForm.language.LanguageContent[Language.SVchangesWrong]);
                     return false;
                 }
             }
             else
             {
-                ShowMode.Information(Manage_Beatmap.language.LanguageContent[Language.timeExpressionDoesNotMatch]);
+                ShowMode.Information(MainForm.language.LanguageContent[Language.timeExpressionDoesNotMatch]);
                 return false;
             }
             if (checkBox1.Checked)
-                Status = ShowMode.QuestionWithYesNoCancel(Manage_Beatmap.language.LanguageContent[Language.rememberSnappingNotes]);
+                Status = ShowMode.QuestionWithYesNoCancel(MainForm.language.LanguageContent[Language.rememberSnappingNotes]);
             else
-                Status = ShowMode.QuestionWithYesNoCancel(Manage_Beatmap.language.LanguageContent[Language.areYouSureToContinue]);
+                Status = ShowMode.QuestionWithYesNoCancel(MainForm.language.LanguageContent[Language.areYouSureToContinue]);
             return true;
         }
 
@@ -279,7 +278,7 @@ namespace Manage_Beatmap
         {
             if (checkBox2.Checked)
             {
-                label7.Text = Manage_Beatmap.language.LanguageContent[Language.copyLastTime];
+                label7.Text = MainForm.language.LanguageContent[Language.copyLastTime];
                 label7.Location = new Point(countOrLastTimeTextBox.Location.X - label7.Width - 2, countOrLastTimeTextBox.Location.Y + 3);
                 comboBox.Enabled = false;
                 comboBox.SelectedIndex = -1;
@@ -288,7 +287,7 @@ namespace Manage_Beatmap
             }
             else
             {
-                label7.Text = Manage_Beatmap.language.LanguageContent[Language.countLabel];
+                label7.Text = MainForm.language.LanguageContent[Language.countLabel];
                 label7.Location = new Point(countOrLastTimeTextBox.Location.X - label7.Width - 2, countOrLastTimeTextBox.Location.Y + 3);
                 comboBox.Enabled = true;
                 checkBox1.Enabled = true;
@@ -299,7 +298,7 @@ namespace Manage_Beatmap
         {
             if (checkBox3.Checked)
             {
-                Manage_Beatmap.savedContent = new SV_Changer_Content
+                MainForm.savedContent = new SV_Changer_Content
                     (
                         checkBox2.Checked,
                         checkBox1.Checked,
@@ -312,7 +311,7 @@ namespace Manage_Beatmap
                     );
             }
             else
-                Manage_Beatmap.savedContent = null;
+                MainForm.savedContent = null;
             if (!isButtonClicked)
                 checkBox3.Checked = false;
         }
@@ -323,7 +322,7 @@ namespace Manage_Beatmap
             {
                 if (!isMessageShown && !checkBox2.Checked)
                 {
-                    ShowMode.Warning(Manage_Beatmap.language.LanguageContent[Language.rememberSnappingNotesBetweenArea]);
+                    ShowMode.Warning(MainForm.language.LanguageContent[Language.rememberSnappingNotesBetweenArea]);
                     isMessageShown = true;
                 }
                 comboBox.Enabled = false;

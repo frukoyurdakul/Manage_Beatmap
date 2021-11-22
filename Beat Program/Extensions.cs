@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FindIndex;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     public static class Extensions
     {

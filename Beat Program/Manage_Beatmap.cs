@@ -2653,12 +2653,9 @@ namespace Manage_Beatmap
             }
             if (!timer1.Enabled) timer1.Start();
         }
-        private void SVadder(bool calledInner)
+        private void SVadder()
         {
-            if (timer1.Enabled) timer1.Stop();
-            SV_Changer obj = new SV_Changer();
-            obj.ShowDialog();
-            if (obj.Status == DialogResult.Yes)
+            SV_Changer svChanger = new SV_Changer(form =>
             {
                 AddBackup();
                 this.lines = File.ReadAllLines(path);
@@ -2667,7 +2664,7 @@ namespace Manage_Beatmap
                 List<int> redPointOffsets = new List<int>();
                 SortedDictionary<int, int> greenPoints = new SortedDictionary<int, int>();
                 List<int> greenPointOffsets = new List<int>();
-                double currentBPMvalue = 0, currentBPMvalueTemp = 0, snapTime, SVchange, firstSV, firstBPMvalue = 1, variableOffset = obj.FirstTimeInMilliSeconds;
+                double currentBPMvalue = 0, currentBPMvalueTemp = 0, snapTime, SVchange, firstSV, firstBPMvalue = 1, variableOffset = form.FirstTimeInMilliSeconds;
                 string currentLine;
                 int timingPointsIndex = -1;
                 for (int i = 0; i < lines.Count; i++)
@@ -2680,9 +2677,9 @@ namespace Manage_Beatmap
                 int resolution = 48,
                     counter = 0,
                     kTemp = 0,
-                    gridValue = (int)(obj.FirstGridValue * resolution / obj.LastGridValue),
-                    svOffset = obj.SvOffset;
-                firstSV = obj.FirstSV;
+                    gridValue = (int)(form.FirstGridValue * resolution / form.LastGridValue),
+                    svOffset = form.SvOffset;
+                firstSV = form.FirstSV;
                 string pointType;
                 for (int i = timingPointsIndex; !lines[i].Contains("["); i++)
                 {
@@ -2708,7 +2705,7 @@ namespace Manage_Beatmap
                 {
                     for (int j = redPointOffsets.Count - 1; j >= 0; j--)
                     {
-                        if (obj.FirstTimeInMilliSeconds >= redPointOffsets[j])
+                        if (form.FirstTimeInMilliSeconds >= redPointOffsets[j])
                         {
                             currentBPMvalue = currentBPMs[j];
                             currentBPMvalueTemp = currentBPMvalue;
@@ -2729,12 +2726,12 @@ namespace Manage_Beatmap
                     currentBPMvalueTemp = currentBPMvalue;
                     firstBPMvalue = currentBPMvalue;
                 }
-                if (obj.TargetBPM != 0)
-                    firstBPMvalue = 60000 / obj.TargetBPM;
-                if (!obj.isNoteMode)
+                if (form.TargetBPM != 0)
+                    firstBPMvalue = 60000 / form.TargetBPM;
+                if (!form.isNoteMode)
                 {
-                    SVchange = (obj.LastSV - obj.FirstSV) / obj.Count;
-                    for (int i = timingPointsIndex; !lines[i].Contains("[") && counter < obj.Count; i++)
+                    SVchange = (form.LastSV - form.FirstSV) / form.Count;
+                    for (int i = timingPointsIndex; !lines[i].Contains("[") && counter < form.Count; i++)
                     {
                         currentLine = lines[i];
                         if (!string.IsNullOrWhiteSpace(currentLine))
@@ -2773,13 +2770,13 @@ namespace Manage_Beatmap
                 else
                 {
                     List<int> noteOffsets = new List<int>();
-                    double currentTime = obj.FirstTimeInMilliSeconds, 
-                        tempSV, 
-                        lastSV = obj.LastSV;
+                    double currentTime = form.FirstTimeInMilliSeconds,
+                        tempSV,
+                        lastSV = form.LastSV;
                     int startTime,
                         endTime,
                         redPointOffset = -10000;
-                    if (obj.isBetweenTimeMode)
+                    if (form.isBetweenTimeMode)
                     {
                         for (int i = hitObjectsIndex; i < lines.Count; i++)
                         {
@@ -2789,7 +2786,7 @@ namespace Manage_Beatmap
                                 string offsetString = currentLine.Substring(currentLine.IndexOfWithCount(',', 2),
                                     currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
                                 int offset = int.Parse(offsetString);
-                                if (offset >= obj.FirstTimeInMilliSeconds)
+                                if (offset >= form.FirstTimeInMilliSeconds)
                                 {
                                     noteOffsets.Add(offset);
                                     for (int j = i + 1; j < lines.Count; j++)
@@ -2800,7 +2797,7 @@ namespace Manage_Beatmap
                                             offsetString = currentLine.Substring(currentLine.IndexOfWithCount(',', 2),
                                                 currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
                                             offset = int.Parse(offsetString);
-                                            if (offset <= obj.LastTimeInMilliSeconds)
+                                            if (offset <= form.LastTimeInMilliSeconds)
                                                 noteOffsets.Add(offset);
                                             else
                                                 break;
@@ -2821,10 +2818,10 @@ namespace Manage_Beatmap
                                 string offsetString = currentLine.Substring(currentLine.IndexOfWithCount(',', 2),
                                     currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
                                 int offset = int.Parse(offsetString);
-                                if (offset >= obj.FirstTimeInMilliSeconds)
+                                if (offset >= form.FirstTimeInMilliSeconds)
                                 {
                                     int listCounter = 0;
-                                    for (int j = i; listCounter < obj.Count && j < lines.Count; j++)
+                                    for (int j = i; listCounter < form.Count && j < lines.Count; j++)
                                     {
                                         if (!string.IsNullOrWhiteSpace(lines[j]))
                                         {
@@ -2869,18 +2866,17 @@ namespace Manage_Beatmap
                             break;
                         }
                     }
-                    if (obj.TargetBPM != 0)
-                        firstBPMvalue = obj.TargetBPM;
+                    if (form.TargetBPM != 0)
+                        firstBPMvalue = form.TargetBPM;
                     else
                         firstBPMvalue = currentBPMvalue;
                     double currentBPM;
-                    int existingSvIndexInLines, closestSvIndex, targetFileSvIndex;
+                    int existingSvIndexInLines;
                     double svOffsetTemp;
                     bool noteIsOnRedPoint;
                     bool noteIsOnGreenPoint;
                     bool isShiftingAsked = false;
                     bool isShiftingPoints = false;
-                    bool addedAnyGreenPoints = false;
                     if (redPointOffset != -10000 || noteOffsets.Count != 0)
                     {
                         for (; currentTime <= endTime && listIndex < noteOffsets.Count;)
@@ -2957,7 +2953,7 @@ namespace Manage_Beatmap
                 this.lines = lines.ToArray();
                 File.WriteAllLines(path, this.lines);
                 ShowMode.Information(language.LanguageContent[Language.SVchangesAdded]);
-                if (!obj.isNoteMode)
+                if (!form.isNoteMode)
                 {
                     if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.mayNotBeSnapped]) == DialogResult.Yes)
                     {
@@ -2967,10 +2963,8 @@ namespace Manage_Beatmap
                     }
                 }
                 manageLoad();
-            }
-            if (obj.checkBox3.Checked)
-                SVadder(true);
-            else if (!timer1.Enabled) timer1.Start();
+            });
+            formHandlerPanel.SetForm(svChanger);
         }
 
         private double GetOffsetOfLine(string line)
@@ -3085,7 +3079,6 @@ namespace Manage_Beatmap
         {
             string line;
             string[] splitted;
-            int existingSvIndex = -1;
             int previousIndex = -1;
             double pointTime;
             for (int i = timingPointIndex; i < fileLines.Count; i++)
@@ -3313,7 +3306,7 @@ namespace Manage_Beatmap
                     ChangeOffset();
                     break;*/
                 case 4:
-                    SVadder(false);
+                    SVadder();
                     break;
                 case 5:
                     EqualizeSV();

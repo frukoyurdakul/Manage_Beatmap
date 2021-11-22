@@ -44,7 +44,8 @@
             this.button16 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridView1 = new DoubleBufferedGridView();
+            this.formHandlerPanel = new FormHandlerPanel();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -178,11 +179,17 @@
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             // 
+            // formHandlerPanel
+            // 
+            resources.ApplyResources(this.formHandlerPanel, "formHandlerPanel");
+            this.formHandlerPanel.Name = "formHandlerPanel";
+            // 
             // Manage_Beatmap
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.formHandlerPanel);
             this.Controls.Add(this.applyFunctionButton);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button23);
@@ -221,6 +228,7 @@
         private System.Windows.Forms.Button button16;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private FormHandlerPanel formHandlerPanel;
+        private DoubleBufferedGridView dataGridView1;
     }
 }

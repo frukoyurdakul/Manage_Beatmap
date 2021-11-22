@@ -95,8 +95,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionableForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Buttons.cs" />
+    <Compile Include="DoubleBufferedGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FormatString.cs" />
+    <Compile Include="FormHandlerPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GlobalKeyboardHook.cs" />
     <Compile Include="Hitsounds.cs">
       <SubType>Form</SubType>
@@ -153,6 +162,9 @@
     <Compile Include="Timing_Manager.Designer.cs">
       <DependentUpon>Timing_Manager.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FormHandlerPanel.resx">
+      <DependentUpon>FormHandlerPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Hitsounds.resx">
       <DependentUpon>Hitsounds.cs</DependentUpon>
     </EmbeddedResource>

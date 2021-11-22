@@ -9,7 +9,12 @@ using System.Globalization;
 
 namespace Manage_Beatmap
 {
-    public partial class SV_Changer : Form
+    public partial class SV_Changer
+        #if DEBUG
+            : ActionableForm<SV_Changer>
+        #else
+            : ActionableForm  
+        #endif
     {
         public double FirstGridValue { get; set; }
         public double LastGridValue { get; set; }
@@ -24,7 +29,13 @@ namespace Manage_Beatmap
         public bool isNoteMode { get; set; }
         public bool isBetweenTimeMode { get; set; }
         private bool isTargetBpmEntered = false, isSvOffsetEntered = false, isButtonClicked = false, isMessageShown = false;
-        public SV_Changer()
+
+        public SV_Changer() : base()
+        {
+
+        }
+
+        public SV_Changer(Action<SV_Changer> action) : base(action)
         {
             InitializeComponent();
             ChangeControlTexts();
@@ -32,6 +43,7 @@ namespace Manage_Beatmap
             if (Manage_Beatmap.savedContent != null)
                 FillSavedContent();
         }
+
         private void ChangeControlTexts()
         {
             Text = Manage_Beatmap.language.LanguageContent[Language.SVchangerFormTitle];

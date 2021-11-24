@@ -379,6 +379,7 @@ namespace BeatmapManager
                 path = file.FileName;
                 fileName = file.SafeFileName;
                 manageLoad();
+                SVadder();
                 timer1.Start();
             }
         }

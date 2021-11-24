@@ -35,7 +35,8 @@ namespace BeatmapManager
             form.Anchor = AnchorStyles.Top | AnchorStyles.Left;
 
             Width = form.Width + 30;
-            form.Location = new System.Drawing.Point(15, form.Location.Y);
+            Height = form.Height -10;
+            form.Location = new System.Drawing.Point(15, form.Location.Y - 5);
 
             Controls.Add(form);
             form.Show();

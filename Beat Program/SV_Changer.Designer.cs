@@ -32,7 +32,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.svOffsetTextBox = new System.Windows.Forms.TextBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.bpmTextBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -64,12 +63,6 @@
             resources.ApplyResources(this.svOffsetTextBox, "svOffsetTextBox");
             this.svOffsetTextBox.Name = "svOffsetTextBox";
             this.svOffsetTextBox.Enter += new System.EventHandler(this.svOffsetTextBox_Enter);
-            // 
-            // checkBox3
-            // 
-            resources.ApplyResources(this.checkBox3, "checkBox3");
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.UseVisualStyleBackColor = true;
             // 
             // checkBox2
             // 
@@ -173,7 +166,6 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.svOffsetTextBox);
-            this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.bpmTextBox);
             this.Controls.Add(this.label7);
@@ -212,7 +204,6 @@
         private System.Windows.Forms.TextBox bpmTextBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBox2;
-        public System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox svOffsetTextBox;
         private System.Windows.Forms.Label label1;

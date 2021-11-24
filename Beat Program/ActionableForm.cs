@@ -11,16 +11,14 @@ namespace BeatmapManager
     {
         private readonly Action<T> formAction;
 
-        public ActionableForm()
+        public ActionableForm() : base()
         {
             formAction = null;
-            DoubleBuffered = true;
         }
 
-        public ActionableForm(Action<T> action)
+        public ActionableForm(Action<T> action) : base()
         {
             formAction = action;
-            DoubleBuffered = true;
         }
 
         protected virtual void InvokeAction()
@@ -36,6 +34,11 @@ namespace BeatmapManager
 
     public abstract class ActionableForm: Form
     {
-
+        public ActionableForm()
+        {
+            TopLevel = false;
+            FormBorderStyle = FormBorderStyle.None;
+            DoubleBuffered = true;
+        }
     }
 }

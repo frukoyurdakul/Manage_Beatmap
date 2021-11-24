@@ -28,7 +28,7 @@ namespace BeatmapManager
         public DialogResult Status { get; set; }
         public bool isNoteMode { get; set; }
         public bool isBetweenTimeMode { get; set; }
-        private bool isTargetBpmEntered = false, isSvOffsetEntered = false, isButtonClicked = false, isMessageShown = false;
+        private bool isTargetBpmEntered = false, isSvOffsetEntered = false, isMessageShown = false;
 
         public SV_Changer() : base()
         {
@@ -58,7 +58,6 @@ namespace BeatmapManager
             checkBox1.Text = MainForm.language.LanguageContent[Language.checkBox];
             button.Text = MainForm.language.LanguageContent[Language.addInheritedPointsButton];
             checkBox2.Text = MainForm.language.LanguageContent[Language.activateBetweenTimeMode];
-            checkBox3.Text = MainForm.language.LanguageContent[Language.reOpenWindow];
             checkBox2.Checked = true;
         }
         private void ChangeLabelPositions()
@@ -80,7 +79,6 @@ namespace BeatmapManager
             lastTextBox.Text = MainForm.savedContent.lastSVTextBox;
             checkBox1.Checked = MainForm.savedContent.putNotesBySnaps;
             checkBox2.Checked = MainForm.savedContent.betweenTimeModeCheckBox;
-            checkBox3.Checked = true;
             comboBox.SelectedIndex = MainForm.savedContent.comboBoxSelectedIndex;
         }
         private void button1_Click(object sender, EventArgs e)
@@ -93,24 +91,18 @@ namespace BeatmapManager
                         isNoteMode = true;
                     else
                         isNoteMode = false;
-                    if (checkBox3.Checked)
-                    {
-                        MainForm.savedContent = new SV_Changer_Content
-                            (
-                                checkBox2.Checked,
-                                checkBox1.Checked,
-                                comboBox.SelectedIndex,
-                                timeTextBox.Text,
-                                firstTextBox.Text,
-                                lastTextBox.Text,
-                                countOrLastTimeTextBox.Text,
-                                svOffsetTextBox.Text
-                            );
-                    }
-                    else
-                        MainForm.savedContent = null;
-                    isButtonClicked = true;
-                    Close();
+                    MainForm.savedContent = new SV_Changer_Content
+                             (
+                                 checkBox2.Checked,
+                                 checkBox1.Checked,
+                                 comboBox.SelectedIndex,
+                                 timeTextBox.Text,
+                                 firstTextBox.Text,
+                                 lastTextBox.Text,
+                                 countOrLastTimeTextBox.Text,
+                                 svOffsetTextBox.Text
+                             );
+                    InvokeAction();
                 }
             }
         }
@@ -296,24 +288,7 @@ namespace BeatmapManager
 
         private void SV_Changer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (checkBox3.Checked)
-            {
-                MainForm.savedContent = new SV_Changer_Content
-                    (
-                        checkBox2.Checked,
-                        checkBox1.Checked,
-                        comboBox.SelectedIndex,
-                        timeTextBox.Text,
-                        firstTextBox.Text,
-                        lastTextBox.Text,
-                        countOrLastTimeTextBox.Text,
-                        svOffsetTextBox.Text
-                    );
-            }
-            else
-                MainForm.savedContent = null;
-            if (!isButtonClicked)
-                checkBox3.Checked = false;
+            
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)

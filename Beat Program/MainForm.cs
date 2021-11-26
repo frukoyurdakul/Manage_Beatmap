@@ -13,9 +13,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Diagnostics;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
-    public partial class Manage_Beatmap : Form
+    public partial class MainForm : Form
     {
         string path = string.Empty;
         string fileName = string.Empty;
@@ -32,6 +32,7 @@ namespace Manage_Beatmap
         int timingPointsIndex = -1;
         int offsetChange = 0;
         int nextTimingPointOffset = 0;
+        int buttonsEnabledState = 0;
         bool isDefined = false;
         bool isHaveNotes = false;
         bool isActivated = false;
@@ -50,7 +51,7 @@ namespace Manage_Beatmap
             }
         }
 
-        public Manage_Beatmap()
+        public MainForm()
         {
             InitializeComponent();
             SetLanguage();
@@ -205,9 +206,19 @@ namespace Manage_Beatmap
             }
             dataGridView1.DataSource = table;
             for (int i = 0; i < dataGridView1.Columns.Count; i++)
-                dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+            {
+                DataGridViewColumn column = dataGridView1.Columns[i];
+                if (i == 0)
+                    column.FillWeight = 4;
+                else if (i == 1)
+                    column.FillWeight = 3;
+                else
+                    column.FillWeight = 2;
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
             dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView1.Columns[4].DefaultCellStyle.Font = new Font("Times New Roman", 18F, FontStyle.Bold);
+            dataGridView1.Columns[4].DefaultCellStyle.Font = new Font("Arial Narrow", 12F, FontStyle.Bold);
             for (int i = 0; i < offsetErrorIndexes.Count; i++)
             {
                 dataGridView1.Rows[offsetErrorIndexes[i]].DefaultCellStyle.BackColor = Color.Red;
@@ -226,6 +237,10 @@ namespace Manage_Beatmap
         }
         private void disableButtons()
         {
+            if (buttonsEnabledState == 1)
+                return;
+
+            buttonsEnabledState = 1;
             comboBox1.Items.Clear();
             comboBox1.Items.AddRange(notActiveComboBoxItems.ToArray());
             button19.Enabled = false;
@@ -235,6 +250,10 @@ namespace Manage_Beatmap
         }
         private void enableButtons()
         {
+            if (buttonsEnabledState == 2)
+                return;
+
+            buttonsEnabledState = 2;
             comboBox1.Items.Clear();
             comboBox1.Items.AddRange(activeComboBoxItems.ToArray());
             button19.Enabled = true;
@@ -348,7 +367,6 @@ namespace Manage_Beatmap
             button17.Text = language.LanguageContent[Language.undo];
             button18.Text = language.LanguageContent[Language.redo];
             button19.Text = language.LanguageContent[Language.save];
-            applyFunctionButton.Text = language.LanguageContent[Language.applyFunctionButton];
         }
         private void RemoveInvisibleSelection()
         {
@@ -369,6 +387,7 @@ namespace Manage_Beatmap
                 path = file.FileName;
                 fileName = file.SafeFileName;
                 manageLoad();
+                SmoothSvChanger();
                 timer1.Start();
             }
         }
@@ -1977,208 +1996,78 @@ namespace Manage_Beatmap
         }
         private void ChangeBPM()
         {
-            if (timer1.Enabled) timer1.Stop();
-            if (dataGridView1.SelectedRows.Count != 1)
-                ShowMode.Error(language.LanguageContent[Language.oneRowOnly]);
-            else
+            BPM_Changer changer = new BPM_Changer(BPM =>
             {
-                if (dataGridView1.SelectedRows[0].Cells[1].Value.ToString().Contains("x"))
-                    ShowMode.Error(language.LanguageContent[Language.inheritedPointBPMError]);
+                if (dataGridView1.SelectedRows.Count != 1)
+                    ShowMode.Error(language.LanguageContent[Language.oneRowOnly]);
                 else
                 {
-                    string offsetString = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
-                    BPM_Changer BPM = new BPM_Changer();
-                    BPM_Changer.Offset = Convert.ToInt32(offsetString.Substring(0, offsetString.IndexOf(' ')));
-                    BPM.checkBox1.Enabled = isMapHaveBookmarks();
-                    BPM.ShowDialog();
-                    if (BPM_Changer.value != 0)
+                    if (dataGridView1.SelectedRows[0].Cells[1].Value.ToString().Contains("x"))
+                        ShowMode.Error(language.LanguageContent[Language.inheritedPointBPMError]);
+                    else
                     {
-                        if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.offsetShift]) == DialogResult.Yes)
-                        {
-                            AddBackup();
-                            linesList = lines.ToList();
-                            if (BPM_Changer.ComboBoxSelectedIndex == 1)
-                            {
-                                ShowMode.Information(language.LanguageContent[Language.multiSelection]);
-                                OpenFileDialog dialog = new OpenFileDialog();
-                                dialog.InitialDirectory = path.Substring(0, path.LastIndexOf('\\'));
-                                dialog.Multiselect = true;
-                                dialog.Title = language.LanguageContent[Language.selectFiles];
-                                dialog.Filter = language.LanguageContent[Language.osuFiles] + " (*.osu,*.OSU) | *.osu;*.OSU";
-                                if (dialog.ShowDialog() == DialogResult.OK)
-                                {
-                                    string[] paths = dialog.FileNames;
-                                    string[] fileNames = dialog.SafeFileNames;
-                                    string[] lines;
-                                    if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.multipleFileBackups]) == DialogResult.Yes)
-                                        saveBackups(paths, fileNames);
-                                    for (int i = 0; i < paths.Length; i++)
-                                    {
-                                        lines = File.ReadAllLines(paths[i]);
-                                        if (BPM.checkBox1.Enabled)
-                                            lines = ChangeBookmarks_BPM(lines);
-                                        lines = SetTimingOffsetsAndNewBpm(lines);
-                                        lines = SetNewHitObjectOffsets(lines, true);
-                                        WriteNewFile(paths[i], fileNames[i], lines);
-                                    }
-                                    ShowMode.Information(language.LanguageContent[Language.processComplete]);
-                                }
-                                else
-                                {
-                                    ShowMode.Error(language.LanguageContent[Language.noFilesSelected]);
-                                    if (!timer1.Enabled) timer1.Start();
-                                    return;
-                                }
-                            }
-                            else
-                            {
-                                if (BPM.checkBox1.Enabled)
-                                    ChangeBookmarks_BPM();
-                                SetTimingOffsetsAndNewBpm();
-                                SetNewHitObjectOffsets();
-                                WriteNewFileFromArray();
-                            }
-                            linesList.Clear();
-                            manageLoad();
-                        }
-                    }
-                }
-            }
-            if (!timer1.Enabled) timer1.Start();
-        }
-        private void ChangeOffset()
-        {
-            if (timer1.Enabled) timer1.Stop();
-            RemoveInvisibleSelection();
-            if (dataGridView1.SelectedRows.Count == 0)
-                ShowMode.Error(language.LanguageContent[Language.oneRowRequired]);
-            else
-            {
-                if (!dataGridView1.SelectedRows.Contains(dataGridView1.Rows[dataGridView1.Rows.Count - 1]))
-                {
-                    DialogResult res = ShowMode.QuestionWithYesNo(language.LanguageContent[Language.selectPointsWithLast]);
-                    if (res == DialogResult.Yes)
-                    {
-                        BPM_Changer form = new BPM_Changer();
-                        form.label1.Text = language.LanguageContent[Language.offsetChange];
-                        form.label1.Location = new Point(133 - form.label1.Size.Width, form.label1.Location.Y);
-                        form.Text = language.LanguageContent[Language.offsetChanger];
-                        form.checkBox1.Enabled = isMapHaveBookmarks();
-                        form.ShowDialog();
-                        if (BPM_Changer.ComboBoxSelectedIndex == -1)
-                        {
-                            ShowMode.Warning(language.LanguageContent[Language.noFunctionSelected]);
-                            return;
-                        }
+                        string offsetString = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
+                        BPM_Changer.Offset = Convert.ToInt32(offsetString.Substring(0, offsetString.IndexOf(' ')));
+                        BPM.ShowDialog();
                         if (BPM_Changer.value != 0)
                         {
-                            if (BPM_Changer.ComboBoxSelectedIndex == 1)
+                            if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.offsetShift]) == DialogResult.Yes)
                             {
-                                ShowMode.Information(language.LanguageContent[Language.multiSelection]);
-                                OpenFileDialog dialog = new OpenFileDialog();
-                                dialog.InitialDirectory = path.Substring(0, path.LastIndexOf('\\'));
-                                dialog.Multiselect = true;
-                                dialog.Title = language.LanguageContent[Language.selectFiles];
-                                dialog.Filter = language.LanguageContent[Language.osuFiles] + " (*.osu,*.OSU) | *.osu;*.OSU";
-                                if (dialog.ShowDialog() == DialogResult.OK)
+                                AddBackup();
+                                linesList = lines.ToList();
+                                if (BPM_Changer.ComboBoxSelectedIndex == 1)
                                 {
-                                    AddBackup();
-                                    string[] paths = dialog.FileNames;
-                                    string[] fileNames = dialog.SafeFileNames;
-                                    string[] lines;
-                                    if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.multipleFileBackups]) == DialogResult.Yes)
-                                        saveBackups(paths, fileNames);
-                                    for (int i = 0; i < paths.Length; i++)
+                                    ShowMode.Information(language.LanguageContent[Language.multiSelection]);
+                                    OpenFileDialog dialog = new OpenFileDialog();
+                                    dialog.InitialDirectory = path.Substring(0, path.LastIndexOf('\\'));
+                                    dialog.Multiselect = true;
+                                    dialog.Title = language.LanguageContent[Language.selectFiles];
+                                    dialog.Filter = language.LanguageContent[Language.osuFiles] + " (*.osu,*.OSU) | *.osu;*.OSU";
+                                    if (dialog.ShowDialog() == DialogResult.OK)
                                     {
-                                        lines = File.ReadAllLines(paths[i]);
-                                        lines = ChangeOffsets(paths[i], lines);
-                                        if (form.checkBox1.Checked)
-                                            lines = ChangeBookmarks_Offset(lines);
-                                        File.WriteAllLines(paths[i], lines);
+                                        string[] paths = dialog.FileNames;
+                                        string[] fileNames = dialog.SafeFileNames;
+                                        string[] lines;
+                                        if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.multipleFileBackups]) == DialogResult.Yes)
+                                            saveBackups(paths, fileNames);
+                                        for (int i = 0; i < paths.Length; i++)
+                                        {
+                                            lines = File.ReadAllLines(paths[i]);
+                                            if (BPM.checkBox1.Enabled)
+                                                lines = ChangeBookmarks_BPM(lines);
+                                            lines = SetTimingOffsetsAndNewBpm(lines);
+                                            lines = SetNewHitObjectOffsets(lines, true);
+                                            WriteNewFile(paths[i], fileNames[i], lines);
+                                        }
+                                        ShowMode.Information(language.LanguageContent[Language.processComplete]);
+                                    }
+                                    else
+                                    {
+                                        ShowMode.Error(language.LanguageContent[Language.noFilesSelected]);
+                                        if (!timer1.Enabled) timer1.Start();
+                                        return;
                                     }
                                 }
                                 else
                                 {
-                                    ShowMode.Error(language.LanguageContent[Language.noFilesSelected]);
-                                    if (!timer1.Enabled) timer1.Start();
-                                    return;
+                                    if (BPM.checkBox1.Enabled)
+                                        ChangeBookmarks_BPM();
+                                    SetTimingOffsetsAndNewBpm();
+                                    SetNewHitObjectOffsets();
+                                    WriteNewFileFromArray();
                                 }
+                                linesList.Clear();
+                                manageLoad();
                             }
-                            else
-                            {
-                                AddBackup();
-                                ChangeOffsets();
-                                if (form.checkBox1.Checked)
-                                    ChangeBookmarks_Offset();
-                                File.WriteAllLines(path, lines);
-                            }
-                            ShowMode.Information(language.LanguageContent[Language.processComplete]);
-                            ShowMode.Warning(language.LanguageContent[Language.overlappedTimingPointsWarning]);
-                            manageLoad();
                         }
                     }
                 }
-                else
-                {
-                    BPM_Changer form = new BPM_Changer();
-                    form.label1.Text = language.LanguageContent[Language.offsetChange];
-                    form.label1.Location = new Point(133 - form.label1.Size.Width, form.label1.Location.Y);
-                    form.Text = language.LanguageContent[Language.offsetChanger];
-                    form.ShowDialog();
-                    if (BPM_Changer.ComboBoxSelectedIndex == -1)
-                    {
-                        ShowMode.Warning(language.LanguageContent[Language.noFunctionSelected]);
-                        return;
-                    }
-                    if (BPM_Changer.value != 0)
-                    {
-                        if (BPM_Changer.ComboBoxSelectedIndex == 1)
-                        {
-                            ShowMode.Information(language.LanguageContent[Language.multiSelection]);
-                            OpenFileDialog dialog = new OpenFileDialog();
-                            dialog.InitialDirectory = path.Substring(0, path.LastIndexOf('\\'));
-                            dialog.Multiselect = true;
-                            dialog.Title = language.LanguageContent[Language.selectFiles];
-                            dialog.Filter = language.LanguageContent[Language.osuFiles] + " (*.osu,*.OSU) | *.osu;*.OSU";
-                            if (dialog.ShowDialog() == DialogResult.OK)
-                            {
-                                AddBackup();
-                                string[] paths = dialog.FileNames;
-                                string[] fileNames = dialog.SafeFileNames;
-                                string[] lines;
-                                if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.multipleFileBackups]) == DialogResult.Yes)
-                                    saveBackups(paths, fileNames);
-                                for (int i = 0; i < paths.Length; i++)
-                                {
-                                    lines = File.ReadAllLines(paths[i]);
-                                    ChangeOffsets(paths[i], lines);
-                                    if (form.checkBox1.Checked)
-                                        ChangeBookmarks_Offset(lines);
-                                    File.WriteAllLines(paths[i], lines);
-                                }
-                            }
-                            else
-                            {
-                                ShowMode.Error(language.LanguageContent[Language.noFilesSelected]);
-                                if (!timer1.Enabled) timer1.Start();
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            AddBackup();
-                            ChangeOffsets();
-                            if (form.checkBox1.Checked)
-                                ChangeBookmarks_Offset();
-                            File.WriteAllLines(path, lines);
-                        }
-                        ShowMode.Information(language.LanguageContent[Language.processComplete]);
-                        manageLoad();
-                    }
-                }
-            }
-            if (!timer1.Enabled) timer1.Start();
+            });
+
+            changer.checkBox1.Checked = isMapHaveBookmarks();
+            formHandlerPanel.SetForm(changer);
         }
+       
         private void SelectFile()
         {
             if (timer1.Enabled) timer1.Stop();
@@ -2200,6 +2089,7 @@ namespace Manage_Beatmap
             manageLoad();
             if (!timer1.Enabled) timer1.Start();
         }
+
         private void DeleteSelectedInheritedPoints()
         {
             if (timer1.Enabled) timer1.Stop();
@@ -2395,57 +2285,53 @@ namespace Manage_Beatmap
         }
         private void SVchanger()
         {
-            if (timer1.Enabled) timer1.Stop();
             RemoveInvisibleSelection();
-            if (dataGridView1.SelectedRows.Count == 0)
-                ShowMode.Error(language.LanguageContent[Language.oneRowRequired]);
-            else
+
+            BPM_Changer form = new BPM_Changer(_ =>
             {
-                for (int i = 0; i < dataGridView1.SelectedRows.Count; i++)
+                if (dataGridView1.SelectedRows.Count == 0)
+                    ShowMode.Error(language.LanguageContent[Language.oneRowRequired]);
+                else
                 {
-                    if (!dataGridView1.SelectedRows[i].Cells[1].Value.ToString().Contains('x'))
-                    {
-                        ShowMode.Error(language.LanguageContent[Language.onlyInheritedPoint]);
-                        return;
-                    }
-                }
-                BPM_Changer form = new BPM_Changer();
-                form.label2.Dispose();
-                form.comboBox1.Dispose();
-                form.MinimumSize = new Size(form.Size.Width, form.Size.Height - 50);
-                form.Size = new Size(form.Size.Width, form.Size.Height - 50);
-                form.label1.Text = language.LanguageContent[Language.sliderVelocityChange];
-                form.label1.Location = new Point(133 - form.label1.Size.Width, form.label1.Location.Y);
-                form.Text = language.LanguageContent[Language.sliderVelocityChanger];
-                form.checkBox1.Dispose();
-                form.ShowDialog();
-                if (BPM_Changer.value != 0)
-                {
-                    AddBackup();
                     for (int i = 0; i < dataGridView1.SelectedRows.Count; i++)
                     {
-                        double value = Convert.ToDouble(dataGridView1.SelectedRows[i].Cells[1].Value.ToString().Substring(0, dataGridView1.SelectedRows[i].Cells[1].Value.ToString().IndexOf('x')));
-                        value += BPM_Changer.value;
-                        value = -(100 / value);
-                        string offsetString = dataGridView1.SelectedRows[i].Cells[0].Value.ToString();
-                        int data = Convert.ToInt32(offsetString.Substring(0, offsetString.IndexOf(' ')));
-                        for (int j = timingPointsIndex + 1; j < lines.Length && !string.IsNullOrWhiteSpace(lines[j]); j++)
+                        if (!dataGridView1.SelectedRows[i].Cells[1].Value.ToString().Contains('x'))
                         {
-                            int time = Convert.ToInt32(lines[j].Substring(0, lines[j].IndexOf(',')));
-                            if (data == time && lines[j].Substring(lines[j].IndexOfWithCount(',', 6), 1) != "1")
-                            {
-                                lines[j] = lines[j].Remove(lines[j].IndexOfWithCount(',', 1), lines[j].IndexOfWithCount(',', 2) - lines[j].IndexOfWithCount(',', 1) - 1);
-                                lines[j] = lines[j].Insert(lines[j].IndexOfWithCount(',', 1), value.ToString().Replace(',', '.'));
-                                break;
-                            }
+                            ShowMode.Error(language.LanguageContent[Language.onlyInheritedPoint]);
+                            return;
                         }
                     }
-                    File.WriteAllLines(path, lines);
-                    ShowMode.Information(language.LanguageContent[Language.processComplete]);
-                    manageLoad();
+                    if (BPM_Changer.value != 0)
+                    {
+                        string[] lines = File.ReadAllLines(path);
+                        AddBackup();
+                        for (int i = 0; i < dataGridView1.SelectedRows.Count; i++)
+                        {
+                            double value = Convert.ToDouble(dataGridView1.SelectedRows[i].Cells[1].Value.ToString().Substring(0, dataGridView1.SelectedRows[i].Cells[1].Value.ToString().IndexOf('x')));
+                            value += BPM_Changer.value;
+                            value = -(100 / value);
+                            string offsetString = dataGridView1.SelectedRows[i].Cells[0].Value.ToString();
+                            int data = Convert.ToInt32(offsetString.Substring(0, offsetString.IndexOf(' ')));
+                            for (int j = timingPointsIndex + 1; j < lines.Length && !string.IsNullOrWhiteSpace(lines[j]); j++)
+                            {
+                                int time = Convert.ToInt32(lines[j].Substring(0, lines[j].IndexOf(',')));
+                                if (data == time && lines[j].Substring(lines[j].IndexOfWithCount(',', 6), 1) != "1")
+                                {
+                                    lines[j] = lines[j].Remove(lines[j].IndexOfWithCount(',', 1), lines[j].IndexOfWithCount(',', 2) - lines[j].IndexOfWithCount(',', 1) - 1);
+                                    lines[j] = lines[j].Insert(lines[j].IndexOfWithCount(',', 1), value.ToString().Replace(',', '.'));
+                                    break;
+                                }
+                            }
+                        }
+                        File.WriteAllLines(path, lines);
+                        ShowMode.Information(language.LanguageContent[Language.processComplete]);
+                        manageLoad();
+                    }
                 }
-            }
-            if (!timer1.Enabled) timer1.Start();
+            });
+
+            form.AdjustFormForSingleInput(language.LanguageContent[Language.sliderVelocityChange]);
+            formHandlerPanel.SetForm(form);
         }
         private void Hitsounds()
         {
@@ -2462,203 +2348,186 @@ namespace Manage_Beatmap
         }
         private void SVstepbystep()
         {
-            if (timer1.Enabled) timer1.Stop();
             RemoveInvisibleSelection();
-            if (dataGridView1.SelectedRows.Count == 0)
-                ShowMode.Error(language.LanguageContent[Language.oneRowRequired]);
-            else
+
+            BPM_Changer form = new BPM_Changer(_ =>
             {
-                for (int i = 0; i < dataGridView1.SelectedRows.Count; i++)
+                if (dataGridView1.SelectedRows.Count == 0)
+                    ShowMode.Error(language.LanguageContent[Language.oneRowRequired]);
+                else
                 {
-                    if (!dataGridView1.SelectedRows[i].Cells[1].Value.ToString().Contains('x'))
+                    for (int i = 0; i < dataGridView1.SelectedRows.Count; i++)
                     {
-                        ShowMode.Error(language.LanguageContent[Language.onlyInheritedPoint]);
-                        if (!timer1.Enabled) timer1.Start();
-                        return;
+                        if (!dataGridView1.SelectedRows[i].Cells[1].Value.ToString().Contains('x'))
+                        {
+                            ShowMode.Error(language.LanguageContent[Language.onlyInheritedPoint]);
+                            if (!timer1.Enabled) timer1.Start();
+                            return;
+                        }
+                    }
+
+                    if (BPM_Changer.value != 0)
+                    {
+                        string[] lines = File.ReadAllLines(path);
+                        AddBackup();
+                        double firstValue = Convert.ToDouble(dataGridView1.SelectedRows[dataGridView1.SelectedRows.Count - 1].Cells[1].Value.ToString().Substring(0, dataGridView1.SelectedRows[dataGridView1.SelectedRows.Count - 1].Cells[1].Value.ToString().IndexOf('x')));
+                        double lastValue = BPM_Changer.value;
+                        double multiplier = (lastValue - firstValue) / (Convert.ToDouble(dataGridView1.SelectedRows.Count - 1));
+                        for (int i = dataGridView1.SelectedRows.Count - 1; i >= 0; i--)
+                        {
+                            double value = firstValue + (multiplier * (dataGridView1.SelectedRows.Count - i - 1));
+                            value = -(100 / value);
+                            string offsetString = dataGridView1.SelectedRows[i].Cells[0].Value.ToString();
+                            int data = Convert.ToInt32(offsetString.Substring(0, offsetString.IndexOf(' ')));
+                            for (int j = timingPointsIndex + 1; j < lines.Length && !string.IsNullOrWhiteSpace(lines[j]); j++)
+                            {
+                                int time = Convert.ToInt32(lines[j].Substring(0, lines[j].IndexOf(',')));
+                                if (data == time && lines[j].Contains('-'))
+                                {
+                                    lines[j] = lines[j].Remove(lines[j].IndexOfWithCount(',', 1), lines[j].IndexOfWithCount(',', 2) - lines[j].IndexOfWithCount(',', 1) - 1);
+                                    lines[j] = lines[j].Insert(lines[j].IndexOfWithCount(',', 1), value.ToString().Replace(',', '.'));
+                                    break;
+                                }
+                            }
+                        }
+                        File.WriteAllLines(path, lines);
+                        ShowMode.Information(language.LanguageContent[Language.processComplete]);
+                        manageLoad();
                     }
                 }
-                BPM_Changer form = new BPM_Changer();
-                form.label1.Text = language.LanguageContent[Language.lastSV];
-                form.label1.Location = new Point(133 - form.label1.Size.Width, form.label1.Location.Y);
-                form.label2.Dispose();
-                form.comboBox1.Dispose();
-                form.MinimumSize = new Size(form.Size.Width, form.Size.Height - 50);
-                form.Size = new Size(form.Size.Width, form.Size.Height - 50);
-                form.Text = language.LanguageContent[Language.sliderVelocityChanger];
-                form.checkBox1.Dispose();
-                form.ShowDialog();
-                if (BPM_Changer.value != 0)
+            });
+
+            form.AdjustFormForSingleInput(language.LanguageContent[Language.lastSV]);
+            formHandlerPanel.SetForm(form);
+        }
+        private void VolumeChanger()
+        {
+            RemoveInvisibleSelection();
+            BPM_Changer form = new BPM_Changer(_ =>
+            {
+                if (dataGridView1.SelectedRows.Count == 0)
                 {
+                    ShowMode.Error(language.LanguageContent[Language.oneRowRequired]);
+                    return;
+                }
+                if (BPM_Changer.value == 0)
+                {
+                    if (!timer1.Enabled) timer1.Start();
+                    return;
+                }
+                else if ((BPM_Changer.value % 1) != 0)
+                {
+                    ShowMode.Error(language.LanguageContent[Language.notFloatValue]);
+                    if (!timer1.Enabled) timer1.Start();
+                    return;
+                }
+                else
+                {
+                    string[] lines = File.ReadAllLines(path);
                     AddBackup();
-                    double firstValue = Convert.ToDouble(dataGridView1.SelectedRows[dataGridView1.SelectedRows.Count - 1].Cells[1].Value.ToString().Substring(0, dataGridView1.SelectedRows[dataGridView1.SelectedRows.Count - 1].Cells[1].Value.ToString().IndexOf('x')));
-                    double lastValue = BPM_Changer.value;
-                    double multiplier = (lastValue - firstValue) / (Convert.ToDouble(dataGridView1.SelectedRows.Count - 1));
-                    for (int i = dataGridView1.SelectedRows.Count - 1; i >= 0; i--)
+                    for (int i = 0; i < dataGridView1.SelectedRows.Count; i++)
                     {
-                        double value = firstValue + (multiplier * (dataGridView1.SelectedRows.Count - i - 1));
-                        value = -(100 / value);
+                        double value = Convert.ToDouble(dataGridView1.SelectedRows[i].Cells[3].Value.ToString().Substring(0, dataGridView1.SelectedRows[i].Cells[3].Value.ToString().IndexOf('%')));
+                        value += BPM_Changer.value;
+                        if (value > 100)
+                            value = 100;
+                        else if (value < 5)
+                            value = 5;
                         string offsetString = dataGridView1.SelectedRows[i].Cells[0].Value.ToString();
                         int data = Convert.ToInt32(offsetString.Substring(0, offsetString.IndexOf(' ')));
-                        for (int j = timingPointsIndex + 1; j < lines.Length && !string.IsNullOrWhiteSpace(lines[j]); j++)
+                        for (int j = timingPointsIndex + 1; !string.IsNullOrWhiteSpace(lines[j]); j++)
                         {
                             int time = Convert.ToInt32(lines[j].Substring(0, lines[j].IndexOf(',')));
-                            if (data == time && lines[j].Contains('-'))
+                            if (data == time)
                             {
-                                lines[j] = lines[j].Remove(lines[j].IndexOfWithCount(',', 1), lines[j].IndexOfWithCount(',', 2) - lines[j].IndexOfWithCount(',', 1) - 1);
-                                lines[j] = lines[j].Insert(lines[j].IndexOfWithCount(',', 1), value.ToString().Replace(',', '.'));
-                                break;
+                                lines[j] = lines[j].Remove(lines[j].IndexOfWithCount(',', 5), lines[j].IndexOfWithCount(',', 6) - lines[j].IndexOfWithCount(',', 5) - 1);
+                                lines[j] = lines[j].Insert(lines[j].IndexOfWithCount(',', 5), value.ToString().Replace(',', '.'));
                             }
+                            else if (time > data)
+                                break;
                         }
                     }
                     File.WriteAllLines(path, lines);
                     ShowMode.Information(language.LanguageContent[Language.processComplete]);
                     manageLoad();
                 }
-            }
-            if (!timer1.Enabled) timer1.Start();
-        }
-        private void VolumeChanger()
-        {
-            if (timer1.Enabled) timer1.Stop();
-            RemoveInvisibleSelection();
-            if (dataGridView1.SelectedRows.Count == 0)
-            {
-                ShowMode.Error(language.LanguageContent[Language.oneRowRequired]);
-                return;
-            }
-            BPM_Changer form = new BPM_Changer();
-            form.label2.Dispose();
-            form.comboBox1.Dispose();
-            form.MinimumSize = new Size(form.Size.Width, form.Size.Height - 50);
-            form.Size = new Size(form.Size.Width, form.Size.Height - 50);
-            form.label1.Text = language.LanguageContent[Language.volumeChange];
-            form.label1.Location = new Point(133 - form.label1.Size.Width, form.label1.Location.Y);
-            form.Text = language.LanguageContent[Language.volumeChanger];
-            form.checkBox1.Dispose();
-            form.ShowDialog();
-            if (BPM_Changer.value == 0)
-            {
-                if (!timer1.Enabled) timer1.Start();
-                return;
-            }
-            else if ((BPM_Changer.value % 1) != 0)
-            {
-                ShowMode.Error(language.LanguageContent[Language.notFloatValue]);
-                if (!timer1.Enabled) timer1.Start();
-                return;
-            }
-            else
-            {
-                AddBackup();
-                for (int i = 0; i < dataGridView1.SelectedRows.Count; i++)
-                {
-                    double value = Convert.ToDouble(dataGridView1.SelectedRows[i].Cells[3].Value.ToString().Substring(0, dataGridView1.SelectedRows[i].Cells[3].Value.ToString().IndexOf('%')));
-                    value += BPM_Changer.value;
-                    if (value > 100)
-                        value = 100;
-                    else if (value < 5)
-                        value = 5;
-                    string offsetString = dataGridView1.SelectedRows[i].Cells[0].Value.ToString();
-                    int data = Convert.ToInt32(offsetString.Substring(0, offsetString.IndexOf(' ')));
-                    for (int j = timingPointsIndex + 1; !string.IsNullOrWhiteSpace(lines[j]); j++)
-                    {
-                        int time = Convert.ToInt32(lines[j].Substring(0, lines[j].IndexOf(',')));
-                        if (data == time)
-                        {
-                            lines[j] = lines[j].Remove(lines[j].IndexOfWithCount(',', 5), lines[j].IndexOfWithCount(',', 6) - lines[j].IndexOfWithCount(',', 5) - 1);
-                            lines[j] = lines[j].Insert(lines[j].IndexOfWithCount(',', 5), value.ToString().Replace(',', '.'));
-                        }
-                        else if (time > data)
-                            break;
-                    }
-                }
-                File.WriteAllLines(path, lines);
-                ShowMode.Information(language.LanguageContent[Language.processComplete]);
-                manageLoad();
-            }
-            if (!timer1.Enabled) timer1.Start();
+            });
+
+            form.AdjustFormForSingleInput(language.LanguageContent[Language.volumeChange]);
+            formHandlerPanel.SetForm(form);
         }
         private void VolumeStepByStep()
         {
-            if (timer1.Enabled) timer1.Stop();
             RemoveInvisibleSelection();
-            if (dataGridView1.SelectedRows.Count == 0)
+            BPM_Changer form = new BPM_Changer(_ =>
             {
-                ShowMode.Error(language.LanguageContent[Language.oneRowRequired]);
-                if (!timer1.Enabled) timer1.Start();
-                return;
-            }
-            BPM_Changer form = new BPM_Changer();
-            form.label2.Dispose();
-            form.comboBox1.Dispose();
-            form.MinimumSize = new Size(form.Size.Width, form.Size.Height - 50);
-            form.Size = new Size(form.Size.Width, form.Size.Height - 50);
-            form.label1.Text = language.LanguageContent[Language.lastVolume];
-            form.label1.Location = new Point(133 - form.label1.Size.Width, form.label1.Location.Y);
-            form.label1.AutoSize = true;
-            form.label1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            form.Text = language.LanguageContent[Language.volumeChanger];
-            form.checkBox1.Dispose();
-            form.ShowDialog();
-            if (BPM_Changer.value == 0)
-            {
-                if (!timer1.Enabled) timer1.Start();
-                return;
-            }
-            else if ((BPM_Changer.value % 1) != 0)
-            {
-                ShowMode.Error(language.LanguageContent[Language.notFloatValue]);
-                if (!timer1.Enabled) timer1.Start();
-                return;
-            }
-            else
-            {
-                AddBackup();
-                List<int> offsets = new List<int>();
-                for (int i = 0; i < dataGridView1.SelectedRows.Count; i++)
+                if (dataGridView1.SelectedRows.Count == 0)
                 {
-                    string currentLine = dataGridView1.SelectedRows[i].Cells[0].Value.ToString();
-                    offsets.Add(Convert.ToInt32(currentLine.Substring(0, currentLine.IndexOf(' '))));
+                    ShowMode.Error(language.LanguageContent[Language.oneRowRequired]);
+                    if (!timer1.Enabled) timer1.Start();
+                    return;
                 }
-                offsets = offsets.Distinct().ToList();
-                offsets.Sort();
-                string currentString = dataGridView1.SelectedRows[dataGridView1.SelectedRows.Count - 1].Cells[3].Value.ToString();
-                double firstValue = Convert.ToDouble(currentString.Substring(0, currentString.IndexOf('%')));
-                double lastValue = BPM_Changer.value;
-                double multiplier = (lastValue - firstValue) / (Convert.ToDouble(offsets.Count - 1));
-                double value = firstValue;
-                for (int i = 0; i < offsets.Count; i++)
+                if (BPM_Changer.value == 0)
                 {
-                    int data = offsets[i];
-                    value = Convert.ToInt32(firstValue + (multiplier * i));
-                    if (value > 100)
-                        value = 100;
-                    else if (value < 5)
-                        value = 5;
-                    for (int j = timingPointsIndex + 1; !string.IsNullOrWhiteSpace(lines[j]); j++)
+                    if (!timer1.Enabled) timer1.Start();
+                    return;
+                }
+                else if ((BPM_Changer.value % 1) != 0)
+                {
+                    ShowMode.Error(language.LanguageContent[Language.notFloatValue]);
+                    if (!timer1.Enabled) timer1.Start();
+                    return;
+                }
+                else
+                {
+                    string[] lines = File.ReadAllLines(path);
+                    AddBackup();
+                    List<int> offsets = new List<int>();
+                    for (int i = 0; i < dataGridView1.SelectedRows.Count; i++)
                     {
-                        int time = Convert.ToInt32(lines[j].Substring(0, lines[j].IndexOf(',')));
-                        if (data == time)
-                        {
-                            lines[j] = lines[j].Remove(lines[j].IndexOfWithCount(',', 5), lines[j].IndexOfWithCount(',', 6) - lines[j].IndexOfWithCount(',', 5) - 1);
-                            lines[j] = lines[j].Insert(lines[j].IndexOfWithCount(',', 5), ((int)value).ToString());
-                        }
-                        else if (time > data)
-                            break;
+                        string currentLine = dataGridView1.SelectedRows[i].Cells[0].Value.ToString();
+                        offsets.Add(Convert.ToInt32(currentLine.Substring(0, currentLine.IndexOf(' '))));
                     }
+                    offsets = offsets.Distinct().ToList();
+                    offsets.Sort();
+                    string currentString = dataGridView1.SelectedRows[dataGridView1.SelectedRows.Count - 1].Cells[3].Value.ToString();
+                    double firstValue = Convert.ToDouble(currentString.Substring(0, currentString.IndexOf('%')));
+                    double lastValue = BPM_Changer.value;
+                    double multiplier = (lastValue - firstValue) / (Convert.ToDouble(offsets.Count - 1));
+                    double value = firstValue;
+                    for (int i = 0; i < offsets.Count; i++)
+                    {
+                        int data = offsets[i];
+                        value = Convert.ToInt32(firstValue + (multiplier * i));
+                        if (value > 100)
+                            value = 100;
+                        else if (value < 5)
+                            value = 5;
+                        for (int j = timingPointsIndex + 1; !string.IsNullOrWhiteSpace(lines[j]); j++)
+                        {
+                            int time = Convert.ToInt32(lines[j].Substring(0, lines[j].IndexOf(',')));
+                            if (data == time)
+                            {
+                                lines[j] = lines[j].Remove(lines[j].IndexOfWithCount(',', 5), lines[j].IndexOfWithCount(',', 6) - lines[j].IndexOfWithCount(',', 5) - 1);
+                                lines[j] = lines[j].Insert(lines[j].IndexOfWithCount(',', 5), ((int)value).ToString());
+                            }
+                            else if (time > data)
+                                break;
+                        }
+                    }
+                    File.WriteAllLines(path, lines);
+                    ShowMode.Information(language.LanguageContent[Language.processComplete]);
+                    manageLoad();
                 }
-                File.WriteAllLines(path, lines);
-                ShowMode.Information(language.LanguageContent[Language.processComplete]);
-                manageLoad();
-            }
-            if (!timer1.Enabled) timer1.Start();
+            });
+
+            form.AdjustFormForSingleInput(language.LanguageContent[Language.lastVolume]);
+            formHandlerPanel.SetForm(form);
         }
-        private void SVadder(bool calledInner)
+
+        private void SmoothSvChanger()
         {
-            if (timer1.Enabled) timer1.Stop();
-            SV_Changer obj = new SV_Changer();
-            obj.ShowDialog();
-            if (obj.Status == DialogResult.Yes)
+            SV_Changer svChanger = new SV_Changer(form =>
             {
                 AddBackup();
                 this.lines = File.ReadAllLines(path);
@@ -2667,7 +2536,7 @@ namespace Manage_Beatmap
                 List<int> redPointOffsets = new List<int>();
                 SortedDictionary<int, int> greenPoints = new SortedDictionary<int, int>();
                 List<int> greenPointOffsets = new List<int>();
-                double currentBPMvalue = 0, currentBPMvalueTemp = 0, snapTime, SVchange, firstSV, firstBPMvalue = 1, variableOffset = obj.FirstTimeInMilliSeconds;
+                double currentBPMvalue = 0, currentBPMvalueTemp = 0, snapTime, SVchange, firstSV, firstBPMvalue = 1, variableOffset = form.FirstTimeInMilliSeconds;
                 string currentLine;
                 int timingPointsIndex = -1;
                 for (int i = 0; i < lines.Count; i++)
@@ -2680,9 +2549,9 @@ namespace Manage_Beatmap
                 int resolution = 48,
                     counter = 0,
                     kTemp = 0,
-                    gridValue = (int)(obj.FirstGridValue * resolution / obj.LastGridValue),
-                    svOffset = obj.SvOffset;
-                firstSV = obj.FirstSV;
+                    gridValue = (int)(form.FirstGridValue * resolution / form.LastGridValue),
+                    svOffset = form.SvOffset;
+                firstSV = form.FirstSV;
                 string pointType;
                 for (int i = timingPointsIndex; !lines[i].Contains("["); i++)
                 {
@@ -2708,7 +2577,7 @@ namespace Manage_Beatmap
                 {
                     for (int j = redPointOffsets.Count - 1; j >= 0; j--)
                     {
-                        if (obj.FirstTimeInMilliSeconds >= redPointOffsets[j])
+                        if (form.FirstTimeInMilliSeconds >= redPointOffsets[j])
                         {
                             currentBPMvalue = currentBPMs[j];
                             currentBPMvalueTemp = currentBPMvalue;
@@ -2729,12 +2598,12 @@ namespace Manage_Beatmap
                     currentBPMvalueTemp = currentBPMvalue;
                     firstBPMvalue = currentBPMvalue;
                 }
-                if (obj.TargetBPM != 0)
-                    firstBPMvalue = 60000 / obj.TargetBPM;
-                if (!obj.isNoteMode)
+                if (form.TargetBPM != 0)
+                    firstBPMvalue = 60000 / form.TargetBPM;
+                if (!form.isNoteMode)
                 {
-                    SVchange = (obj.LastSV - obj.FirstSV) / obj.Count;
-                    for (int i = timingPointsIndex; !lines[i].Contains("[") && counter < obj.Count; i++)
+                    SVchange = (form.LastSV - form.FirstSV) / form.Count;
+                    for (int i = timingPointsIndex; !lines[i].Contains("[") && counter < form.Count; i++)
                     {
                         currentLine = lines[i];
                         if (!string.IsNullOrWhiteSpace(currentLine))
@@ -2773,13 +2642,13 @@ namespace Manage_Beatmap
                 else
                 {
                     List<int> noteOffsets = new List<int>();
-                    double currentTime = obj.FirstTimeInMilliSeconds, 
-                        tempSV, 
-                        lastSV = obj.LastSV;
+                    double currentTime = form.FirstTimeInMilliSeconds,
+                        tempSV,
+                        lastSV = form.LastSV;
                     int startTime,
                         endTime,
                         redPointOffset = -10000;
-                    if (obj.isBetweenTimeMode)
+                    if (form.isBetweenTimeMode)
                     {
                         for (int i = hitObjectsIndex; i < lines.Count; i++)
                         {
@@ -2789,7 +2658,7 @@ namespace Manage_Beatmap
                                 string offsetString = currentLine.Substring(currentLine.IndexOfWithCount(',', 2),
                                     currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
                                 int offset = int.Parse(offsetString);
-                                if (offset >= obj.FirstTimeInMilliSeconds)
+                                if (offset >= form.FirstTimeInMilliSeconds)
                                 {
                                     noteOffsets.Add(offset);
                                     for (int j = i + 1; j < lines.Count; j++)
@@ -2800,7 +2669,7 @@ namespace Manage_Beatmap
                                             offsetString = currentLine.Substring(currentLine.IndexOfWithCount(',', 2),
                                                 currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
                                             offset = int.Parse(offsetString);
-                                            if (offset <= obj.LastTimeInMilliSeconds)
+                                            if (offset <= form.LastTimeInMilliSeconds)
                                                 noteOffsets.Add(offset);
                                             else
                                                 break;
@@ -2821,10 +2690,10 @@ namespace Manage_Beatmap
                                 string offsetString = currentLine.Substring(currentLine.IndexOfWithCount(',', 2),
                                     currentLine.IndexOfWithCount(',', 3) - currentLine.IndexOfWithCount(',', 2) - 1);
                                 int offset = int.Parse(offsetString);
-                                if (offset >= obj.FirstTimeInMilliSeconds)
+                                if (offset >= form.FirstTimeInMilliSeconds)
                                 {
                                     int listCounter = 0;
-                                    for (int j = i; listCounter < obj.Count && j < lines.Count; j++)
+                                    for (int j = i; listCounter < form.Count && j < lines.Count; j++)
                                     {
                                         if (!string.IsNullOrWhiteSpace(lines[j]))
                                         {
@@ -2869,18 +2738,17 @@ namespace Manage_Beatmap
                             break;
                         }
                     }
-                    if (obj.TargetBPM != 0)
-                        firstBPMvalue = obj.TargetBPM;
+                    if (form.TargetBPM != 0)
+                        firstBPMvalue = form.TargetBPM;
                     else
                         firstBPMvalue = currentBPMvalue;
                     double currentBPM;
-                    int existingSvIndexInLines, closestSvIndex, targetFileSvIndex;
+                    int existingSvIndexInLines;
                     double svOffsetTemp;
                     bool noteIsOnRedPoint;
                     bool noteIsOnGreenPoint;
                     bool isShiftingAsked = false;
                     bool isShiftingPoints = false;
-                    bool addedAnyGreenPoints = false;
                     if (redPointOffset != -10000 || noteOffsets.Count != 0)
                     {
                         for (; currentTime <= endTime && listIndex < noteOffsets.Count;)
@@ -2957,7 +2825,7 @@ namespace Manage_Beatmap
                 this.lines = lines.ToArray();
                 File.WriteAllLines(path, this.lines);
                 ShowMode.Information(language.LanguageContent[Language.SVchangesAdded]);
-                if (!obj.isNoteMode)
+                if (!form.isNoteMode)
                 {
                     if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.mayNotBeSnapped]) == DialogResult.Yes)
                     {
@@ -2967,10 +2835,8 @@ namespace Manage_Beatmap
                     }
                 }
                 manageLoad();
-            }
-            if (obj.checkBox3.Checked)
-                SVadder(true);
-            else if (!timer1.Enabled) timer1.Start();
+            });
+            formHandlerPanel.SetForm(svChanger);
         }
 
         private double GetOffsetOfLine(string line)
@@ -3085,7 +2951,6 @@ namespace Manage_Beatmap
         {
             string line;
             string[] splitted;
-            int existingSvIndex = -1;
             int previousIndex = -1;
             double pointTime;
             for (int i = timingPointIndex; i < fileLines.Count; i++)
@@ -3119,27 +2984,26 @@ namespace Manage_Beatmap
             return previousIndex;
         }
 
-        private void EqualizeSV()
+        private void SVequalizer()
         {
-            if (timer1.Enabled) timer1.Stop();
-            SV_Equalizer obj = new SV_Equalizer();
-            obj.ShowDialog();
-            if (obj.IsValueSet)
+            formHandlerPanel.SetForm(new SV_Equalizer(obj =>
             {
-                if (obj.editType == 0)
+                if (obj.IsValueSet)
                 {
-                    AddBackup();
-                    addSVs(obj.Bpm_value);
+                    if (obj.editType == 0)
+                    {
+                        AddBackup();
+                        addSVs(obj.Bpm_value);
+                    }
+                    else if (obj.editType == 1)
+                    {
+                        AddBackup();
+                        editSVs(obj.Bpm_value, obj.SV_value);
+                    }
+                    else
+                        ShowMode.Error(language.LanguageContent[Language.noFunctionSelected]);
                 }
-                else if (obj.editType == 1)
-                {
-                    AddBackup();
-                    editSVs(obj.Bpm_value, obj.SV_value);
-                }
-                else
-                    ShowMode.Error(language.LanguageContent[Language.noFunctionSelected]);
-            }
-            if (!timer1.Enabled) timer1.Start();
+            }));
         }
         private void DeleteAllInheritedPoints()
         {
@@ -3228,15 +3092,14 @@ namespace Manage_Beatmap
         }
         private void MetadataManager()
         {
-            if (timer1.Enabled) timer1.Stop();
-            Metadata_manager obj = new Metadata_manager(path, lines);
-            obj.ShowDialog();
-            if (obj.isSuccess)
+            formHandlerPanel.SetForm(new Metadata_manager(path, lines, metadataManager =>
             {
-                SelectFile();
-                manageLoad();
-            }
-            if (!timer1.Enabled) timer1.Start();
+                if (metadataManager.isSuccess)
+                {
+                    SelectFile();
+                    manageLoad();
+                }
+            }));
         }
         #endregion
         #region Form control functions
@@ -3283,9 +3146,6 @@ namespace Manage_Beatmap
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             dataGridView1.Focus();
-        }
-        private void applyFunctionButton_Click(object sender, EventArgs e) // Apply Function
-        {
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
@@ -3313,10 +3173,10 @@ namespace Manage_Beatmap
                     ChangeOffset();
                     break;*/
                 case 4:
-                    SVadder(false);
+                    SmoothSvChanger();
                     break;
                 case 5:
-                    EqualizeSV();
+                    SVequalizer();
                     break;
                 case 6:
                     SVchanger();
@@ -3349,6 +3209,10 @@ namespace Manage_Beatmap
                     ShowMode.Error(language.LanguageContent[Language.noFunctionSelected]);
                     break;
             }
+        }
+        private void applyFunctionButton_Click(object sender, EventArgs e) // Apply Function
+        {
+            
         }
         private void optionsButton_Click(object sender, EventArgs e) // Options
         {

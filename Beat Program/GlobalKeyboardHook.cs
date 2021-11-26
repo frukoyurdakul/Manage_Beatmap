@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     class GlobalKeyboardHookEventArgs : HandledEventArgs
     {

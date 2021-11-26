@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FindIndex;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     public static class Extensions
     {
@@ -85,6 +86,18 @@ namespace Manage_Beatmap
                 else
                     throw new ArgumentException("BinarySearch returned index: " + targetIndex + ", count: " + list.Count);
             }
+        }
+
+        public static void AdjustFormForSingleInput(this BPM_Changer form, string text)
+        {
+            form.label1.Text = text;
+            form.Size = new Size(form.Width, 115);
+            form.label2.Dispose();
+            form.label1.Location = new Point(form.label1.Location.X, form.label1.Location.Y + 12);
+            form.textBox1.Location = new Point(form.textBox1.Location.X, form.textBox1.Location.Y + 12);
+
+            form.comboBox1.Dispose();
+            form.checkBox1.Dispose();
         }
     }
 }

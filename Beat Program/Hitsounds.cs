@@ -11,7 +11,7 @@ using System.Drawing;
 using System.ComponentModel;
 using System.Diagnostics;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     public partial class Hitsounds : Form
     {
@@ -36,11 +36,11 @@ namespace Manage_Beatmap
         }
         private void ChangeControlTexts()
         {
-            Text = Manage_Beatmap.language.LanguageContent[Language.HitsoundsFormTitle];
-            label1.Text = Manage_Beatmap.language.LanguageContent[Language.hitsoundsModeLabel];
-            button2.Text = Manage_Beatmap.language.LanguageContent[Language.clearHitsoundsButton];
-            label2.Text = Manage_Beatmap.language.LanguageContent[Language.hitsoundsExplanationLabel];
-            button1.Text = Manage_Beatmap.language.LanguageContent[Language.saveHitsoundsButton];
+            Text = MainForm.language.LanguageContent[Language.HitsoundsFormTitle];
+            label1.Text = MainForm.language.LanguageContent[Language.hitsoundsModeLabel];
+            button2.Text = MainForm.language.LanguageContent[Language.clearHitsoundsButton];
+            label2.Text = MainForm.language.LanguageContent[Language.hitsoundsExplanationLabel];
+            button1.Text = MainForm.language.LanguageContent[Language.saveHitsoundsButton];
         }
         private void ChangeLabelPositions()
         {
@@ -58,7 +58,7 @@ namespace Manage_Beatmap
                 {
                     if (!isShown)
                     {
-                        ShowMode.Warning(Manage_Beatmap.language.LanguageContent[Language.onlyWavAllowed]);
+                        ShowMode.Warning(MainForm.language.LanguageContent[Language.onlyWavAllowed]);
                         isShown = true;
                     }
                     paths.Remove(paths[i--]);
@@ -92,7 +92,7 @@ namespace Manage_Beatmap
 
             //button specifications
             button.Size = new Size(80, 28);
-            button.Text = Manage_Beatmap.language.LanguageContent[Language.delete];
+            button.Text = MainForm.language.LanguageContent[Language.delete];
             button.Visible = true;
             button.BackColor = SystemColors.ControlLightLight;
             button.FlatStyle = FlatStyle.Flat;
@@ -116,7 +116,7 @@ namespace Manage_Beatmap
                 currentButtonCount--;
             }
             else
-                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.buttonNotFound]);
+                ShowMode.Error(MainForm.language.LanguageContent[Language.buttonNotFound]);
         }
         private void SaveHitSounds(string path)
         {
@@ -293,11 +293,11 @@ namespace Manage_Beatmap
                     hitSoundCounts[box1SelectedIndex, box2SelectedIndex]++;
                 }
             }
-            ShowMode.Information(Manage_Beatmap.language.LanguageContent[Language.hitsoundsSaved]);
+            ShowMode.Information(MainForm.language.LanguageContent[Language.hitsoundsSaved]);
             if(notes.Count > 0)
             {
                 File.WriteAllLines(path + "\\notes.txt", notes.ToArray());
-                if (ShowMode.QuestionWithYesNo(Manage_Beatmap.language.LanguageContent[Language.notesSaved]) == DialogResult.Yes)
+                if (ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.notesSaved]) == DialogResult.Yes)
                     Process.Start(path + "\\notes.txt");
             }
             for (int i = 0; i < 4; i++) for (int j = 0; j < 3; j++) hitSoundCounts[j, i] = 1;
@@ -309,19 +309,19 @@ namespace Manage_Beatmap
         {
             if (panel2.Controls.Count < 5)
             {
-                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.noHitsounds]);
+                ShowMode.Error(MainForm.language.LanguageContent[Language.noHitsounds]);
                 return;
             }
-            if (ShowMode.QuestionWithYesNo(Manage_Beatmap.language.LanguageContent[Language.areYouSureToSaveHitsounds]) == DialogResult.Yes)
+            if (ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.areYouSureToSaveHitsounds]) == DialogResult.Yes)
             {
                 if(beatmapPath != string.Empty)
                 {
-                    DialogResult res = ShowMode.QuestionWithYesNoCancel(Manage_Beatmap.language.LanguageContent[Language.saveSongFolder]);
+                    DialogResult res = ShowMode.QuestionWithYesNoCancel(MainForm.language.LanguageContent[Language.saveSongFolder]);
                     if (res == DialogResult.Yes)
                         SaveHitSounds(beatmapPath);
                     else if (res == DialogResult.No)
                     {
-                        ShowMode.Information(Manage_Beatmap.language.LanguageContent[Language.selectTheFolder]);
+                        ShowMode.Information(MainForm.language.LanguageContent[Language.selectTheFolder]);
                         FolderBrowserDialog dialog = new FolderBrowserDialog();
                         if (dialog.ShowDialog() == DialogResult.OK)
                             SaveHitSounds(dialog.SelectedPath);
@@ -329,7 +329,7 @@ namespace Manage_Beatmap
                 }
                 else
                 {
-                    ShowMode.Information(Manage_Beatmap.language.LanguageContent[Language.selectTheFolder]);
+                    ShowMode.Information(MainForm.language.LanguageContent[Language.selectTheFolder]);
                     FolderBrowserDialog dialog = new FolderBrowserDialog();
                     if (dialog.ShowDialog() == DialogResult.OK)
                         SaveHitSounds(dialog.SelectedPath);
@@ -338,7 +338,7 @@ namespace Manage_Beatmap
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            if (ShowMode.QuestionWithYesNo(Manage_Beatmap.language.LanguageContent[Language.areYouSure]) == DialogResult.Yes)
+            if (ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.areYouSure]) == DialogResult.Yes)
             {
                 for (int i = 0; i < buttons.Count; i++) buttons[i].RemovePlayer();
                 buttons.Clear();

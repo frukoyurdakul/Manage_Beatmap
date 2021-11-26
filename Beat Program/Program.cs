@@ -5,7 +5,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Globalization;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     static class Program
     {
@@ -17,7 +17,7 @@ namespace Manage_Beatmap
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Manage_Beatmap());
+            Application.Run(new MainForm());
         }
 
         public static string GetDecimalSeparator()

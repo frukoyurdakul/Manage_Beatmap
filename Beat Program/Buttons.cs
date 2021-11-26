@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using WMPLib;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     class Buttons
     {
@@ -28,19 +28,19 @@ namespace Manage_Beatmap
             //label
 
             label.AutoSize = true;
-            label.Text = count.ToString() + ". " + Manage_Beatmap.language.LanguageContent[Language.hitsoundLabel];
+            label.Text = count.ToString() + ". " + MainForm.language.LanguageContent[Language.hitsoundLabel];
             label.Visible = true;
 
             //label2
 
             label2.AutoSize = true;
-            label2.Text = Manage_Beatmap.language.LanguageContent[Language.hitsoundTypeLabel];
+            label2.Text = MainForm.language.LanguageContent[Language.hitsoundTypeLabel];
             label2.Visible = true;
 
             //label3
 
             label3.AutoSize = true;
-            label3.Text = Manage_Beatmap.language.LanguageContent[Language.hitsoundSampleLabel];
+            label3.Text = MainForm.language.LanguageContent[Language.hitsoundSampleLabel];
             label3.Visible = true;
 
             //comboBox
@@ -86,20 +86,20 @@ namespace Manage_Beatmap
         private void Wmp_PlayStateChange(int NewState)
         {
             if (wmp.playState == WMPPlayState.wmppsPlaying)
-                button.Text = Manage_Beatmap.language.LanguageContent[Language.stopHitsoundButton];
+                button.Text = MainForm.language.LanguageContent[Language.stopHitsoundButton];
             else if (wmp.playState == WMPPlayState.wmppsStopped)
-                button.Text = Manage_Beatmap.language.LanguageContent[Language.playHitsoundButton];
+                button.Text = MainForm.language.LanguageContent[Language.playHitsoundButton];
         }
         void button_Click(object sender, EventArgs e)
         {
             if (wmp.playState == WMPPlayState.wmppsPlaying)
             {
-                button.Text = Manage_Beatmap.language.LanguageContent[Language.playHitsoundButton];
+                button.Text = MainForm.language.LanguageContent[Language.playHitsoundButton];
                 wmp.controls.stop();
             }
             else if (wmp.playState == WMPPlayState.wmppsStopped)
             {
-                button.Text = Manage_Beatmap.language.LanguageContent[Language.stopHitsoundButton];
+                button.Text = MainForm.language.LanguageContent[Language.stopHitsoundButton];
                 wmp.controls.play();
             }
         }

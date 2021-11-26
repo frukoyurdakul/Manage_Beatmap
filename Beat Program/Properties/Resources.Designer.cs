@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Manage_Beatmap.Properties {
+namespace BeatmapManager.Properties {
     using System;
     
     

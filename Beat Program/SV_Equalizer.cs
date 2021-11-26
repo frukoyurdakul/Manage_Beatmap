@@ -5,15 +5,15 @@ using System.Threading;
 using System.Globalization;
 using System.Drawing;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
-    public partial class SV_Equalizer : Form
+    public partial class SV_Equalizer : ActionableForm<SV_Equalizer>
     {
         public double Bpm_value { get; set; } = -1;
         public double SV_value { get; set; } = 1;
         public bool IsValueSet { get; set; } = false;
         public int editType { get; set; } = -1;
-        public SV_Equalizer()
+        public SV_Equalizer(Action<SV_Equalizer> action) : base(action)
         {
             InitializeComponent();
             ChangeControlTexts();
@@ -22,13 +22,13 @@ namespace Manage_Beatmap
 
         private void ChangeControlTexts()
         {
-            Text = Manage_Beatmap.language.LanguageContent[Language.SVequalizerFormTitle];
-            label1.Text = Manage_Beatmap.language.LanguageContent[Language.enterBPMlabel];
-            label2.Text = Manage_Beatmap.language.LanguageContent[Language.enterSVlabel];
-            label3.Text = Manage_Beatmap.language.LanguageContent[Language.typeLabel];
-            comboBox1.Items[0] = Manage_Beatmap.language.LanguageContent[Language.addComboBox];
-            comboBox1.Items[1] = Manage_Beatmap.language.LanguageContent[Language.editComboBox];
-            button1.Text = Manage_Beatmap.language.LanguageContent[Language.applyButton];
+            Text = MainForm.language.LanguageContent[Language.SVequalizerFormTitle];
+            label1.Text = MainForm.language.LanguageContent[Language.enterBPMlabel];
+            label2.Text = MainForm.language.LanguageContent[Language.enterSVlabel];
+            label3.Text = MainForm.language.LanguageContent[Language.typeLabel];
+            comboBox1.Items[0] = MainForm.language.LanguageContent[Language.addComboBox];
+            comboBox1.Items[1] = MainForm.language.LanguageContent[Language.editComboBox];
+            button1.Text = MainForm.language.LanguageContent[Language.applyButton];
         }
         private void ChangeLabelPositions()
         {
@@ -41,56 +41,56 @@ namespace Manage_Beatmap
             decimal d = 0;
             decimal f = 0;
             if (!Decimal.TryParse(textBox1.Text, out d) && comboBox1.SelectedIndex == -1)
-                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.BPMwrong]);
+                ShowMode.Error(MainForm.language.LanguageContent[Language.BPMwrong]);
             else
             {
                 if (textBox2.Text != "1" && textBox2.Text != "Default is 1.00x")
                 {
                     if (!decimal.TryParse(textBox2.Text, out f))
-                        ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.SVvalueFormat]);
+                        ShowMode.Error(MainForm.language.LanguageContent[Language.SVvalueFormat]);
                     else if (comboBox1.SelectedIndex == 0)
                     {
-                        if (ShowMode.QuestionWithYesNo(Manage_Beatmap.language.LanguageContent[Language.removeAllSVchanges]) == DialogResult.Yes)
+                        if (ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.removeAllSVchanges]) == DialogResult.Yes)
                         {
                             Bpm_value = (double)d;
                             if (f != 0) SV_value = (double)f;
                             IsValueSet = true;
                             editType = comboBox1.SelectedIndex;
-                            this.Close();
+                            InvokeAction();
                         }
                     }
                     else
                     {
-                        if ((ShowMode.QuestionWithYesNo(Manage_Beatmap.language.LanguageContent[Language.selectSVwithBPM]) == DialogResult.Yes))
+                        if ((ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.selectSVwithBPM]) == DialogResult.Yes))
                         {
                             Bpm_value = (double)d;
                             if (f != 0) SV_value = (double)f;
                             IsValueSet = true;
                             editType = comboBox1.SelectedIndex;
-                            this.Close();
+                            InvokeAction();
                         }
                     }
                 }
                 else if (comboBox1.SelectedIndex == 0)
                 {
-                    if (ShowMode.QuestionWithYesNo(Manage_Beatmap.language.LanguageContent[Language.removeAllSVchanges]) == DialogResult.Yes)
+                    if (ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.removeAllSVchanges]) == DialogResult.Yes)
                     {
                         Bpm_value = (double)d;
                         SV_value = 1;
                         IsValueSet = true;
                         editType = comboBox1.SelectedIndex;
-                        this.Close();
+                        InvokeAction();
                     }
                 }
                 else
                 {
-                    if ((ShowMode.QuestionWithYesNo(Manage_Beatmap.language.LanguageContent[Language.selectSVwithBPM]) == DialogResult.Yes))
+                    if ((ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.selectSVwithBPM]) == DialogResult.Yes))
                     {
                         Bpm_value = (double)d;
                         SV_value = 1;
                         IsValueSet = true;
                         editType = comboBox1.SelectedIndex;
-                        this.Close();
+                        InvokeAction();
                     }
                 }
             }

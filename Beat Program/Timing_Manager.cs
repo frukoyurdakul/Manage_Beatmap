@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Manage_Beatmap
+namespace BeatmapManager
 {
     public partial class Timing_Manager : Form
     {
@@ -24,10 +24,10 @@ namespace Manage_Beatmap
         }
         private void ChangeControlTexts()
         {
-            Text = Manage_Beatmap.language.LanguageContent[Language.timingManagerFormTitle];
-            label1.Text = Manage_Beatmap.language.LanguageContent[Language.timingContent];
-            label2.Text = Manage_Beatmap.language.LanguageContent[Language.changeType];
-            timingTextBox.Text = Manage_Beatmap.language.LanguageContent[Language.pasteTimingHere];
+            Text = MainForm.language.LanguageContent[Language.timingManagerFormTitle];
+            label1.Text = MainForm.language.LanguageContent[Language.timingContent];
+            label2.Text = MainForm.language.LanguageContent[Language.changeType];
+            timingTextBox.Text = MainForm.language.LanguageContent[Language.pasteTimingHere];
         }
 
         private void ChangeLabelPositions()
@@ -37,7 +37,7 @@ namespace Manage_Beatmap
 
         private void timingTextBox_Enter(object sender, EventArgs e)
         {
-            if (timingTextBox.Text == Manage_Beatmap.language.LanguageContent[Language.pasteTimingHere])
+            if (timingTextBox.Text == MainForm.language.LanguageContent[Language.pasteTimingHere])
                 timingTextBox.Text = string.Empty;
         }
 
@@ -57,7 +57,7 @@ namespace Manage_Beatmap
                     {
                         if (!((currentLine[j] >= '0' && currentLine[j] <= '9') || currentLine[j] == '.' || currentLine[j] == ',' || currentLine[j] == '\n' || currentLine[j] == '-'))
                         {
-                            ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.timingFormatWrong] + (j + 1).ToString());
+                            ShowMode.Error(MainForm.language.LanguageContent[Language.timingFormatWrong] + (j + 1).ToString());
                             timingTextBox.Focus();
                             if (!string.IsNullOrEmpty(timingTextBox.Text))
                                 timingTextBox.Select(getSelectionLine(timingContent, j), timingTextBox.Lines[j].Length);
@@ -78,7 +78,7 @@ namespace Manage_Beatmap
                             string currentLine = timingContent[i];
                             if (currentLine.Substring(currentLine.IndexOfWithCount(',', 6), 1) == "0")
                             {
-                                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.onlyTimingPoints] + (i + 1).ToString());
+                                ShowMode.Error(MainForm.language.LanguageContent[Language.onlyTimingPoints] + (i + 1).ToString());
                                 timingTextBox.Focus();
                                 if (!string.IsNullOrEmpty(timingTextBox.Text))
                                     timingTextBox.Select(getSelectionLine(timingContent, i), timingTextBox.Lines[i].Length);
@@ -88,7 +88,7 @@ namespace Manage_Beatmap
                         }
                         if (isAllTimingPoints)
                         {
-                            if (ShowMode.QuestionWithYesNo(Manage_Beatmap.language.LanguageContent[Language.areYouSure]) == DialogResult.Yes)
+                            if (ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.areYouSure]) == DialogResult.Yes)
                             {
                                 this.timingContent = timingContent;
                                 isValid = true;
@@ -97,11 +97,11 @@ namespace Manage_Beatmap
                         }
                     }
                     else
-                        ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.noFunctionSelected]);
+                        ShowMode.Error(MainForm.language.LanguageContent[Language.noFunctionSelected]);
                 }
             }
             else
-                ShowMode.Error(Manage_Beatmap.language.LanguageContent[Language.noInputDetected]);
+                ShowMode.Error(MainForm.language.LanguageContent[Language.noInputDetected]);
         }
 
         private int getSelectionLine(List<string> timingContent, int lineIndex)

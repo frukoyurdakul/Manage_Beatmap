@@ -7,13 +7,13 @@ using System.Drawing;
 
 namespace BeatmapManager
 {
-    public partial class SV_Equalizer : Form
+    public partial class SV_Equalizer : ActionableForm<SV_Equalizer>
     {
         public double Bpm_value { get; set; } = -1;
         public double SV_value { get; set; } = 1;
         public bool IsValueSet { get; set; } = false;
         public int editType { get; set; } = -1;
-        public SV_Equalizer()
+        public SV_Equalizer(Action<SV_Equalizer> action) : base(action)
         {
             InitializeComponent();
             ChangeControlTexts();
@@ -56,7 +56,7 @@ namespace BeatmapManager
                             if (f != 0) SV_value = (double)f;
                             IsValueSet = true;
                             editType = comboBox1.SelectedIndex;
-                            this.Close();
+                            InvokeAction();
                         }
                     }
                     else
@@ -67,7 +67,7 @@ namespace BeatmapManager
                             if (f != 0) SV_value = (double)f;
                             IsValueSet = true;
                             editType = comboBox1.SelectedIndex;
-                            this.Close();
+                            InvokeAction();
                         }
                     }
                 }
@@ -79,7 +79,7 @@ namespace BeatmapManager
                         SV_value = 1;
                         IsValueSet = true;
                         editType = comboBox1.SelectedIndex;
-                        this.Close();
+                        InvokeAction();
                     }
                 }
                 else
@@ -90,7 +90,7 @@ namespace BeatmapManager
                         SV_value = 1;
                         IsValueSet = true;
                         editType = comboBox1.SelectedIndex;
-                        this.Close();
+                        InvokeAction();
                     }
                 }
             }

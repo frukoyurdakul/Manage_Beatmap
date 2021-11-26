@@ -14,12 +14,12 @@ using System.Windows.Forms;
 
 namespace BeatmapManager
 {
-    public partial class Metadata_manager : Form
+    public partial class Metadata_manager : ActionableForm<Metadata_manager>
     {
         public bool isSuccess { get; internal set; } = false;
         string path;
         List<string> lines = new List<string>();
-        public Metadata_manager(string path, string[] lines)
+        public Metadata_manager(string path, string[] lines, Action<Metadata_manager> action) : base(action)
         {
             this.lines = lines.ToList();
             this.path = path;
@@ -239,7 +239,7 @@ namespace BeatmapManager
                             ShowMode.Error(MainForm.language.LanguageContent[Language.metadatatagmissing] + " " +
                                 MainForm.language.LanguageContent[Language.currentFile] + paths[i]);
                     }
-                    Thread.Sleep(500);
+                    Thread.Sleep(150);
                     if (mapper.Count == paths.Length && version.Count == paths.Length)
                     {
                         for (int i = 0; i < paths.Length; i++)
@@ -259,7 +259,7 @@ namespace BeatmapManager
                             }
                         ShowMode.Information(MainForm.language.LanguageContent[Language.processComplete]);
                         isSuccess = true;
-                        Close();
+                        InvokeAction();
                     }
                 }
                 else

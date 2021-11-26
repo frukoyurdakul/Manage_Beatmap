@@ -33,8 +33,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.applyFunctionButton = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.button23 = new System.Windows.Forms.Button();
             this.button22 = new System.Windows.Forms.Button();
             this.button21 = new System.Windows.Forms.Button();
@@ -45,6 +43,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.comboBox1 = new System.Windows.Forms.ListBox();
             this.formHandlerPanel = new BeatmapManager.FormHandlerPanel();
             this.dataGridView1 = new BeatmapManager.DoubleBufferedGridView();
             this.tableLayoutPanel1.SuspendLayout();
@@ -55,42 +54,6 @@
             // 
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // applyFunctionButton
-            // 
-            resources.ApplyResources(this.applyFunctionButton, "applyFunctionButton");
-            this.applyFunctionButton.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.applyFunctionButton.Name = "applyFunctionButton";
-            this.applyFunctionButton.UseVisualStyleBackColor = false;
-            this.applyFunctionButton.Click += new System.EventHandler(this.applyFunctionButton_Click);
-            // 
-            // comboBox1
-            // 
-            resources.ApplyResources(this.comboBox1, "comboBox1");
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            resources.GetString("comboBox1.Items"),
-            resources.GetString("comboBox1.Items1"),
-            resources.GetString("comboBox1.Items2"),
-            resources.GetString("comboBox1.Items3"),
-            resources.GetString("comboBox1.Items4"),
-            resources.GetString("comboBox1.Items5"),
-            resources.GetString("comboBox1.Items6"),
-            resources.GetString("comboBox1.Items7"),
-            resources.GetString("comboBox1.Items8"),
-            resources.GetString("comboBox1.Items9"),
-            resources.GetString("comboBox1.Items10"),
-            resources.GetString("comboBox1.Items11"),
-            resources.GetString("comboBox1.Items12"),
-            resources.GetString("comboBox1.Items13"),
-            resources.GetString("comboBox1.Items14"),
-            resources.GetString("comboBox1.Items15"),
-            resources.GetString("comboBox1.Items16"),
-            resources.GetString("comboBox1.Items17"),
-            resources.GetString("comboBox1.Items18")});
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // button23
             // 
@@ -158,6 +121,13 @@
             this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             // 
+            // comboBox1
+            // 
+            resources.ApplyResources(this.comboBox1, "comboBox1");
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
             // formHandlerPanel
             // 
             resources.ApplyResources(this.formHandlerPanel, "formHandlerPanel");
@@ -199,9 +169,8 @@
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.Controls.Add(this.tableLayoutPanel1);
-            this.Controls.Add(this.applyFunctionButton);
             this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.button23);
             this.Controls.Add(this.button22);
             this.Controls.Add(this.button21);
@@ -227,8 +196,6 @@
 
         #endregion
         public System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Button applyFunctionButton;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button button23;
         private System.Windows.Forms.Button button22;
         private System.Windows.Forms.Button button21;
@@ -241,5 +208,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private FormHandlerPanel formHandlerPanel;
         private DoubleBufferedGridView dataGridView1;
+        private System.Windows.Forms.ListBox comboBox1;
     }
 }

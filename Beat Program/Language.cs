@@ -318,7 +318,7 @@ namespace BeatmapManager
             LanguageContent[62] = "Warning: Before starting this process, remove all the SV changes. Are you sure you want to continue?";
             LanguageContent[63] = "Select SVs with the BPM values above (at least one BPM), so the program will calculate correctly. Are you sure you want to continue?";
             LanguageContent[64] = "SV value format is wrong. Example: 1 or 1,05 (localized decimal separator works.)";
-            LanguageContent[65] = "If you want to increase or decrease step by step from bottom to top, select the related rows from bottom to top.It will take the first selected value as the base value and calculates the related values automatically based on your input at the other window. \"Always select as rows, otherwise you'll get an error (except hitsounds and add smooth SV change button).\" Normally the program detects Ctrl + S while osu! is open with editor mode, but it should be checked. Last update: ";
+            LanguageContent[65] = "If you want to increase or decrease step by step from bottom to top, select the related rows from bottom to top. It will take the first selected value as the base value and calculates the related values automatically based on your input at the other window. \"Always select as rows, otherwise you'll get an error (except hitsounds and add smooth SV change button).\" Normally the program detects Ctrl + S while osu! is open with editor mode, but it should be checked. Last update: ";
             LanguageContent[66] = "The key combinations are in Options.";
             LanguageContent[67] = "Select File";
             LanguageContent[68] = "Add hitsounds to the folder";

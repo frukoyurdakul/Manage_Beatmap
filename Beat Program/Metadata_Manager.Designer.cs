@@ -193,7 +193,7 @@
             this.button.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.button.Location = new System.Drawing.Point(12, 295);
+            this.button.Location = new System.Drawing.Point(12, 249);
             this.button.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button.Name = "button";
             this.button.Size = new System.Drawing.Size(344, 38);
@@ -207,7 +207,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(368, 346);
+            this.ClientSize = new System.Drawing.Size(368, 300);
             this.Controls.Add(this.button);
             this.Controls.Add(this.tagsTextBox);
             this.Controls.Add(this.label7);

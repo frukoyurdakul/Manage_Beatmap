@@ -55,7 +55,8 @@ namespace BeatmapManager
         {
             if (string.IsNullOrWhiteSpace(textBox1.Text))
             {
-                value = 0;
+                ShowMode.Error(MainForm.language.LanguageContent[Language.oneOrMoreValuesEmpty]);
+                return;
             }
             else if (textBox1.Text.Any(char.IsLetter))
             {

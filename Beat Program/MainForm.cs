@@ -32,6 +32,7 @@ namespace BeatmapManager
         int timingPointsIndex = -1;
         int offsetChange = 0;
         int nextTimingPointOffset = 0;
+        int buttonsEnabledState = 0;
         bool isDefined = false;
         bool isHaveNotes = false;
         bool isActivated = false;
@@ -236,6 +237,10 @@ namespace BeatmapManager
         }
         private void disableButtons()
         {
+            if (buttonsEnabledState == 1)
+                return;
+
+            buttonsEnabledState = 1;
             comboBox1.Items.Clear();
             comboBox1.Items.AddRange(notActiveComboBoxItems.ToArray());
             button19.Enabled = false;
@@ -245,6 +250,10 @@ namespace BeatmapManager
         }
         private void enableButtons()
         {
+            if (buttonsEnabledState == 2)
+                return;
+
+            buttonsEnabledState = 2;
             comboBox1.Items.Clear();
             comboBox1.Items.AddRange(activeComboBoxItems.ToArray());
             button19.Enabled = true;
@@ -358,7 +367,6 @@ namespace BeatmapManager
             button17.Text = language.LanguageContent[Language.undo];
             button18.Text = language.LanguageContent[Language.redo];
             button19.Text = language.LanguageContent[Language.save];
-            applyFunctionButton.Text = language.LanguageContent[Language.applyFunctionButton];
         }
         private void RemoveInvisibleSelection()
         {
@@ -3138,9 +3146,6 @@ namespace BeatmapManager
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             dataGridView1.Focus();
-        }
-        private void applyFunctionButton_Click(object sender, EventArgs e) // Apply Function
-        {
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
@@ -3204,6 +3209,10 @@ namespace BeatmapManager
                     ShowMode.Error(language.LanguageContent[Language.noFunctionSelected]);
                     break;
             }
+        }
+        private void applyFunctionButton_Click(object sender, EventArgs e) // Apply Function
+        {
+            
         }
         private void optionsButton_Click(object sender, EventArgs e) // Options
         {

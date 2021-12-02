@@ -661,25 +661,14 @@
     <value>The exponential multiplier, which will
 adjust how the SVs are going to be placed.
 
-For example: Entering 0.5 here will cause
-the SVs to change with more 
-spike at the start of the section but will 
-cause them to increase less step by
-step as the section progresses.
-
 The value must be bigger than 0, can
 be decimal.
 
-It is advised to use values between 0 and 1
-when the SV is decreasing, and 1 or above
-when SV is increasing, to have the desired
-effect. The other way around works too,
-but could result to non-smooth changes
-due to how multiplier works.
-
-0 to 1 --&gt; logarithmic (spikes early),
+0 to 1 --&gt; logarithmic (spikes early on increase,
+spikes late on decrease),
 1 --&gt; linear
-Above 1 --&gt; exponential (spikes later)</value>
+Above 1 --&gt; exponential (spikes late on increase, 
+spikes early on decrease)</value>
   </data>
   <data name="&gt;&gt;expMulTextBox.Name" xml:space="preserve">
     <value>expMulTextBox</value>
@@ -715,25 +704,14 @@ Above 1 --&gt; exponential (spikes later)</value>
     <value>The exponential multiplier, which will
 adjust how the SVs are going to be placed.
 
-For example: Entering 0.5 here will cause
-the SVs to change with more 
-spike at the start of the section but will 
-cause them to increase less step by
-step as the section progresses.
-
 The value must be bigger than 0, can
 be decimal.
 
-It is advised to use values between 0 and 1
-when the SV is decreasing, and 1 or above
-when SV is increasing, to have the desired
-effect. The other way around works too,
-but could result to non-smooth changes
-due to how multiplier works.
-
-0 to 1 --&gt; logarithmic (spikes early),
+0 to 1 --&gt; logarithmic (spikes early on increase,
+spikes late on decrease),
 1 --&gt; linear
-Above 1 --&gt; exponential (spikes later)</value>
+Above 1 --&gt; exponential (spikes late on increase, 
+spikes early on decrease)</value>
   </data>
   <data name="&gt;&gt;label6.Name" xml:space="preserve">
     <value>label6</value>

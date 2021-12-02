@@ -2930,8 +2930,17 @@ namespace BeatmapManager
             double currentBPM, double targetBPM, double expMultiplier)
         {
             double ratio = currentDifference / totalDifference;
-            double exponent = Math.Pow(ratio, expMultiplier);
-            double sv = (firstSV + ((lastSV - firstSV) * exponent)) / (currentBPM / targetBPM);
+            double exponent, sv;
+            if (lastSV < firstSV)
+            {
+                exponent = Math.Pow(1d - ratio, expMultiplier);
+                sv = (lastSV + ((firstSV - lastSV) * exponent)) / (currentBPM / targetBPM);
+            }
+            else
+            {
+                exponent = Math.Pow(ratio, expMultiplier);
+                sv = (firstSV + ((lastSV - firstSV) * exponent)) / (currentBPM / targetBPM);
+            }
             return sv;
         }
 

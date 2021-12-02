@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SV_Changer));
             this.label4 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -46,6 +47,9 @@
             this.firstTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.expMulTextBox = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // label4
@@ -158,12 +162,33 @@
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
             // 
+            // expMulTextBox
+            // 
+            resources.ApplyResources(this.expMulTextBox, "expMulTextBox");
+            this.expMulTextBox.Name = "expMulTextBox";
+            this.toolTip1.SetToolTip(this.expMulTextBox, resources.GetString("expMulTextBox.ToolTip"));
+            this.expMulTextBox.Enter += new System.EventHandler(this.expMulTextBox_Enter);
+            // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.Name = "label6";
+            this.toolTip1.SetToolTip(this.label6, resources.GetString("label6.ToolTip"));
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.AutoPopDelay = 30000;
+            this.toolTip1.InitialDelay = 500;
+            this.toolTip1.ReshowDelay = 100;
+            // 
             // SV_Changer
             // 
             this.AcceptButton = this.button;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.expMulTextBox);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.svOffsetTextBox);
@@ -209,5 +234,8 @@
         private System.Windows.Forms.TextBox svOffsetTextBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox expMulTextBox;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label label6;
     }
 }

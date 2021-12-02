@@ -16,19 +16,20 @@ namespace BeatmapManager
             : ActionableForm  
         #endif
     {
-        public double FirstGridValue { get; set; }
-        public double LastGridValue { get; set; }
-        public double FirstSV { get; set; }
-        public double LastSV { get; set; }
-        public double TargetBPM { get; set; }
-        public int FirstTimeInMilliSeconds { get; set; }
-        public int LastTimeInMilliSeconds { get; set; }
-        public int Count { get; set; }
-        public int SvOffset { get; set; }
-        public DialogResult Status { get; set; }
-        public bool isNoteMode { get; set; }
-        public bool isBetweenTimeMode { get; set; }
-        private bool isTargetBpmEntered = false, isSvOffsetEntered = false, isMessageShown = false;
+        public double FirstGridValue { get; internal set; }
+        public double LastGridValue { get; internal set; }
+        public double FirstSV { get; internal set; }
+        public double LastSV { get; internal set; }
+        public double TargetBPM { get; internal set; }
+        public double ExpMultiplier { get; internal set; }
+        public int FirstTimeInMilliSeconds { get; internal set; }
+        public int LastTimeInMilliSeconds { get; internal set; }
+        public int Count { get; internal set; }
+        public int SvOffset { get; internal set; }
+        public DialogResult Status { get; internal set; }
+        public bool IsNoteMode { get; internal set; }
+        public bool IsBetweenTimeMode { get; internal set; }
+        private bool isTargetBpmEntered = false, isSvOffsetEntered = false, isExpMultiplierEntered = false, isMessageShown = false;
 
         public SV_Changer() : base()
         {
@@ -88,9 +89,9 @@ namespace BeatmapManager
                 if (Status == DialogResult.Yes || Status == DialogResult.No)
                 {
                     if (checkBox1.Checked)
-                        isNoteMode = true;
+                        IsNoteMode = true;
                     else
-                        isNoteMode = false;
+                        IsNoteMode = false;
                     MainForm.savedContent = new SV_Changer_Content
                              (
                                  checkBox2.Checked,
@@ -119,18 +120,14 @@ namespace BeatmapManager
                     }
                 }
             }
-            if (Regex.IsMatch(timeTextBox.Text, @"\d{2}[:]\d{2}[:]\d{3}") || Regex.IsMatch(timeTextBox.Text, @"[1-9]+[0-9]*[:]\d{2}[:]\d{2}[:]\d{3}"))
+            if (timeTextBox.IsValidOffsetInput())
             {
                 string decimalSeparator = Program.GetDecimalSeparator();
-                if (Regex.IsMatch(firstTextBox.Text, @"^[0-9]+$") ||
-                Regex.IsMatch(firstTextBox.Text, @"^[0-9]+[" + decimalSeparator + "][0-9]+$") ||
-                Regex.IsMatch(lastTextBox.Text, @"^[0-9]+$") ||
-                Regex.IsMatch(lastTextBox.Text, @"^[0-9]+[" + decimalSeparator + "][0-9]+$"))
+                if (firstTextBox.IsValidDecimalInput() && lastTextBox.IsValidDecimalInput())
                 {
                     if(checkBox2.Checked)
                     {
-                        if(!(Regex.IsMatch(countOrLastTimeTextBox.Text, @"\d{2}[:]\d{2}[:]\d{3}") || 
-                            Regex.IsMatch(countOrLastTimeTextBox.Text, @"[1-9]+[0-9]*[:]\d{2}[:]\d{2}[:]\d{3}")))
+                        if(!countOrLastTimeTextBox.IsValidOffsetInput())
                         {
                             ShowMode.Information(MainForm.language.LanguageContent[Language.timeExpressionDoesNotMatch]);
                             return false;
@@ -149,7 +146,7 @@ namespace BeatmapManager
                         ShowMode.Error(MainForm.language.LanguageContent[Language.selectGridSnap]);
                         return false;
                     }
-                    if (!Regex.IsMatch(bpmTextBox.Text, @"^[1-9]+[0-9]*$") && !Regex.IsMatch(bpmTextBox.Text, @"^[1-9]+[0-9]*[,][0-9]+$") && !string.IsNullOrWhiteSpace(bpmTextBox.Text) && bpmTextBox.Text != MainForm.language.LanguageContent[Language.optionalInitialIsFirst])
+                    if (!bpmTextBox.IsValidDecimalInput() && !string.IsNullOrWhiteSpace(bpmTextBox.Text) && bpmTextBox.Text != MainForm.language.LanguageContent[Language.optionalInitialIsFirst])
                     {
                         ShowMode.Error(MainForm.language.LanguageContent[Language.BPMwrong]);
                         return false;
@@ -161,7 +158,7 @@ namespace BeatmapManager
                         if (string.IsNullOrWhiteSpace(result) || result == MainForm.language.LanguageContent[Language.optionalDefaultIsMinusThree])
                             svOffsetLocal = -3;
                         else
-                            svOffsetLocal = Convert.ToInt32(svOffsetTextBox.Text.Trim());
+                            svOffsetLocal = Convert.ToInt32(result);
                     }
                     catch (FormatException)
                     {
@@ -172,6 +169,24 @@ namespace BeatmapManager
                     {
                         if (ShowMode.QuestionWithYesNo("The SV offset should be 0 or a negative value. Using a positive value will put the inherited points after the notes themselves. Are you sure you want to continue?") == DialogResult.No)
                             return false;
+                    }
+
+                    double expMultiplierLocal;
+                    if (expMulTextBox.Text == MainForm.language.LanguageContent[Language.optionalDefaultIsOne])
+                        expMultiplierLocal = 1;
+                    else if (!expMulTextBox.IsValidDecimalInput())
+                    {
+                        ShowMode.Error("The exponential value should be a decimal value.");
+                        return false;
+                    }
+                    else
+                    {
+                        expMultiplierLocal = Convert.ToDouble(expMulTextBox.Text);
+                    }
+                    if (expMultiplierLocal <= 0)
+                    {
+                        ShowMode.Error("The exponential multiplier should be bigger than 0.");
+                        return false;
                     }
                     if (timeTextBox.Text.SearchCharCount(':') == 2)
                     {
@@ -208,9 +223,9 @@ namespace BeatmapManager
                         ShowMode.Error(MainForm.language.LanguageContent[Language.lastTimeCannotBeSmaller]);
                         return false;
                     }
-                    isNoteMode = checkBox1.Checked;
-                    isBetweenTimeMode = checkBox2.Checked;
-                    if(!isNoteMode)
+                    IsNoteMode = checkBox1.Checked;
+                    IsBetweenTimeMode = checkBox2.Checked;
+                    if(!IsNoteMode)
                     {
                         FirstGridValue = Convert.ToDouble(comboBox.Items[comboBox.SelectedIndex].ToString().Substring(0, comboBox.Items[comboBox.SelectedIndex].ToString().IndexOf('/')));
                         LastGridValue = Convert.ToDouble(comboBox.Items[comboBox.SelectedIndex].ToString().Substring(comboBox.Items[comboBox.SelectedIndex].ToString().IndexOf('/') + 1));
@@ -224,6 +239,7 @@ namespace BeatmapManager
                     else
                         TargetBPM = 0;
                     SvOffset = svOffsetLocal;
+                    ExpMultiplier = expMultiplierLocal;
                 }
                 else
                 {
@@ -263,6 +279,15 @@ namespace BeatmapManager
             {
                 svOffsetTextBox.Text = string.Empty;
                 isSvOffsetEntered = true;
+            }
+        }
+
+        private void expMulTextBox_Enter(object sender, EventArgs e)
+        {
+            if (!isExpMultiplierEntered)
+            {
+                expMulTextBox.Text = string.Empty;
+                isExpMultiplierEntered = true;
             }
         }
 

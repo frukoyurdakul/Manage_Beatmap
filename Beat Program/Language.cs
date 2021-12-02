@@ -76,6 +76,7 @@ namespace BeatmapManager
         public const int BPMwrong = 54;
         public const int optionalInitialIsFirst = 55;
         public const int optionalDefaultIsMinusThree = 178;
+        public const int optionalDefaultIsOne = 180;
         public const int SVchangesWrong = 56;
         public const int timeExpressionDoesNotMatch = 57;
         public const int rememberSnappingNotes = 58;
@@ -215,10 +216,11 @@ namespace BeatmapManager
         public const int prepareMapToHitsoundingButton = 175;
         public const int noSliderMultiplierFound = 176;
         public const int svOffset = 177;
+        public const int exponentialSv = 179;
         #endregion
         #endregion
         #endregion
-        private const int size = 179;
+        private const int size = 181;
         public Language(string lang)
         {
             if (File.Exists("Languages\\" + lang + ".txt"))
@@ -432,6 +434,7 @@ namespace BeatmapManager
             LanguageContent[noSliderMultiplierFound] = "The property \"SliderMultiplier\" has not been found on the file. Process aborted.";
             LanguageContent[optionalDefaultIsMinusThree] = "optional, default is -3";
             LanguageContent[svOffset] = "SV Offset:";
+            LanguageContent[optionalDefaultIsOne] = "optional, default is 1";
             SelectedLanguage = "English";
             SaveToConfig(SelectedLanguage);
         }

@@ -2744,11 +2744,16 @@ namespace BeatmapManager
                         firstBPMvalue = currentBPMvalue;
                     double currentBPM;
                     int existingSvIndexInLines;
+                    int selectedIndex2;
                     double svOffsetTemp;
+                    double currentTimeRaw;
                     bool noteIsOnRedPoint;
                     bool noteIsOnGreenPoint;
                     bool isShiftingAsked = false;
                     bool isShiftingPoints = false;
+                    bool isKiaiActive = false;
+                    bool isKiaiActiveTemp = false;
+                    bool firstLoop = true;
                     if (redPointOffset != -10000 || noteOffsets.Count != 0)
                     {
                         for (; currentTime <= endTime && listIndex < noteOffsets.Count;)
@@ -2757,6 +2762,29 @@ namespace BeatmapManager
                             svOffsetTemp = noteIsOnRedPoint ? 0 : svOffset;
 
                             currentTime = noteOffsets[listIndex] + svOffsetTemp;
+                            currentTimeRaw = noteOffsets[listIndex];
+                            selectedIndex = GetClosestPointIndexInLines(lines, timingPointsIndex, currentTime);
+                            selectedIndex2 = GetClosestPointIndexInLines(lines, timingPointsIndex, currentTimeRaw);
+
+                            isKiaiActiveTemp = selectedIndex2 != -1 && lines[selectedIndex2].IsKiaiOpen();
+
+                            // If we're checking for the first time, find the second closest from the line's
+                            // offset and mark the kiai active value. Do not do this on other encounters.
+                            if (firstLoop && selectedIndex != -1)
+                            {
+                                isKiaiActive = lines[selectedIndex].IsKiaiOpen();
+                                firstLoop = false;
+                            }
+
+                            // Check if the point toggles kiai. If it does, do not apply offset.
+                            if (isKiaiActiveTemp != isKiaiActive)
+                            {
+                                svOffsetTemp = 0;
+                                currentTime = currentTimeRaw;
+                                selectedIndex = selectedIndex2;
+                            }
+
+                            isKiaiActive = isKiaiActiveTemp;
 
                             if (svOffsetTemp != 0)
                             {
@@ -2778,11 +2806,10 @@ namespace BeatmapManager
                                 }
                             }
 
-                            currentBPM = GetCurrentBPM(redPointOffsets, currentBPMs, currentTime);
-                            tempSV = GetSvForTextByDifference(firstSV, lastSV, currentTime - startTime - svOffsetTemp,
+                            currentBPM = GetCurrentBPM(redPointOffsets, currentBPMs, currentTimeRaw);
+                            tempSV = GetSvForTextByDifference(firstSV, lastSV, currentTimeRaw - startTime,
                                 totalDifference, currentBPM, firstBPMvalue);
                             existingSvIndexInLines = GetExistingSvIndexInLines(lines, timingPointsIndex, currentTime);
-                            selectedIndex = GetClosestPointIndexInLines(lines, timingPointsIndex, currentTime);
                             if (existingSvIndexInLines == -1 && isShiftingPoints)
                                 existingSvIndexInLines = GetExistingSvIndexInLines(lines, timingPointsIndex, noteOffsets[listIndex]);
 

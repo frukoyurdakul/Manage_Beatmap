@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using FindIndex;
 
 namespace BeatmapManager
@@ -84,6 +86,18 @@ namespace BeatmapManager
             }
             else
                 return "";
+        }
+
+        public static bool IsValidDecimalInput(this TextBox textBox)
+        {
+            string decimalSeparator = Program.GetDecimalSeparator();
+            return (Regex.IsMatch(textBox.Text, @"^[0-9]+$") ||
+                Regex.IsMatch(textBox.Text, @"^[0-9]+[" + decimalSeparator + "][0-9]+$"));
+        }
+
+        public static bool IsValidOffsetInput(this TextBox textBox)
+        {
+            return Regex.IsMatch(textBox.Text, @"\d{2}[:]\d{2}[:]\d{3}") || Regex.IsMatch(textBox.Text, @"[1-9]+[0-9]*[:]\d{2}[:]\d{2}[:]\d{3}");
         }
 
         public static T GetClosest<T>(this List<T> list, T item)

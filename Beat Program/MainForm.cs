@@ -2600,15 +2600,21 @@ namespace BeatmapManager
                 }
                 if (form.TargetBPM != 0)
                     firstBPMvalue = 60000 / form.TargetBPM;
-                if (!form.isNoteMode)
+                if (!form.IsNoteMode)
                 {
-                    SVchange = (form.LastSV - form.FirstSV) / form.Count;
-                    for (int i = timingPointsIndex; !lines[i].Contains("[") && counter < form.Count; i++)
+                    double count = form.Count;
+                    double expMultiplier = form.ExpMultiplier;
+                    SVchange = (form.LastSV - form.FirstSV) / count;
+                    for (int i = timingPointsIndex; !lines[i].Contains("[") && counter < count; i++)
                     {
                         currentLine = lines[i];
                         if (!string.IsNullOrWhiteSpace(currentLine))
                         {
-                            double tempSV = -100 * ((firstBPMvalue / currentBPMvalue) / (firstSV + (SVchange * (counter + 1))));
+                            double target = counter + 1;
+                            double percent = target / count;
+                            double exponent = Math.Pow(percent, expMultiplier);
+                            double result = target * exponent;
+                            double tempSV = -100 * ((firstBPMvalue / currentBPMvalue) / (firstSV + (SVchange * result)));
                             string temp = lines[i].Substring(lines[i].IndexOfWithCount(',', 2));
                             temp = temp.Remove(temp.IndexOfWithCount(',', 4), 1);
                             temp = temp.Insert(temp.IndexOfWithCount(',', 4), "0");
@@ -2648,7 +2654,7 @@ namespace BeatmapManager
                     int startTime,
                         endTime,
                         redPointOffset = -10000;
-                    if (form.isBetweenTimeMode)
+                    if (form.IsBetweenTimeMode)
                     {
                         for (int i = hitObjectsIndex; i < lines.Count; i++)
                         {
@@ -2742,6 +2748,8 @@ namespace BeatmapManager
                         firstBPMvalue = form.TargetBPM;
                     else
                         firstBPMvalue = currentBPMvalue;
+
+                    double expMultiplier = form.ExpMultiplier;
                     double currentBPM;
                     int existingSvIndexInLines;
                     int selectedIndex2;
@@ -2808,7 +2816,7 @@ namespace BeatmapManager
 
                             currentBPM = GetCurrentBPM(redPointOffsets, currentBPMs, currentTimeRaw);
                             tempSV = GetSvForTextByDifference(firstSV, lastSV, currentTimeRaw - startTime,
-                                totalDifference, currentBPM, firstBPMvalue);
+                                totalDifference, currentBPM, firstBPMvalue, expMultiplier);
                             existingSvIndexInLines = GetExistingSvIndexInLines(lines, timingPointsIndex, currentTime);
                             if (existingSvIndexInLines == -1 && isShiftingPoints)
                                 existingSvIndexInLines = GetExistingSvIndexInLines(lines, timingPointsIndex, noteOffsets[listIndex]);
@@ -2852,7 +2860,7 @@ namespace BeatmapManager
                 this.lines = lines.ToArray();
                 File.WriteAllLines(path, this.lines);
                 ShowMode.Information(language.LanguageContent[Language.SVchangesAdded]);
-                if (!form.isNoteMode)
+                if (!form.IsNoteMode)
                 {
                     if (ShowMode.QuestionWithYesNo(language.LanguageContent[Language.mayNotBeSnapped]) == DialogResult.Yes)
                     {
@@ -2911,18 +2919,19 @@ namespace BeatmapManager
 
         private double GetSvForTextByDifference(double firstSV, double lastSV, 
             double currentDifference, double totalDifference,
-            double currentBPM, double targetBPM)
+            double currentBPM, double targetBPM, double expMultiplier)
         {
             return -100 / GetSvValueByDifference(firstSV, lastSV, currentDifference, 
-                totalDifference, currentBPM, targetBPM);
+                totalDifference, currentBPM, targetBPM, expMultiplier);
         }
 
         private double GetSvValueByDifference(double firstSV, double lastSV,
             double currentDifference, double totalDifference,
-            double currentBPM, double targetBPM)
+            double currentBPM, double targetBPM, double expMultiplier)
         {
             double ratio = currentDifference / totalDifference;
-            double sv = (firstSV + ((lastSV - firstSV) * ratio)) / (currentBPM / targetBPM);
+            double exponent = Math.Pow(ratio, expMultiplier);
+            double sv = (firstSV + ((lastSV - firstSV) * exponent)) / (currentBPM / targetBPM);
             return sv;
         }
 

@@ -29,6 +29,12 @@ namespace BeatmapManager
             return input.GetBetween(',', 6, 7) == "0";
         }
 
+        public static bool IsKiaiOpen(this string input)
+        {
+            string searched = input.GetAfter(',', 7);
+            return (int.Parse(searched) & 1) == 1;
+        }
+
         public static double GetHitObjectOffset(this string input)
         {
             string result = input.GetBetween(',', 2, 3).ReplaceDecimalSeparator();
@@ -47,6 +53,16 @@ namespace BeatmapManager
             int endIndex = input.IndexOfWithCount(searched, endCount);
             if (startIndex >= 0 && endIndex >= 0 && startIndex < endIndex)
                 return input.Substring(startIndex, endIndex - startIndex - 1);
+            else
+                return "";
+        }
+
+        public static string GetAfter(this string input, char searched, int startCount)
+        {
+            int startIndex = input.IndexOfWithCount(searched, startCount);
+            int endIndex = input.Length;
+            if (startIndex >= 0 && endIndex >= 0 && startIndex < endIndex)
+                return input.Substring(startIndex, endIndex - startIndex);
             else
                 return "";
         }

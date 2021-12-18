@@ -9,15 +9,19 @@ namespace BeatmapManager
 {
     public partial class SV_Equalizer : ActionableForm<SV_Equalizer>
     {
-        public double Bpm_value { get; set; } = -1;
-        public double SV_value { get; set; } = 1;
-        public bool IsValueSet { get; set; } = false;
-        public int editType { get; set; } = -1;
+        private const string defaultText = "Default is 1.00x";
+
+        public double BpmValue { get; set; } = -1;
+        public double SvValue { get; internal set; } = 1;
+        public double StartOffset { get; internal set; } = 1;
+        public double EndOffset { get; internal set; } = 1;
+        public bool ApplyToWholeRange { get; internal set; }
+        public bool ApplyToAllTaikoDiffs { get; internal set; }
+   
         public SV_Equalizer(Action<SV_Equalizer> action) : base(action)
         {
             InitializeComponent();
             ChangeControlTexts();
-            ChangeLabelPositions();
         }
 
         private void ChangeControlTexts()
@@ -26,78 +30,97 @@ namespace BeatmapManager
             label1.Text = MainForm.language.LanguageContent[Language.enterBPMlabel];
             label2.Text = MainForm.language.LanguageContent[Language.enterSVlabel];
             label3.Text = MainForm.language.LanguageContent[Language.typeLabel];
-            comboBox1.Items[0] = MainForm.language.LanguageContent[Language.addComboBox];
-            comboBox1.Items[1] = MainForm.language.LanguageContent[Language.editComboBox];
             button1.Text = MainForm.language.LanguageContent[Language.applyButton];
         }
-        private void ChangeLabelPositions()
-        {
-            label1.Location = new Point(textBox1.Location.X - label1.Size.Width - 2, label1.Location.Y);
-            label2.Location = new Point(textBox2.Location.X - label2.Size.Width - 2, label2.Location.Y);
-            label3.Location = new Point(comboBox1.Location.X - label3.Size.Width - 2, label3.Location.Y);
-        }
+       
         private void button1_Click(object sender, EventArgs e)
         {
-            decimal d = 0;
-            decimal f = 0;
-            if (!Decimal.TryParse(textBox1.Text, out d) && comboBox1.SelectedIndex == -1)
-                ShowMode.Error(MainForm.language.LanguageContent[Language.BPMwrong]);
-            else
+            double bpmValue = 0;
+            double svValue = 0;
+            double startOffset = 0;
+            double endOffset = 0;
+
+            if (!bpmTextBox.IsValidDecimalInput())
             {
-                if (textBox2.Text != "1" && textBox2.Text != "Default is 1.00x")
-                {
-                    if (!decimal.TryParse(textBox2.Text, out f))
-                        ShowMode.Error(MainForm.language.LanguageContent[Language.SVvalueFormat]);
-                    else if (comboBox1.SelectedIndex == 0)
-                    {
-                        if (ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.removeAllSVchanges]) == DialogResult.Yes)
-                        {
-                            Bpm_value = (double)d;
-                            if (f != 0) SV_value = (double)f;
-                            IsValueSet = true;
-                            editType = comboBox1.SelectedIndex;
-                            InvokeAction();
-                        }
-                    }
-                    else
-                    {
-                        if ((ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.selectSVwithBPM]) == DialogResult.Yes))
-                        {
-                            Bpm_value = (double)d;
-                            if (f != 0) SV_value = (double)f;
-                            IsValueSet = true;
-                            editType = comboBox1.SelectedIndex;
-                            InvokeAction();
-                        }
-                    }
-                }
-                else if (comboBox1.SelectedIndex == 0)
-                {
-                    if (ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.removeAllSVchanges]) == DialogResult.Yes)
-                    {
-                        Bpm_value = (double)d;
-                        SV_value = 1;
-                        IsValueSet = true;
-                        editType = comboBox1.SelectedIndex;
-                        InvokeAction();
-                    }
-                }
+                ShowMode.Error("The BPM format is not correct. Example: \"120\" or \"135" + Program.GetDecimalSeparator() + "46\".");
+                return;
+            }
+            else
+                bpmValue = Convert.ToDouble(bpmTextBox.Text.Trim());
+
+            if (!svTextBox.IsValidDecimalInput())
+            {
+                if (svTextBox.Text == defaultText)
+                    svValue = 1;
                 else
                 {
-                    if ((ShowMode.QuestionWithYesNo(MainForm.language.LanguageContent[Language.selectSVwithBPM]) == DialogResult.Yes))
-                    {
-                        Bpm_value = (double)d;
-                        SV_value = 1;
-                        IsValueSet = true;
-                        editType = comboBox1.SelectedIndex;
-                        InvokeAction();
-                    }
+                    ShowMode.Error("The SV format is not correct. Example: \"1\" or \"1" + Program.GetDecimalSeparator() + "35\".");
+                    return;
                 }
+            }
+            else
+                svValue = Convert.ToDouble(svTextBox.Text.Trim());
+
+            if (!applyFullyCheckBox.Checked)
+            {
+                if (!startOffsetTextBox.IsValidOffsetInput())
+                {
+                    ShowMode.Error("The start offset is wrong. " + MainForm.language.LanguageContent[Language.timeExpressionDoesNotMatch]);
+                    return;
+                }
+                else
+                    startOffset = startOffsetTextBox.GetOffsetMillis();
+
+                if (!endOffsetTextBox.IsValidOffsetInput())
+                {
+                    ShowMode.Error("The end offset is wrong. " + MainForm.language.LanguageContent[Language.timeExpressionDoesNotMatch]);
+                    return;
+                }
+                else
+                    endOffset = endOffsetTextBox.GetOffsetMillis();
+            }
+            else
+            {
+                startOffset = 0;
+                endOffset = int.MaxValue;
+            }
+
+            string questionText = applyTaikoMapsCheckBox.Checked
+                ? "This operation will equalize the SV for the selected region, for all taiko difficulties in the mapset. Are you sure you want to continue?"
+                : "This operation will equalize the SV for the selected region. Are you sure you want to continue?";
+
+            // If we made it here, it means all values are correct.
+            // Ask the confirmation and continue if agreed.
+            if (ShowMode.QuestionWithYesNo(questionText) == DialogResult.Yes)
+            {
+                BpmValue = bpmValue;
+                SvValue = svValue;
+                StartOffset = startOffset;
+                EndOffset = endOffset;
+                ApplyToAllTaikoDiffs = applyTaikoMapsCheckBox.Checked;
+                ApplyToWholeRange = applyFullyCheckBox.Checked;
+                InvokeAction();
             }
         }
         private void textBox2_Enter(object sender, EventArgs e)
         {
-            textBox2.Text = "";
+            svTextBox.Text = "";
+        }
+
+        private void applyFullyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (applyFullyCheckBox.Checked)
+            {
+                startOffsetTextBox.Clear();
+                endOffsetTextBox.Clear();
+                startOffsetTextBox.Enabled = false;
+                endOffsetTextBox.Enabled = false;
+            }
+            else
+            {
+                startOffsetTextBox.Enabled = true;
+                endOffsetTextBox.Enabled = true;
+            }
         }
     }
 }

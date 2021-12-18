@@ -100,6 +100,30 @@ namespace BeatmapManager
             return Regex.IsMatch(textBox.Text, @"\d{2}[:]\d{2}[:]\d{3}") || Regex.IsMatch(textBox.Text, @"[1-9]+[0-9]*[:]\d{2}[:]\d{2}[:]\d{3}");
         }
 
+        public static double GetOffsetMillis(this TextBox textBox)
+        {
+            if (IsValidOffsetInput(textBox))
+            {
+                if (textBox.Text.SearchCharCount(':') == 2)
+                {
+                    string first = textBox.Text.Substring(0, 2);
+                    string second = textBox.Text.Substring(textBox.Text.IndexOfWithCount(':', 1), 2);
+                    string third = textBox.Text.Substring(textBox.Text.IndexOfWithCount(':', 2), 3);
+                    return Convert.ToInt32(first) * 60000 + Convert.ToInt32(second) * 1000 + Convert.ToInt32(third);
+                }
+                else
+                {
+                    string first = textBox.Text.Substring(0, textBox.Text.IndexOf(':'));
+                    string second = textBox.Text.Substring(textBox.Text.IndexOfWithCount(':', 1), 2);
+                    string third = textBox.Text.Substring(textBox.Text.IndexOfWithCount(':', 2), 2);
+                    string fourth = textBox.Text.Substring(textBox.Text.IndexOfWithCount(':', 3), 3);
+                    return Convert.ToInt32(first) * 3600000 + Convert.ToInt32(second) * 60000 + Convert.ToInt32(third) * 1000 + Convert.ToInt32(fourth);
+                }
+            }
+            else
+                throw new ArgumentException("Invalid offset format: " + textBox.Text);
+        }
+
         public static T GetClosest<T>(this List<T> list, T item)
         {
             if (list.Count == 0)

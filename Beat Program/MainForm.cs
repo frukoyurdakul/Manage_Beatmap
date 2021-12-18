@@ -3038,12 +3038,12 @@ namespace BeatmapManager
                     if (obj.editType == 0)
                     {
                         AddBackup();
-                        addSVs(obj.Bpm_value);
+                        addSVs(obj.BpmValue);
                     }
                     else if (obj.editType == 1)
                     {
                         AddBackup();
-                        editSVs(obj.Bpm_value, obj.SV_value);
+                        editSVs(obj.BpmValue, obj.SvValue);
                     }
                     else
                         ShowMode.Error(language.LanguageContent[Language.noFunctionSelected]);

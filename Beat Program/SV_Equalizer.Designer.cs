@@ -31,11 +31,15 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SV_Equalizer));
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.bpmTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.svTextBox = new System.Windows.Forms.TextBox();
+            this.startOffsetTextBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.endOffsetTextBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.applyFullyCheckBox = new System.Windows.Forms.CheckBox();
+            this.applyTaikoMapsCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -51,36 +55,54 @@
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // textBox1
+            // bpmTextBox
             // 
-            resources.ApplyResources(this.textBox1, "textBox1");
-            this.textBox1.Name = "textBox1";
+            resources.ApplyResources(this.bpmTextBox, "bpmTextBox");
+            this.bpmTextBox.Name = "bpmTextBox";
             // 
             // label2
             // 
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
             // 
-            // textBox2
+            // svTextBox
             // 
-            resources.ApplyResources(this.textBox2, "textBox2");
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Enter += new System.EventHandler(this.textBox2_Enter);
+            resources.ApplyResources(this.svTextBox, "svTextBox");
+            this.svTextBox.Name = "svTextBox";
+            this.svTextBox.Enter += new System.EventHandler(this.textBox2_Enter);
+            // 
+            // startOffsetTextBox
+            // 
+            resources.ApplyResources(this.startOffsetTextBox, "startOffsetTextBox");
+            this.startOffsetTextBox.Name = "startOffsetTextBox";
             // 
             // label3
             // 
             resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
             // 
-            // comboBox1
+            // endOffsetTextBox
             // 
-            resources.ApplyResources(this.comboBox1, "comboBox1");
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            resources.GetString("comboBox1.Items"),
-            resources.GetString("comboBox1.Items1")});
-            this.comboBox1.Name = "comboBox1";
+            resources.ApplyResources(this.endOffsetTextBox, "endOffsetTextBox");
+            this.endOffsetTextBox.Name = "endOffsetTextBox";
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
+            // 
+            // applyFullyCheckBox
+            // 
+            resources.ApplyResources(this.applyFullyCheckBox, "applyFullyCheckBox");
+            this.applyFullyCheckBox.Name = "applyFullyCheckBox";
+            this.applyFullyCheckBox.UseVisualStyleBackColor = true;
+            this.applyFullyCheckBox.CheckedChanged += new System.EventHandler(this.applyFullyCheckBox_CheckedChanged);
+            // 
+            // applyTaikoMapsCheckBox
+            // 
+            resources.ApplyResources(this.applyTaikoMapsCheckBox, "applyTaikoMapsCheckBox");
+            this.applyTaikoMapsCheckBox.Name = "applyTaikoMapsCheckBox";
+            this.applyTaikoMapsCheckBox.UseVisualStyleBackColor = true;
             // 
             // SV_Equalizer
             // 
@@ -88,11 +110,15 @@
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.applyTaikoMapsCheckBox);
+            this.Controls.Add(this.applyFullyCheckBox);
+            this.Controls.Add(this.endOffsetTextBox);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.startOffsetTextBox);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.svTextBox);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.bpmTextBox);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
@@ -107,10 +133,14 @@
 
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox bpmTextBox;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox svTextBox;
+        private System.Windows.Forms.TextBox startOffsetTextBox;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.TextBox endOffsetTextBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox applyFullyCheckBox;
+        private System.Windows.Forms.CheckBox applyTaikoMapsCheckBox;
     }
 }

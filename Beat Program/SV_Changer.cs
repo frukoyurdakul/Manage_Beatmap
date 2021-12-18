@@ -188,41 +188,16 @@ namespace BeatmapManager
                         ShowMode.Error("The exponential multiplier should be bigger than 0.");
                         return false;
                     }
-                    if (timeTextBox.Text.SearchCharCount(':') == 2)
-                    {
-                        string first = timeTextBox.Text.Substring(0, 2);
-                        string second = timeTextBox.Text.Substring(timeTextBox.Text.IndexOfWithCount(':', 1), 2);
-                        string third = timeTextBox.Text.Substring(timeTextBox.Text.IndexOfWithCount(':', 2), 3);
-                        FirstTimeInMilliSeconds = Convert.ToInt32(first) * 60000 + Convert.ToInt32(second) * 1000 + Convert.ToInt32(third);
-                        if(checkBox2.Checked)
-                        {
-                            first = countOrLastTimeTextBox.Text.Substring(0, 2);
-                            second = countOrLastTimeTextBox.Text.Substring(countOrLastTimeTextBox.Text.IndexOfWithCount(':', 1), 2);
-                            third = countOrLastTimeTextBox.Text.Substring(countOrLastTimeTextBox.Text.IndexOfWithCount(':', 2), 3);
-                            LastTimeInMilliSeconds = Convert.ToInt32(first) * 60000 + Convert.ToInt32(second) * 1000 + Convert.ToInt32(third);
-                        }
-                    }
-                    else
-                    {
-                        string first = timeTextBox.Text.Substring(0, timeTextBox.Text.IndexOf(':'));
-                        string second = timeTextBox.Text.Substring(timeTextBox.Text.IndexOfWithCount(':', 1), 2);
-                        string third = timeTextBox.Text.Substring(timeTextBox.Text.IndexOfWithCount(':', 2), 2);
-                        string fourth = timeTextBox.Text.Substring(timeTextBox.Text.IndexOfWithCount(':',3), 3);
-                        FirstTimeInMilliSeconds = Convert.ToInt32(first) * 3600000 + Convert.ToInt32(second) * 60000 + Convert.ToInt32(third) * 1000 + Convert.ToInt32(fourth);
-                        if(checkBox2.Checked)
-                        {
-                            first = countOrLastTimeTextBox.Text.Substring(0, timeTextBox.Text.IndexOf(':'));
-                            second = countOrLastTimeTextBox.Text.Substring(countOrLastTimeTextBox.Text.IndexOfWithCount(':', 1), 2);
-                            third = countOrLastTimeTextBox.Text.Substring(countOrLastTimeTextBox.Text.IndexOfWithCount(':', 2), 2);
-                            fourth = countOrLastTimeTextBox.Text.Substring(countOrLastTimeTextBox.Text.IndexOfWithCount(':', 3), 3);
-                            LastTimeInMilliSeconds = Convert.ToInt32(first) * 3600000 + Convert.ToInt32(second) * 60000 + Convert.ToInt32(third) * 1000 + Convert.ToInt32(fourth);
-                        }
-                    }
+
+                    FirstTimeInMilliSeconds = (int) timeTextBox.GetOffsetMillis();
+                    if (checkBox2.Checked)
+                        LastTimeInMilliSeconds = (int) countOrLastTimeTextBox.GetOffsetMillis();
                     if(checkBox2.Checked && LastTimeInMilliSeconds <= FirstTimeInMilliSeconds)
                     {
                         ShowMode.Error(MainForm.language.LanguageContent[Language.lastTimeCannotBeSmaller]);
                         return false;
                     }
+
                     IsNoteMode = checkBox1.Checked;
                     IsBetweenTimeMode = checkBox2.Checked;
                     if(!IsNoteMode)
@@ -249,7 +224,7 @@ namespace BeatmapManager
             }
             else
             {
-                ShowMode.Information(MainForm.language.LanguageContent[Language.timeExpressionDoesNotMatch]);
+                ShowMode.Error(MainForm.language.LanguageContent[Language.timeExpressionDoesNotMatch]);
                 return false;
             }
             if (checkBox1.Checked)

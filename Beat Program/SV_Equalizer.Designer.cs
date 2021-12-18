@@ -40,6 +40,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.applyFullyCheckBox = new System.Windows.Forms.CheckBox();
             this.applyTaikoMapsCheckBox = new System.Windows.Forms.CheckBox();
+            this.fromPointsCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -104,12 +105,20 @@
             this.applyTaikoMapsCheckBox.Name = "applyTaikoMapsCheckBox";
             this.applyTaikoMapsCheckBox.UseVisualStyleBackColor = true;
             // 
+            // fromPointsCheckBox
+            // 
+            resources.ApplyResources(this.fromPointsCheckBox, "fromPointsCheckBox");
+            this.fromPointsCheckBox.Name = "fromPointsCheckBox";
+            this.fromPointsCheckBox.UseVisualStyleBackColor = true;
+            this.fromPointsCheckBox.CheckedChanged += new System.EventHandler(this.fromPointsCheckBox_CheckedChanged);
+            // 
             // SV_Equalizer
             // 
             this.AcceptButton = this.button1;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Controls.Add(this.fromPointsCheckBox);
             this.Controls.Add(this.applyTaikoMapsCheckBox);
             this.Controls.Add(this.applyFullyCheckBox);
             this.Controls.Add(this.endOffsetTextBox);
@@ -142,5 +151,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox applyFullyCheckBox;
         private System.Windows.Forms.CheckBox applyTaikoMapsCheckBox;
+        private System.Windows.Forms.CheckBox fromPointsCheckBox;
     }
 }

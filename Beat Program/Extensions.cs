@@ -17,6 +17,16 @@ namespace BeatmapManager
             return input.Replace(Program.GetOriginalDecimalSeparator(), Program.GetDecimalSeparator());
         }
 
+        public static string ToOffsetString(this double input)
+        {
+            return TimeSpan.FromMilliseconds(input).ToString(@"mm':'ss':'fff");
+        }
+
+        public static string ToOffsetString(this int input)
+        {
+            return TimeSpan.FromMilliseconds(input).ToString(@"mm':'ss':'fff");
+        }
+
         public static int GetIntegerPart(this string input)
         {
             return int.Parse(new string(input.Where(char.IsDigit).ToArray()));
@@ -264,6 +274,88 @@ namespace BeatmapManager
                     return i + 1;
             }
             return -1;
+        }
+
+        public static double FindMaxPointOffset(this string[] input)
+        {
+            // Surely there can't be a map with -30000 ms timing point offset, right?
+            double offset = -30000;
+            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Length; i++)
+            {
+                offset = Math.Max(offset, input[i].GetPointOffset());
+            }
+            return offset;
+        }
+
+        public static double FindMaxPointOffset(this List<string> input)
+        {
+            // Surely there can't be a map with -30000 ms timing point offset, right?
+            double offset = -30000;
+            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Count; i++)
+            {
+                offset = Math.Max(offset, input[i].GetPointOffset());
+            }
+            return offset;
+        }
+
+        public static double FindMinPointOffset(this string[] input)
+        {
+            double offset = double.MaxValue;
+            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Length; i++)
+            {
+                offset = Math.Min(offset, input[i].GetPointOffset());
+            }
+            return offset;
+        }
+
+        public static double FindMinPointOffset(this List<string> input)
+        {
+            double offset = double.MaxValue;
+            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Count; i++)
+            {
+                offset = Math.Min(offset, input[i].GetPointOffset());
+            }
+            return offset;
+        }
+
+        public static double FindMaxHitObjectOffset(this string[] input)
+        {
+            double offset = 0;
+            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Length; i++)
+            {
+                offset = Math.Max(offset, input[i].GetHitObjectOffset());
+            }
+            return offset;
+        }
+
+        public static double FindMaxHitObjectOffset(this List<string> input)
+        {
+            double offset = 0;
+            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Count; i++)
+            {
+                offset = Math.Max(offset, input[i].GetHitObjectOffset());
+            }
+            return offset;
+        }
+
+        public static double FindMinHitObjectOffset(this string[] input)
+        {
+            double offset = double.MaxValue;
+            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Length; i++)
+            {
+                offset = Math.Min(offset, input[i].GetHitObjectOffset());
+            }
+            return offset;
+        }
+
+        public static double FindMinHitObjectOffset(this List<string> input)
+        {
+            double offset = double.MaxValue;
+            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Count; i++)
+            {
+                offset = Math.Min(offset, input[i].GetHitObjectOffset());
+            }
+            return offset;
         }
 
         public static bool IsTaikoDifficulty(this string[] input)

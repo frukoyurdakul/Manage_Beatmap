@@ -17,6 +17,7 @@ namespace BeatmapManager
         public double EndOffset { get; internal set; } = 1;
         public bool ApplyToWholeRange { get; internal set; }
         public bool ApplyToAllTaikoDiffs { get; internal set; }
+        public bool FindFromSelectedPoints { get; internal set; }
    
         public SV_Equalizer(Action<SV_Equalizer> action) : base(action)
         {
@@ -29,7 +30,6 @@ namespace BeatmapManager
             Text = MainForm.language.LanguageContent[Language.SVequalizerFormTitle];
             label1.Text = MainForm.language.LanguageContent[Language.enterBPMlabel];
             label2.Text = MainForm.language.LanguageContent[Language.enterSVlabel];
-            label3.Text = MainForm.language.LanguageContent[Language.typeLabel];
             button1.Text = MainForm.language.LanguageContent[Language.applyButton];
         }
        
@@ -61,7 +61,7 @@ namespace BeatmapManager
             else
                 svValue = Convert.ToDouble(svTextBox.Text.Trim());
             
-            if (!applyFullyCheckBox.Checked)
+            if (!applyFullyCheckBox.Checked && !fromPointsCheckBox.Checked)
             {
                 if (!startOffsetTextBox.IsValidOffsetInput())
                 {
@@ -99,6 +99,7 @@ namespace BeatmapManager
                 EndOffset = endOffset;
                 ApplyToAllTaikoDiffs = applyTaikoMapsCheckBox.Checked;
                 ApplyToWholeRange = applyFullyCheckBox.Checked;
+                FindFromSelectedPoints = fromPointsCheckBox.Checked;
                 InvokeAction();
             }
         }
@@ -113,6 +114,24 @@ namespace BeatmapManager
             {
                 startOffsetTextBox.Clear();
                 endOffsetTextBox.Clear();
+                fromPointsCheckBox.Checked = false;
+                startOffsetTextBox.Enabled = false;
+                endOffsetTextBox.Enabled = false;
+            }
+            else
+            {
+                startOffsetTextBox.Enabled = true;
+                endOffsetTextBox.Enabled = true;
+            }
+        }
+
+        private void fromPointsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (fromPointsCheckBox.Checked)
+            {
+                startOffsetTextBox.Clear();
+                endOffsetTextBox.Clear();
+                applyFullyCheckBox.Checked = false;
                 startOffsetTextBox.Enabled = false;
                 endOffsetTextBox.Enabled = false;
             }

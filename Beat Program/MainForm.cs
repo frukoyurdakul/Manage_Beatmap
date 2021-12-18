@@ -2992,6 +2992,32 @@ namespace BeatmapManager
             return existingSvIndex;
         }
 
+        private int GetClosestTimingPointIndexInLines(List<string> fileLines, int timingPointIndex, double currentTime)
+        {
+            string line;
+            string[] splitted;
+            int lastTimingPointIndex = -1;
+            double pointTime;
+            for (int i = timingPointIndex; i < fileLines.Count; i++)
+            {
+                line = fileLines[i].Trim();
+                if (line == "[TimingPoints]")
+                    continue;
+                else if (line.StartsWith("[") || string.IsNullOrEmpty(line))
+                    break;
+                else
+                {
+                    splitted = line.Split(',');
+                    pointTime = double.Parse(splitted[0]);
+                    if (pointTime <= currentTime && !line.IsPointInherited())
+                        lastTimingPointIndex = i;
+                    else if (pointTime > currentTime)
+                        return lastTimingPointIndex;
+                }
+            }
+            return lastTimingPointIndex;
+        }
+
         private int GetClosestPointIndexInLines(List<string> fileLines, int timingPointIndex, double currentTime)
         {
             string line;
@@ -3059,31 +3085,167 @@ namespace BeatmapManager
 
                         // If we reach here, it means the SVs should be equalized.
                         int count = taikoDiffs.Count;
+                        int changedFileCount = 0;
                         for (int i = 0; i < count; i++)
                         {
                             bool lastDiff = i == count - 1;
-                            EqualizeSvInDiff(taikoDiffs[i].FullName, lastDiff);
+                            if (!EqualizeSvInDiff(equalizerForm, taikoDiffs[i].FullName, lastDiff))
+                            {
+                                ShowMode.Error("Process aborted. " + changedFileCount + " file(s) have been changed.");
+                                manageLoad();
+                                return;
+                            }
+                            else
+                                changedFileCount++;
                         }
                     }
                     else
                     {
                         // Add a backup and equalize SV.
                         AddBackup();
-                        EqualizeSvInDiff(path, true);
+                        EqualizeSvInDiff(equalizerForm, path, true);
                     }
                 }
                 else
                 {
                     // Add a backup and equalize SV.
                     AddBackup();
-                    EqualizeSvInDiff(path, true);
+                    EqualizeSvInDiff(equalizerForm, path, true);
                 }
             }));
         }
 
-        private void EqualizeSvInDiff(string filePath, bool isLastDiff)
+        private bool EqualizeSvInDiff(SV_Equalizer equalizerForm, string filePath, bool isLastDiff)
         {
-            //TODO
+            List<string> lines = File.ReadAllLines(filePath).ToList();
+            int timingPointsIndex = lines.GetTimingPointsStartIndex();
+            if (timingPointsIndex == -1)
+            {
+                ShowMode.Error("Could not find any timing points in file: " + new FileInfo(filePath).Name + ".");
+                return false;
+            }
+
+            double bpm = equalizerForm.BpmValue;
+            double sv = equalizerForm.SvValue;
+
+            string currentPoint;
+            double startOffset, endOffset, currentOffset;
+            double currentBpm = 0;
+
+            if (equalizerForm.ApplyToWholeRange)
+            {
+                startOffset = lines.FindMinPointOffset();
+                endOffset = lines.FindMaxPointOffset();
+            }
+            else if (equalizerForm.FindFromSelectedPoints)
+            {
+                if (dataGridView1.SelectedCells.Count == 0)
+                {
+                    ShowMode.Error("No points selected.");
+                    return false;
+                }
+                else
+                {
+                    startOffset = int.MaxValue;
+                    endOffset = int.MinValue;
+                    for (int i = 0; i < dataGridView1.SelectedCells.Count; i++)
+                    {
+                        int rowIndex = dataGridView1.SelectedCells[i].RowIndex;
+                        string text = dataGridView1[0, rowIndex].Value.ToString();
+                        string offsetText = text.Substring(0, text.IndexOf(' '));
+                        double offset = double.Parse(offsetText);
+                        startOffset = Math.Min(startOffset, offset);
+                        endOffset = Math.Max(endOffset, offset);
+                    }
+
+                    if (endOffset < startOffset)
+                    {
+                        ShowMode.Error("End offset " + endOffset.ToOffsetString() + " is smaller than start offset " + startOffset.ToOffsetString() + ".");
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                startOffset = equalizerForm.StartOffset;
+                endOffset = equalizerForm.EndOffset;
+            }
+
+            for (int i = timingPointsIndex; !string.IsNullOrWhiteSpace(lines[i]) && i < lines.Count; i++)
+            {
+                currentPoint = lines[i];
+                currentOffset = currentPoint.GetPointOffset();
+                if (!currentPoint.IsPointInherited())
+                    currentBpm = 60000d / currentPoint.GetPointValue();
+
+                if (currentOffset < startOffset)
+                    continue;
+                else if (currentOffset > endOffset)
+                    break;
+
+                // If current BPM is 0 here again, find the closest
+                // timing point and get its BPM.
+                if (currentBpm == 0)
+                {
+                    int closestPointIndex = GetClosestTimingPointIndexInLines(lines, timingPointsIndex, currentOffset);
+
+                    // There has to be a timing point prior to the start offset. Otherwise it is meaningless to try to
+                    // equalize SVs.
+                    if (closestPointIndex == -1)
+                    {
+                        ShowMode.Error("Could not find any timing points prior to " + currentOffset.ToOffsetString() + ".");
+                        return false;
+                    }
+                }
+
+                // Find the BPM ratio so that we can multiply it.
+                double bpmRatio = currentBpm != 0 ? bpm / currentBpm : 0;
+
+                // Find the target SV.
+                double targetSv = sv * bpmRatio;
+
+                // Find the .osu equvialent of the SV value.
+                double targetSvFormatted = -100d / targetSv;
+
+                // Check if there is an inherited point in the same offset already.
+                int existingSvIndex = GetExistingSvIndexInLines(lines, timingPointsIndex, currentOffset);
+
+                // If there is, edit its value and replace it in the list.
+                if (existingSvIndex != -1)
+                {
+                    string newSv = lines[existingSvIndex].SetPointValue(targetSvFormatted);
+                    lines[existingSvIndex] = newSv; 
+                }
+                else
+                {
+                    // Check if the current SV is equal to the target SV. If it is, then
+                    // do not add a line.
+                    if (targetSv == 1)
+                        continue;
+
+                    // Otherwise, we need to add an inherited point based on the timing point values.
+                    // We can assume it is a timing point at this moment.
+                    string newSv = currentPoint.SetPointType(false)
+                        .SetPointValue(targetSvFormatted);
+
+                    // If we're at the last index, just add the line.
+                    if (i == lines.Count - 2)
+                        lines.Add(newSv);
+                    else
+                        lines.Insert(i + 1, newSv);
+                }
+            }
+
+            // Update the content.
+            File.WriteAllLines(filePath, lines);
+
+            // If last diff is processed, we need to show a popup and reload the manager.
+            if (isLastDiff)
+            {
+                ShowMode.Information(language.LanguageContent[Language.processComplete]);
+                manageLoad();
+            }
+            return true;
         }
 
         private void DeleteAllInheritedPoints()

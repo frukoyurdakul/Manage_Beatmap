@@ -112,9 +112,9 @@ namespace BeatmapManager
         {
             if (applyFullyCheckBox.Checked)
             {
-                startOffsetTextBox.Clear();
-                endOffsetTextBox.Clear();
                 fromPointsCheckBox.Checked = false;
+                startOffsetTextBox.Text = "Start of map";
+                endOffsetTextBox.Text = "End of map";
                 startOffsetTextBox.Enabled = false;
                 endOffsetTextBox.Enabled = false;
             }
@@ -122,6 +122,8 @@ namespace BeatmapManager
             {
                 startOffsetTextBox.Enabled = true;
                 endOffsetTextBox.Enabled = true;
+                startOffsetTextBox.Clear();
+                endOffsetTextBox.Clear();
             }
         }
 
@@ -129,9 +131,9 @@ namespace BeatmapManager
         {
             if (fromPointsCheckBox.Checked)
             {
-                startOffsetTextBox.Clear();
-                endOffsetTextBox.Clear();
                 applyFullyCheckBox.Checked = false;
+                startOffsetTextBox.Text = "Start of selection";
+                endOffsetTextBox.Text = "End of selection";
                 startOffsetTextBox.Enabled = false;
                 endOffsetTextBox.Enabled = false;
             }
@@ -139,6 +141,8 @@ namespace BeatmapManager
             {
                 startOffsetTextBox.Enabled = true;
                 endOffsetTextBox.Enabled = true;
+                startOffsetTextBox.Clear();
+                endOffsetTextBox.Clear();
             }
         }
     }

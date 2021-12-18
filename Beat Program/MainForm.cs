@@ -3031,25 +3031,61 @@ namespace BeatmapManager
 
         private void SVequalizer()
         {
-            formHandlerPanel.SetForm(new SV_Equalizer(obj =>
+            formHandlerPanel.SetForm(new SV_Equalizer(equalizerForm =>
             {
-                if (obj.IsValueSet)
+                if (equalizerForm.ApplyToAllTaikoDiffs)
                 {
-                    if (obj.editType == 0)
+                    DirectoryInfo folder = Directory.GetParent(path);
+                    List<FileInfo> taikoDiffs = folder.GetFiles().Where(info => File.ReadAllLines(info.FullName).IsTaikoDifficulty()).ToList();
+                    if (taikoDiffs.Count > 1)
                     {
-                        AddBackup();
-                        addSVs(obj.BpmValue);
-                    }
-                    else if (obj.editType == 1)
-                    {
-                        AddBackup();
-                        editSVs(obj.BpmValue, obj.SvValue);
+                        DialogResult result = ShowMode.QuestionWithYesNoCancel("The beatmapset contains multiple taiko diffs and backups inside Manage Beatmap tool cannot be created.\n\nDo you want to save the backups to the Desktop?");
+                        if (result == DialogResult.Cancel)
+                            return;
+                        else if (result == DialogResult.Yes)
+                        {
+                            // Save the current diffs to desktop here.
+                            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + folder.Name;
+
+                            // Check if the directory can be created.
+                            if (Directory.CreateDirectory(desktopPath).Exists)
+                            {
+                                foreach (FileInfo diff in taikoDiffs)
+                                {
+                                    File.Copy(diff.FullName, desktopPath + "\\" + diff.Name);
+                                }
+                            }
+                        }
+
+                        // If we reach here, it means the SVs should be equalized.
+                        int count = taikoDiffs.Count;
+                        for (int i = 0; i < count; i++)
+                        {
+                            bool lastDiff = i == count - 1;
+                            EqualizeSvInDiff(taikoDiffs[i].FullName, lastDiff);
+                        }
                     }
                     else
-                        ShowMode.Error(language.LanguageContent[Language.noFunctionSelected]);
+                    {
+                        // Add a backup and equalize SV.
+                        AddBackup();
+                        EqualizeSvInDiff(path, true);
+                    }
+                }
+                else
+                {
+                    // Add a backup and equalize SV.
+                    AddBackup();
+                    EqualizeSvInDiff(path, true);
                 }
             }));
         }
+
+        private void EqualizeSvInDiff(string filePath, bool isLastDiff)
+        {
+            //TODO
+        }
+
         private void DeleteAllInheritedPoints()
         {
             if (timer1.Enabled) timer1.Stop();

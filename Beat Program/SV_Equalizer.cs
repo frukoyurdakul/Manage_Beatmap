@@ -35,10 +35,10 @@ namespace BeatmapManager
        
         private void button1_Click(object sender, EventArgs e)
         {
-            double bpmValue = 0;
-            double svValue = 0;
-            double startOffset = 0;
-            double endOffset = 0;
+            double bpmValue;
+            double svValue;
+            double startOffset;
+            double endOffset;
 
             if (!bpmTextBox.IsValidDecimalInput())
             {
@@ -47,7 +47,7 @@ namespace BeatmapManager
             }
             else
                 bpmValue = Convert.ToDouble(bpmTextBox.Text.Trim());
-
+            
             if (!svTextBox.IsValidDecimalInput())
             {
                 if (svTextBox.Text == defaultText)
@@ -60,7 +60,7 @@ namespace BeatmapManager
             }
             else
                 svValue = Convert.ToDouble(svTextBox.Text.Trim());
-
+            
             if (!applyFullyCheckBox.Checked)
             {
                 if (!startOffsetTextBox.IsValidOffsetInput())
@@ -82,7 +82,7 @@ namespace BeatmapManager
             else
             {
                 startOffset = 0;
-                endOffset = int.MaxValue;
+                endOffset = 0;
             }
 
             string questionText = applyTaikoMapsCheckBox.Checked

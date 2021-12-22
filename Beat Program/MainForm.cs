@@ -2545,24 +2545,91 @@ namespace BeatmapManager
                     if (result == BeatmapMultiResult.CANCEL)
                         return;
                     else if (result == BeatmapMultiResult.SINGLE)
+                    {
                         ResnapObjects(members, path, true);
+                    }
                     else
                     {
                         // Can be multiple diffs only.
                         List<FileInfo> taikoDiffs = GetTaikoDiffs();
+                        int changedFileCount = 0;
                         for (int i = 0; i < taikoDiffs.Count; i++)
                         {
-                            ResnapObjects(members, taikoDiffs[i].FullName, i == taikoDiffs.Count - 1);
+                            if (!ResnapObjects(members, taikoDiffs[i].FullName, i == taikoDiffs.Count - 1))
+                            {
+                                ShowMode.Error("Process aborted. Changed diff count: " + changedFileCount);
+                                return;
+                            }
+                            else
+                                changedFileCount++;
                         }
                     }
                 }
+                else
+                    ResnapObjects(members, path, true);
             });
             formHandlerPanel.SetForm(resnapObjectsForm);
         }
 
-        private void ResnapObjects(ResnapObjectsForm.Members members, string path, bool lastDiff)
+        private bool ResnapObjects(ResnapObjectsForm.Members members, string path, bool lastDiff)
         {
-            throw new NotImplementedException();
+            List<string> lines = File.ReadAllLines(path).ToList();
+            int timingPointsIndex = lines.GetTimingPointsStartIndex();
+            int hitObjectsIndex = lines.GetHitObjectsStartIndex();
+
+            // Get the start and end offsets.
+            decimal hitObjectStart, hitObjectEnd;
+
+            if (members.IsWholeMap)
+            {
+                hitObjectStart = (decimal)lines.FindMinHitObjectOffset();
+                hitObjectEnd = (decimal)lines.FindMaxHitObjectOffset();
+            }
+            else
+            {
+                hitObjectStart = (decimal)members.StartOffset;
+                hitObjectEnd = (decimal)members.EndOffset;
+            }
+
+            decimal closestTimingPointOffset;
+            decimal currentOffset;
+            decimal currentBPM;
+            string currentLine;
+            string closestRedPoint;
+            for (int i = hitObjectsIndex; i < lines.Count && !string.IsNullOrEmpty(lines[i]); i++)
+            {
+                currentLine = lines[i];
+                currentOffset = (decimal)currentLine.GetHitObjectOffset();
+
+                if (currentOffset < hitObjectStart)
+                    continue;
+                else if (currentOffset > hitObjectEnd)
+                    break;
+
+                int closestRedPointIndex = GetClosestTimingPointIndexInLines(lines, timingPointsIndex, (double)currentOffset);
+                if (closestRedPointIndex == -1)
+                {
+                    ShowMode.Error("Failed to find associated timing point for hitobject at " + ((double)currentOffset).ToOffsetString() + ".");
+                    return false;
+                }
+
+                closestRedPoint = lines[closestRedPointIndex];
+                closestTimingPointOffset = (decimal)closestRedPoint.GetPointOffset();
+                currentBPM = (decimal)closestRedPoint.GetPointValue();
+
+                decimal diff = currentOffset - closestTimingPointOffset;
+                decimal closestResolution = GetClosestResolution(diff, currentBPM);
+                decimal result = currentBPM * closestResolution / resolution;
+                int newOffset = (int)(closestTimingPointOffset + result);
+                if ((int)currentOffset != newOffset)
+                {
+                    lines[i] = currentLine.SetHitObjectOffset(newOffset);
+                }
+            }
+
+            // First, start resnapping hitobjects where
+            // the start and end offset is defined.
+            return true;
         }
 
         private void SmoothSvChanger()

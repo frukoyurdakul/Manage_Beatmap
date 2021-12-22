@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Diagnostics;
+using Manage_Beatmap;
 
 namespace BeatmapManager
 {
@@ -49,6 +50,13 @@ namespace BeatmapManager
                 cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
                 return cp;
             }
+        }
+
+        private enum BeatmapMultiResult
+        {
+            SINGLE,
+            MULTI,
+            CANCEL
         }
 
         public MainForm()
@@ -336,6 +344,7 @@ namespace BeatmapManager
             activeComboBoxItems.Add(language.LanguageContent[Language.positionNotesButton]);
             // activeComboBoxItems[5] = language.LanguageContent[Language.newTimingButton];
             activeComboBoxItems.Add(language.LanguageContent[Language.changeBPMofSelectedPointButton]);
+            activeComboBoxItems.Add("Resnap objects (1/5, 1/7, 1/9 included)");
             // activeComboBoxItems[7] = language.LanguageContent[Language.changeOffsetsOfSelectedPointsButton];
             activeComboBoxItems.Add(language.LanguageContent[Language.addInheritedPointsToChangeSVsmoothlyButton]);
             activeComboBoxItems.Add(language.LanguageContent[Language.equalizeSVforAllTimingPointsButton]);
@@ -2525,6 +2534,37 @@ namespace BeatmapManager
             formHandlerPanel.SetForm(form);
         }
 
+        private void ResnapObjects()
+        {
+            ResnapObjectsForm resnapObjectsForm = new ResnapObjectsForm(form =>
+            {
+                ResnapObjectsForm.Members members = form.Values;
+                if (members.IsAllTaikoDiffs)
+                {
+                    BeatmapMultiResult result = ManageBackupMultiDiffs();
+                    if (result == BeatmapMultiResult.CANCEL)
+                        return;
+                    else if (result == BeatmapMultiResult.SINGLE)
+                        ResnapObjects(members, path, true);
+                    else
+                    {
+                        // Can be multiple diffs only.
+                        List<FileInfo> taikoDiffs = GetTaikoDiffs();
+                        for (int i = 0; i < taikoDiffs.Count; i++)
+                        {
+                            ResnapObjects(members, taikoDiffs[i].FullName, i == taikoDiffs.Count - 1);
+                        }
+                    }
+                }
+            });
+            formHandlerPanel.SetForm(resnapObjectsForm);
+        }
+
+        private void ResnapObjects(ResnapObjectsForm.Members members, string path, bool lastDiff)
+        {
+            throw new NotImplementedException();
+        }
+
         private void SmoothSvChanger()
         {
             SV_Changer svChanger = new SV_Changer(form =>
@@ -3055,35 +3095,62 @@ namespace BeatmapManager
             return previousIndex;
         }
 
+        private List<FileInfo> GetTaikoDiffs()
+        {
+            if (string.IsNullOrEmpty(path))
+                return new List<FileInfo>();
+
+            DirectoryInfo folder = Directory.GetParent(path);
+            List<FileInfo> taikoDiffs = folder.GetFiles().Where(info => File.ReadAllLines(info.FullName).IsTaikoDifficulty()).ToList();
+            return taikoDiffs;
+        }
+
+        private BeatmapMultiResult ManageBackupMultiDiffs()
+        {
+            DirectoryInfo folder = Directory.GetParent(path);
+            List<FileInfo> taikoDiffs = GetTaikoDiffs();
+            if (taikoDiffs.Count > 1)
+            {
+                DialogResult result = ShowMode.QuestionWithYesNoCancel("The beatmapset contains multiple taiko diffs and backups inside Manage Beatmap tool cannot be created.\n\nDo you want to save the backups to the Desktop?");
+                if (result == DialogResult.Cancel)
+                    return BeatmapMultiResult.CANCEL;
+                else if (result == DialogResult.Yes)
+                {
+                    // Save the current diffs to desktop here.
+                    string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + folder.Name;
+
+                    // Check if the directory can be created.
+                    if (Directory.CreateDirectory(desktopPath).Exists)
+                    {
+                        foreach (FileInfo diff in taikoDiffs)
+                        {
+                            File.Copy(diff.FullName, desktopPath + "\\" + diff.Name);
+                        }
+                    }
+                }
+                return BeatmapMultiResult.MULTI;
+            }
+            else
+                return BeatmapMultiResult.SINGLE;
+        }
+
         private void SVequalizer()
         {
             formHandlerPanel.SetForm(new SV_Equalizer(equalizerForm =>
             {
                 if (equalizerForm.ApplyToAllTaikoDiffs)
                 {
-                    DirectoryInfo folder = Directory.GetParent(path);
-                    List<FileInfo> taikoDiffs = folder.GetFiles().Where(info => File.ReadAllLines(info.FullName).IsTaikoDifficulty()).ToList();
-                    if (taikoDiffs.Count > 1)
+                    BeatmapMultiResult result = ManageBackupMultiDiffs();
+                    if (result == BeatmapMultiResult.SINGLE)
                     {
-                        DialogResult result = ShowMode.QuestionWithYesNoCancel("The beatmapset contains multiple taiko diffs and backups inside Manage Beatmap tool cannot be created.\n\nDo you want to save the backups to the Desktop?");
-                        if (result == DialogResult.Cancel)
-                            return;
-                        else if (result == DialogResult.Yes)
-                        {
-                            // Save the current diffs to desktop here.
-                            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + folder.Name;
-
-                            // Check if the directory can be created.
-                            if (Directory.CreateDirectory(desktopPath).Exists)
-                            {
-                                foreach (FileInfo diff in taikoDiffs)
-                                {
-                                    File.Copy(diff.FullName, desktopPath + "\\" + diff.Name);
-                                }
-                            }
-                        }
-
+                        // Add a backup and equalize SV.
+                        AddBackup();
+                        EqualizeSvInDiff(equalizerForm, path, true);
+                    }
+                    else if (result == BeatmapMultiResult.MULTI)
+                    {
                         // If we reach here, it means the SVs should be equalized.
+                        List<FileInfo> taikoDiffs = GetTaikoDiffs();
                         int count = taikoDiffs.Count;
                         int changedFileCount = 0;
                         for (int i = 0; i < count; i++)
@@ -3098,12 +3165,6 @@ namespace BeatmapManager
                             else
                                 changedFileCount++;
                         }
-                    }
-                    else
-                    {
-                        // Add a backup and equalize SV.
-                        AddBackup();
-                        EqualizeSvInDiff(equalizerForm, path, true);
                     }
                 }
                 else
@@ -3416,21 +3477,24 @@ namespace BeatmapManager
                     ChangeOffset();
                     break;*/
                 case 4:
-                    SmoothSvChanger();
+                    ResnapObjects();
                     break;
                 case 5:
-                    SVequalizer();
+                    SmoothSvChanger();
                     break;
                 case 6:
-                    SVchanger();
+                    SVequalizer();
                     break;
                 case 7:
-                    SVstepbystep();
+                    SVchanger();
                     break;
                 case 8:
-                    VolumeChanger();
+                    SVstepbystep();
                     break;
                 case 9:
+                    VolumeChanger();
+                    break;
+                case 10:
                     VolumeStepByStep();
                     break;
                 /*case 14:
@@ -3445,7 +3509,7 @@ namespace BeatmapManager
                 case 17:
                     DeleteUnneccessaryInheritedPoints();
                     break;*/
-                case 10:
+                case 11:
                     MetadataManager();
                     break;
                 default:

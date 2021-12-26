@@ -587,7 +587,7 @@ namespace BeatmapManager
             bool searching = true;
             while (searching)
             {
-                int comparisonResult = Decimal.Compare(thisValue, thisList.ElementAt(index));
+                int comparisonResult = decimal.Compare(thisValue, thisList.ElementAt(index));
                 if (comparisonResult == 0) { return thisList.ElementAt(index); }
                 else if (comparisonResult < 0) { upper = index - 1; }
                 else { lower = index + 1; }
@@ -1880,7 +1880,7 @@ namespace BeatmapManager
             dataGridView1.Focus();
         }
         #endregion
-        #region Combo box functions
+        #region List functions
         private void PrepareMapToHitsounding()
         {
             if (timer1.Enabled) timer1.Stop();
@@ -2591,6 +2591,8 @@ namespace BeatmapManager
                 hitObjectEnd = (decimal)members.EndOffset;
             }
 
+            bool willSnapGreenLines = members.IsSnapGreenLines;
+            List<decimal> currentHitObjects = new List<decimal>();
             decimal closestTimingPointOffset;
             decimal currentOffset;
             decimal currentBPM;
@@ -2605,6 +2607,9 @@ namespace BeatmapManager
                     continue;
                 else if (currentOffset > hitObjectEnd)
                     break;
+
+                if (willSnapGreenLines)
+                    currentHitObjects.Add(currentOffset);
 
                 int closestRedPointIndex = GetClosestTimingPointIndexInLines(lines, timingPointsIndex, (double)currentOffset);
                 if (closestRedPointIndex == -1)
@@ -2627,8 +2632,69 @@ namespace BeatmapManager
                 }
             }
 
-            // First, start resnapping hitobjects where
-            // the start and end offset is defined.
+            if (members.IsSnapGreenLines)
+            {
+                int closestPointIndex = -1;
+                SortedSet<decimal> sortedHitObjects = new SortedSet<decimal>(currentHitObjects);
+                for (int i = timingPointsIndex; i < lines.Count && !string.IsNullOrEmpty(lines[i]); i++)
+                {
+                    currentLine = lines[i];
+                    currentOffset = (decimal)currentLine.GetPointOffset();
+
+                    // We only care about inherited points here. If we encounter a timing point,
+                    // continue looping.
+                    if (currentOffset < hitObjectStart || !currentLine.IsPointInherited())
+                        continue;
+                    else if (currentOffset > hitObjectEnd)
+                        break;
+
+                    // Get the closest red point. Important for resnapping the green line if necessary.
+                    int closestRedPointIndex = GetClosestTimingPointIndexInLines(lines, timingPointsIndex, (double)currentOffset);
+                    if (closestRedPointIndex == -1)
+                    {
+                        ShowMode.Error("Failed to find associated timing point for the inherited point at " + ((double)currentOffset).ToOffsetString() + ".");
+                        return false;
+                    }
+
+                    // Get the closest green or red point. Important to determine if there is a kiai change between the offsets.
+                    if (closestPointIndex == -1)
+                    {
+                        closestPointIndex = GetClosestPointIndexInLines(lines, timingPointsIndex, (double)Math.Max(0, currentOffset - 1));
+                        if (closestPointIndex == -1)
+                            closestPointIndex = closestRedPointIndex;
+                    }
+
+                    bool isKiaiOpenPrevious = lines[closestPointIndex].IsKiaiOpen();
+                    bool isKiaiOpenCurrent = currentLine.IsKiaiOpen();
+
+                    if (isKiaiOpenPrevious == isKiaiOpenCurrent)
+                    {
+                        // Check the closest note to the current.
+                        // If it is ahead of the point offset,
+                        // then we will need to move it -1ms before this.
+                        decimal closestNote = GetClosest(sortedHitObjects, currentOffset);
+
+                        if (currentOffset > closestNote)
+                        {
+                            // Assume the inherited point is off if the difference is +5ms at most and there
+                            // are no other points.
+                            if (currentOffset < closestNote + 5 && GetClosestPointIndexInLines(lines, timingPointsIndex, (double)(closestNote + 5)) == i)
+                            {
+                                double newOffset = (double)(currentOffset - 1);
+                                lines[i] = currentLine.SetPointOffset(newOffset);
+                            }
+                        }
+                        else
+                        {
+                            // Not sure what to do here. Do not handle this case for now.
+                            int x = 0;
+                            x++;
+                        }
+                    }
+
+                    closestPointIndex = i;
+                }
+            }
             return true;
         }
 

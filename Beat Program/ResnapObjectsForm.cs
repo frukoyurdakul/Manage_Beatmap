@@ -12,12 +12,7 @@ using System.Windows.Forms;
 
 namespace Manage_Beatmap
 {
-    public partial class ResnapObjectsForm
-        #if DEBUG
-            : ActionableForm<ResnapObjectsForm>
-        #else
-            : ActionableForm  
-        #endif
+    public partial class ResnapObjectsForm: ActionableForm<ResnapObjectsForm>
     {
         public class Members
         {
@@ -25,7 +20,6 @@ namespace Manage_Beatmap
             public double EndOffset { get; internal set; } = 0;
 
             public bool IsSnapGreenLines { get; internal set; } = true;
-            public bool IsSnapBookmarks { get; internal set; } = false;
             public bool IsWholeMap { get; internal set; } = true;
             public bool IsAllTaikoDiffs { get; internal set; } = false;
 
@@ -34,7 +28,6 @@ namespace Manage_Beatmap
                 StartOffset = 0;
                 EndOffset = 0;
                 IsSnapGreenLines = true;
-                IsSnapBookmarks = false;
                 IsWholeMap = true;
                 IsAllTaikoDiffs = false;
             }
@@ -115,7 +108,6 @@ namespace Manage_Beatmap
             Values.IsAllTaikoDiffs = allTaikoDiffsCheckBox.Checked;
             Values.IsWholeMap = wholeMapCheckBox.Checked;
             Values.IsSnapGreenLines = snapGreenLinesCheckBox.Checked;
-            Values.IsSnapBookmarks = snapBookmarksCheckBox.Checked;
             return true;
         }
     }

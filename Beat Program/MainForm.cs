@@ -109,6 +109,7 @@ namespace BeatmapManager
             snaps.Add(4480m);
             snaps.Add(4620m);
             snaps.Add(4725m);
+            snaps.Add(5040m);
         }
 
         #region WinApi
@@ -2088,11 +2089,6 @@ namespace BeatmapManager
                 fileName = file.SafeFileName;
                 lines = File.ReadAllLines(path);
             }
-            else
-            {
-                path = string.Empty;
-                fileName = string.Empty;
-            }
             undo.Clear();
             redo.Clear();
             manageLoad();
@@ -2567,7 +2563,7 @@ namespace BeatmapManager
                 }
                 else
                     ResnapObjects(members, path, true);
-            });
+            }).UseLoading(this);
             formHandlerPanel.SetForm(resnapObjectsForm);
         }
 
@@ -2624,10 +2620,14 @@ namespace BeatmapManager
 
                 decimal diff = currentOffset - closestTimingPointOffset;
                 decimal closestResolution = GetClosestResolution(diff, currentBPM);
-                decimal result = currentBPM * closestResolution / resolution;
+                decimal originalResult = currentBPM * closestResolution / resolution;
+                decimal result = (currentBPM * closestResolution / resolution).RoundIfTooClose();
                 int newOffset = (int)(closestTimingPointOffset + result);
                 if ((int)currentOffset != newOffset)
                 {
+                    int hitObjectIndex = currentHitObjects.FindIndex(s => s == currentOffset);
+                    if (hitObjectIndex != -1)
+                        currentHitObjects[hitObjectIndex] = newOffset;
                     lines[i] = currentLine.SetHitObjectOffset(newOffset);
                 }
             }
@@ -2673,14 +2673,19 @@ namespace BeatmapManager
                         // If it is ahead of the point offset,
                         // then we will need to move it -1ms before this.
                         decimal closestNote = GetClosest(sortedHitObjects, currentOffset);
-
-                        if (currentOffset > closestNote)
+                        if (currentOffset == 206174)
                         {
-                            // Assume the inherited point is off if the difference is +5ms at most and there
+                            int x = 0;
+                            x++;
+                        }
+
+                        if (currentOffset > closestNote && currentOffset < closestNote + 10)
+                        {
+                            // Assume the inherited point is off if the difference is +10ms at most and there
                             // are no other points.
-                            if (currentOffset < closestNote + 5 && GetClosestPointIndexInLines(lines, timingPointsIndex, (double)(closestNote + 5)) == i)
+                            if (GetClosestPointIndexInLines(lines, timingPointsIndex, (double)(closestNote + 10)) == i)
                             {
-                                double newOffset = (double)(currentOffset - 1);
+                                double newOffset = (double)(closestNote - 1);
                                 lines[i] = currentLine.SetPointOffset(newOffset);
                             }
                         }
@@ -2694,6 +2699,13 @@ namespace BeatmapManager
 
                     closestPointIndex = i;
                 }
+            }
+
+            File.WriteAllLines(path, lines.ToArray());
+            if (lastDiff)
+            {
+                ShowMode.Information(language.LanguageContent[Language.processComplete]);
+                manageLoad();
             }
             return true;
         }

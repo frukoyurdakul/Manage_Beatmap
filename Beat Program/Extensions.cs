@@ -32,6 +32,29 @@ namespace BeatmapManager
             return int.Parse(new string(input.Where(char.IsDigit).ToArray()));
         }
 
+        public static decimal RoundIfTooClose(this decimal input)
+        {
+            string inputString = input.ToString();
+            int precisionIndex = inputString.IndexOf(Program.GetDecimalSeparator());
+            if (precisionIndex == -1 || precisionIndex == inputString.Length - 1)
+                return input;
+
+            string floatingPointValue = inputString.Substring(precisionIndex + 1);
+            if (floatingPointValue.Length > 11 && floatingPointValue.Substring(0, 11).IsAllEqualTo('9'))
+                return Math.Round(input);
+            else
+                return input;
+        }
+
+        public static bool IsAllEqualTo(this string input, char searched)
+        {
+            for (int i = 0; i < input.Length; i++)
+                if (input[i] != searched)
+                    return false;
+
+            return true;
+        }
+
         public static double GetPointOffset(this string input)
         {
             int index = input.IndexOf(',');

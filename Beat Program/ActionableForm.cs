@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manage_Beatmap;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,8 @@ namespace BeatmapManager
     public class ActionableForm<T>: ActionableForm where T: ActionableForm<T>
     {
         private readonly Action<T> formAction;
+        private bool willUseLoading = false;
+        private Form parent;
 
         public ActionableForm() : base()
         {
@@ -21,9 +24,28 @@ namespace BeatmapManager
             formAction = action;
         }
 
+        public virtual T UseLoading(Form parent)
+        {
+            this.parent = parent;
+            willUseLoading = true;
+            return GetThis();
+        }
+
         protected virtual void InvokeAction()
         {
+            LoadingForm loadingForm = null;
+            if (willUseLoading)
+            {
+                loadingForm = new LoadingForm();
+                loadingForm.StartPosition = FormStartPosition.CenterParent;
+                loadingForm.Show();
+                loadingForm.Top = parent.Top + ((parent.Height / 2) - (loadingForm.Height / 2));
+                loadingForm.Left = parent.Left + ((parent.Width / 2) - (loadingForm.Width / 2));
+                loadingForm.Refresh();
+            }
             formAction.Invoke(GetThis());
+            if (willUseLoading)
+                loadingForm.Close();
         }
 
         private T GetThis()

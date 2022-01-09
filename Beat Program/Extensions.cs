@@ -32,6 +32,29 @@ namespace BeatmapManager
             return int.Parse(new string(input.Where(char.IsDigit).ToArray()));
         }
 
+        public static decimal RoundIfTooClose(this decimal input)
+        {
+            string inputString = input.ToString();
+            int precisionIndex = inputString.IndexOf(Program.GetDecimalSeparator());
+            if (precisionIndex == -1 || precisionIndex == inputString.Length - 1)
+                return input;
+
+            string floatingPointValue = inputString.Substring(precisionIndex + 1);
+            if (floatingPointValue.Length > 11 && floatingPointValue.Substring(0, 11).IsAllEqualTo('9'))
+                return Math.Round(input);
+            else
+                return input;
+        }
+
+        public static bool IsAllEqualTo(this string input, char searched)
+        {
+            for (int i = 0; i < input.Length; i++)
+                if (input[i] != searched)
+                    return false;
+
+            return true;
+        }
+
         public static double GetPointOffset(this string input)
         {
             int index = input.IndexOf(',');
@@ -58,9 +81,30 @@ namespace BeatmapManager
             return (int.Parse(searched) & 1) == 1;
         }
 
+        public static bool IsHitObjectNormal(this string input)
+        {
+            return (Convert.ToInt16(input.GetBetween(',', 3, 4)) & 1) == 1;
+        }
+
+        public static bool IsHitObjectSpinner(this string input)
+        {
+            return (Convert.ToInt16(input.GetBetween(',', 3, 4)) & 8) != 0;
+        }
+
+        public static bool IsHitObjectSlider(this string input)
+        {
+            return (Convert.ToInt16(input.GetBetween(',', 3, 4)) & 2) != 0;
+        }
+
         public static double GetHitObjectOffset(this string input)
         {
             string result = input.GetBetween(',', 2, 3).ReplaceDecimalSeparator();
+            return double.Parse(result);
+        }
+
+        public static double GetHitObjectSpinnerOffset(this string input)
+        {
+            string result = input.GetBetween(',', 5, 6).ReplaceDecimalSeparator();
             return double.Parse(result);
         }
 
@@ -280,7 +324,7 @@ namespace BeatmapManager
         {
             // Surely there can't be a map with -30000 ms timing point offset, right?
             double offset = -30000;
-            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Length; i++)
+            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && i < input.Length && !string.IsNullOrWhiteSpace(input[i]); i++)
             {
                 offset = Math.Max(offset, input[i].GetPointOffset());
             }
@@ -291,7 +335,7 @@ namespace BeatmapManager
         {
             // Surely there can't be a map with -30000 ms timing point offset, right?
             double offset = -30000;
-            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Count; i++)
+            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && i < input.Count && !string.IsNullOrWhiteSpace(input[i]); i++)
             {
                 offset = Math.Max(offset, input[i].GetPointOffset());
             }
@@ -301,7 +345,7 @@ namespace BeatmapManager
         public static double FindMinPointOffset(this string[] input)
         {
             double offset = double.MaxValue;
-            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Length; i++)
+            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && i < input.Length && !string.IsNullOrWhiteSpace(input[i]); i++)
             {
                 offset = Math.Min(offset, input[i].GetPointOffset());
             }
@@ -311,7 +355,7 @@ namespace BeatmapManager
         public static double FindMinPointOffset(this List<string> input)
         {
             double offset = double.MaxValue;
-            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Count; i++)
+            for (int i = input.GetTimingPointsStartIndex(); i >= 0 && i < input.Count && !string.IsNullOrWhiteSpace(input[i]); i++)
             {
                 offset = Math.Min(offset, input[i].GetPointOffset());
             }
@@ -321,7 +365,7 @@ namespace BeatmapManager
         public static double FindMaxHitObjectOffset(this string[] input)
         {
             double offset = 0;
-            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Length; i++)
+            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && i < input.Length && !string.IsNullOrWhiteSpace(input[i]); i++)
             {
                 offset = Math.Max(offset, input[i].GetHitObjectOffset());
             }
@@ -331,7 +375,7 @@ namespace BeatmapManager
         public static double FindMaxHitObjectOffset(this List<string> input)
         {
             double offset = 0;
-            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Count; i++)
+            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && i < input.Count && !string.IsNullOrWhiteSpace(input[i]); i++)
             {
                 offset = Math.Max(offset, input[i].GetHitObjectOffset());
             }
@@ -341,7 +385,7 @@ namespace BeatmapManager
         public static double FindMinHitObjectOffset(this string[] input)
         {
             double offset = double.MaxValue;
-            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Length; i++)
+            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && i < input.Length && !string.IsNullOrWhiteSpace(input[i]); i++)
             {
                 offset = Math.Min(offset, input[i].GetHitObjectOffset());
             }
@@ -351,7 +395,7 @@ namespace BeatmapManager
         public static double FindMinHitObjectOffset(this List<string> input)
         {
             double offset = double.MaxValue;
-            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && !string.IsNullOrWhiteSpace(input[i]) && i < input.Count; i++)
+            for (int i = input.GetHitObjectsStartIndex(); i >= 0 && i < input.Count && !string.IsNullOrWhiteSpace(input[i]); i++)
             {
                 offset = Math.Min(offset, input[i].GetHitObjectOffset());
             }
